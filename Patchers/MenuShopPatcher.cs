@@ -92,21 +92,25 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     sprites.Add(Helpers.GetItemSprite(_ScoutedLocationInfo.ElementAt(i).Value, true));
                 Sprites = [.. sprites];
 
-                // Reset the location ID lost.
-                locationIDs = [];
-                
-                // Calculate how many items are valid hints.
-                int hintableItems = FPSaveManager.TotalStarCards();
-                if (shop == "Vinyl")
-                    hintableItems *= 2;
+                // If our shop information setting is set to full, then also send hints for the items in this shop.
+                if ((long)Plugin.slotData["shop_information"] == 0)
+                {
+                    // Reset the location ID lost.
+                    locationIDs = [];
 
-                // Loop through and get the location indices for this shop's hints.
-                for (int i = 1; i <= hintableItems; i++)
-                    locationIDs.Add(Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{shop} Shop Item {i}"));
+                    // Calculate how many items are valid hints.
+                    int hintableItems = FPSaveManager.TotalStarCards();
+                    if (shop == "Vinyl")
+                        hintableItems *= 2;
 
-                // Scout for the hints for these locations.
-                // TODO: If an item is purchased before being hinted for, then it makes the hint each time despite the annouce setting. MultiClient bug?
-                Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfoHint, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [.. locationIDs]);
+                    // Loop through and get the location indices for this shop's hints.
+                    for (int i = 1; i <= hintableItems; i++)
+                        locationIDs.Add(Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{shop} Shop Item {i}"));
+
+                    // Scout for the hints for these locations.
+                    // TODO: If an item is purchased before being hinted for, then it makes the hint each time despite the annouce setting. MultiClient bug?
+                    Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfoHint, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [.. locationIDs]);
+                }
             }
 
             void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _ScoutedLocationInfo = scoutedLocationInfo;

@@ -70,6 +70,10 @@ namespace Freedom_Planet_2_Archipelago
                 return;
             }
 
+            // Create the Archipelago Saves directory if it doesn't exist.
+            if (!Directory.Exists($@"{Paths.GameRootPath}\Archipelago Saves"))
+                Directory.CreateDirectory($@"{Paths.GameRootPath}\Archipelago Saves");
+
             // Get the player prefabs from the game itself.
             foreach (GameObject obj in UnityEngine.Resources.FindObjectsOfTypeAll<GameObject>())
                 if (obj.name is "Player Lilac" or "Player Carol" or "Player Milla" or "Player Neera") playerPrefabs.Add(obj);
