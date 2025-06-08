@@ -93,7 +93,6 @@ namespace Freedom_Planet_2_Archipelago
             {
                 switch (scoutedLocationInfo.ItemName)
                 {
-
                     // Multitude Items.
                     case "Gold Gem": return Plugin.apAssetBundle.LoadAsset<Sprite>("gold_gem");
                     case "Star Card": return Plugin.apAssetBundle.LoadAsset<Sprite>("star_card");

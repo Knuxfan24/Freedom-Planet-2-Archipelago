@@ -2,6 +2,9 @@
 {
     internal class MenuClassicShopHubPatcher
     {
+        /// <summary>
+        /// Locks the shops that don't have any locations based on the YAML options.
+        /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuClassicShopHub), "Start")]
         static void LockUnusedShops(MenuClassicShopHub __instance)

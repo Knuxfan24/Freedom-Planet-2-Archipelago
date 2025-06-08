@@ -19,7 +19,7 @@
                 // Check if the time limit has elapsed.
                 if (FPSaveManager.GetStageParTime(FPStage.currentStage.stageID) - (FPStage.currentStage.minutes * 6000 + FPStage.currentStage.seconds * 100 + FPStage.currentStage.milliSeconds) < 0)
                 {
-                    // Disable the player's DeathLink flag so we don't send a "became a pancake message".
+                    // Disable the player's DeathLink flag so we don't send a "became a pancake" message.
                     FPPlayerPatcher.canSendDeathLink = false;
 
                     // Forcibly run the player's crush action to blow them up.

@@ -1,4 +1,5 @@
-﻿using Rewired;
+﻿using FP2Lib.Player;
+using Rewired;
 using System.Linq;
 using System.Reflection.Emit;
 using UnityEngine.SceneManagement;
@@ -282,10 +283,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Set the index to our character ID.
             int index = (int)player.characterID;
 
-            // Reroll the index if it landed on our current ID. We only select the base game characters as custom ones can do some funky shit that breaks everything.
+            // Reroll the index if it landed on our current ID. We currently only select the base game characters as custom ones can do some funky shit that breaks everything.
             while (index == (int)player.characterID)
             {
                 index = Plugin.rng.Next(0, 4);
+                //index = Plugin.rng.Next(MenuConnection.characters.Count - 1);
                 index = MenuConnection.characters.ElementAt(index).Value;
             }
 
@@ -301,9 +303,13 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 case 4: prefab = Plugin.playerPrefabs[1]; break; // neera
                 //default:
                 //    foreach (PlayableChara chara in PlayerHandler.PlayableChars.Values)
+                //    {
                 //        if (chara.id == index)
+                //        {
                 //            prefab = chara.prefab;
-                //        break; // custom
+                //        }
+                //    }
+                //    break; // custom
             }
 
             // Bail out if we didn't find a prefab.
@@ -312,6 +318,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
             // Set the player character's ID.
             player.characterID = (FPCharacterID)index;
+            PlayerHandler.currentCharacter = PlayerHandler.GetPlayableCharaByFPCharacterId((FPCharacterID)index);
 
             // Load the FPPlayer script from the prefab, if only so we aren't spamming this line all over the place.
             FPPlayer playerPrefabScript = prefab.GetComponent<FPPlayer>();

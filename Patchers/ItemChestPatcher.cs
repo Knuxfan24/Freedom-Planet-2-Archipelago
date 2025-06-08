@@ -84,6 +84,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         fPPlayer.buttonPromptAction = "Tracer Required!";
 
                         // Standard player button prompt set up.
+                        // TODO: Maybe move the message down a bit? Feels a bit high up.
                         fPPlayer.buttonPromptLocation = __instance.transform.position + new Vector3(0f, 100f, 0f);
                         fPPlayer.buttonPromptTimer = 0f;
 

@@ -6,7 +6,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class MenuArenaChallengeSelectPatcher
     {
-        // Set up a dictionary of scouted locations
+        // Set up an array of sprites for the challenge rewards.
         public static Sprite[] Sprites;
 
         [HarmonyPrefix]
