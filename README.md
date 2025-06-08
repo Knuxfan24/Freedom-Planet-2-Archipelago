@@ -1,58 +1,165 @@
 # Freedom Planet 2 Archipelago
 
-A (rather hacky) implementation of Freedom Planet 2 into [Archipelago](https://archipelago.gg/), using the [Manual](https://github.com/ManualForArchipelago/Manual) system as I cannot for the life of me wrap my head around writing a proper apworld.
+An implementation of Freedom Planet 2 into [Archipelago](https://archipelago.gg/), currently using the [Manual](https://github.com/ManualForArchipelago/Manual) system due to an inability to understand and write a proper, standalone APWorld.
 
 ## Building
 
-First off, ensure that your system has [Visual Studio 2022](https://visualstudio.microsoft.com/) installed alongside the `.NET Framework 3.5 development tools`, as well as [Unity 5.6.3](https://unity.com/releases/editor/whats-new/5.6.3#installs).
+First off, ensure that your system has [Visual Studio 2022](https://visualstudio.microsoft.com/) installed alongside the `.NET Framework 3.5 development tools`, as well as [Unity 5.6.3](https://unity.com/releases/editor/whats-new/5.6.3#installs) and a copy of Freedom Planet 2 itself that is set up for modding with BepInEx and FP2Lib (using the [Freedom Manager tool](https://gamebanana.com/tools/10870) can set the game and libraries up automatically for you).
 
 Open the solution file in VS2022 then go to `Tools > Options` and select `Package Sources` under the `NuGet Package Manager` category. Then add a package source called `BepInEx` with the source url set to `https://nuget.bepinex.dev/v3/index.json`.
 
-Next, go to the `Assemblies` category in the `Dependencies` for the project, then delete the `Assembly-CSharp` and `Rewired_Core` references. Right click on the Assemblies category and click `Add Assembly Reference...`, then click `Browse...` and navigate to Freedom Planet 2's install directory. Open the `FP2_Data` directory, then the `Managed` directory and select the `Assembly-CSharp.dll` and `Rewired_Core.dll` files. Click Add, then OK.
+Next, go to the `Assemblies` category in the `Dependencies` for the project, then delete the `Assembly-CSharp`, `FP2Lib` and `Rewired_Core` references. Right click on the Assemblies category and click `Add Assembly Reference...`, then click `Browse...` and navigate to Freedom Planet 2's install directory. Open the `FP2_Data` directory, then the `Managed` directory and select the `Assembly-CSharp.dll` and `Rewired_Core.dll` files, then click Add. Choose `Browse...` again and navigate to the install location of FP2Lib's DLL (likely within the `BepInEx\plugins\lib` directory) and select it. Click Add, then click OK to close the Reference Manager.
 
-You should now be able to right click the solution and choose `Rebuild` to build the mod. Though it is recommended to change the build configuration from `Debug` to `Release`, as the debug build prints a lot more console messages, some of which spoil what items are at a location.
+You should now be able to right click the solution and choose `Rebuild` to build the mod.
 
 ## Installing
 
-First off, install [BepInEx 5](https://github.com/BepInEx/BepInEx/releases/latest) into Freedom Planet 2 (make sure to use the x86 version, as the game is a 32-bit application rather than a 64-bit one). Then create an `Archipelago` folder in the `BepInEx/plugins` directory. Copy the `Archipelago.MultiClient.Net`, `Freedom_Planet_2_Archipelago` and `Newtonsoft.Json` DLLs from the build (`bin/Debug/net35` or `bin/Release/net35`) into this folder. Then grab the `clang32` version of [c-wspp-websocket-sharp](https://github.com/black-sliver/c-wspp-websocket-sharp/releases/latest) and extract the `c-wspp` and `websocket-sharp` DLLs to this folder as well.
+Navigate to Freedom Planet 2's plugins directory (likely found at `BepInEx\plugins`) and create a directory called Archipleago. Then copy the `Archipelago.MultiClient.Net`, `Freedom_Planet_2_Archipelago` and `Newtonsoft.Json` DLLs from the build (`bin\Debug\net35` or `bin\Release\net35`) into this directory. Then grab the `clang32` version of [c-wspp-websocket-sharp](https://github.com/black-sliver/c-wspp-websocket-sharp/releases/latest) and extract the `c-wspp` and `websocket-sharp` DLLs to this directory as well.
 
-It is also HEAVILY recommended to enable the BepInEx console. To do this, go to the `BepInEx/config` and open `BepInEx.cfg` in a text editor. There, find the `Enabled = false` line under `[Logging.Console]` and change it to `Enabled = true`.
+Next, return to the root directory for Freedom Planet 2 and open the `mod_overrides` directory (create it if it doesn't exist.) Within that directory, create another directroy called `Archipelago` and copy the `archipelago.assets` file from the repository to it.
+
+It is also recommended to enable the BepInEx console. To do this, go to the `BepInEx\config` and open `BepInEx.cfg` in a text editor. There, find the `Enabled = false` line under `[Logging.Console]` and change it to `Enabled = true`.
 
 ## Connecting
 
-Upon running the game, it should load to a basic connection screen consisting of three textboxes. Change the contents of the first textbox to the address of the Archipelago server that is running a multiworld with a Freedom Planet 2 game. Change the second textbox to your Slot Name, then put the server password in the third box (if the server has no password, then leave it blank.)
+![](./readme_imgs/connection_menu.png)
+*The connection menu, with the plugin defaults displayed.*
 
-Upon pressing Connect, the game will freeze for a short while as it gets the starting information from the server. Checking the console will show multiple lines reading `[Info   :Freedom_Planet_2_Archipelago] Getting information for location [locationName] with an index of [locationIndex]`. Once this is done, the game will go to the Classic Mode map screen.
+Upon running the game and pressing start on the title screen, the game should load into a custom connection menu, with options for the server address, slotname and password, as well as the option to select your player character. Modded characters such as my own [Sonic mod](https://github.com/Knuxfan24/Freedom-Planet-2-Sonic-Mod) and Kubboros' [Spade mod](https://github.com/Kuborros/PlayableSpade) are also selectable here, but it is not guaranteed that they can fully complete a run. In addition, the character can be set to `Random Each Stage`, which will select a character at random every time the world map is loaded; modded characters are also included in this selection.
 
-## Custom Content
+To connect, simply press enter on an option to be able to type into it. Input your server address, slotname and password (leave the field blank if the server doesn't have a password set on it) then press A on the Connect button. The game will hang for a short while until the connection is complete, at which point it will automatically go to the world map. If the connection fails, then the failure reason(s) will be printed to the BepInEx console.
 
-### Music
+Upon a successful connection, the game will save the settings into the mod's config file (found at `BepInEx\config\K24_FP2_Archipelago.cfg`). These settings will be autofilled whenever the connection menu is accessed.
 
-By default, an option for custom music is enabled (this can be disabled by changing the `Enable Music Randomiser = true` line in `FP2_AP.cfg` (found in the same directory as BepInEx's own configuration file) to `Enable Music Randomiser = false`). To use this, place any music you want into the `mod_overrides\Archipelago\Audio\music` directory as an OGG Vorbis file. To control when the music loops, create a file in the same directory called `loop_points.txt` and open it in a text editor. Add a line to it with the file name, the start loop point (in samples) and end loop point (also in samples).
+## Archipelago Goal
 
-**Example:**
+For this implementation, the aim of the game is to unlock and complete Weapon's Core, which is locked behind a requirement of 32 Star Cards, 13 Time Capsules and access to the Bakunawa Stages. Present in the item pool are 48 Star Cards, 21 Time Capsules, unlocks for each chapter (affected by the options detailed below), extra slots for both Brave Stones and Potions (toggable in the options detailed below), tracers used for locating each stage's chests (affected by the options detailed below), each individual Brave Stone (some of which are treated as traps and have an option relating to them detailed below), each individual Potion and a few optional traps.
 
-`S4EP1_15_Boss1_Mixed4816_wav|53261|1546750`
+These traps are the `Mirror Trap`, which enables the effect of the unused Mirror Lens item by flipping the whole stage horizontally (controls are also flipped accordingly), the `Swap Trap`, which swaps the player character to one of the other original four (modded characters are excluded from the swap pool, as they can be unpredictable in their implementation) and the `Pie Trap`, which spawns one of Acrabelle's pies at the player's position, causing them to get stuck in it for a bit.
 
-![](https://raw.githubusercontent.com/Knuxfan24/Freedom-Planet-2-Archipelago/refs/heads/master/readme_imgs/custom_music.png)
-*An example of a populated custom music directory and approriate loop_points.txt file.*
+## Archipelago Options
 
-Custom 1UP, Stage Clear and Invincibility Jingles can also be added in a similar manner, although these do not use loop points and go in different directories within the `mod_overrides\Archipelago\Audio\jingles` directory.
+The Template YAML generated by the Archipelago Launcher (under the name `Manual_FreedomPlanet2_Knuxfan24.yaml`) has a few configurable options. Due to limitations of the Manual system (and likely my own lack of research) some options need to be set according to other options. In a proper implementation these options would likely be properly bundled together.
 
-![](https://raw.githubusercontent.com/Knuxfan24/Freedom-Planet-2-Archipelago/refs/heads/master/readme_imgs/custom_jingles.png)
-*An example of populated custom jingle directories.*
+The options included in the YAML are:
 
-This custom audio is loaded when the connect screen is and will also print the total amount of custom music to the console.
+### Chapters
 
-### Item Sprites and Descriptions
+![](./readme_imgs/chapter.png)
+*The world map tile for Avian Museum, without the approriate Chapter Unlock received.*
 
-By default, items for other games will appear as the generic Archipelago logo, and shop items will simply say who the item is for. To get sprites and descriptions for other games, create a folder in `mod_overrides\Archipelago\Sprites` with the game's name. Then place PNG files with the item names into the new folder. For descriptions, create a file called `descriptions.txt` and add a line with the item name, followed by a comma, then the desired description.
+This is one of the options that is split into two, with both options needing to be set accordingly. The first option is `individual_chapters`, if this is enabled then the world generation will have eight individual chapter items (those being `Mystery of the Frozen North`, `Sky Pirate Panic`, `Enter the Battlesphere`, `Globe Opera`, `Justice in the Sky Paradise`, `Robot Wars! Snake VS Tarsier`, `Echoes of the Dragon War` and `Bakunawa`). In contrast, the `progressive_chapters` option will add eight copies of a `Progressive Chapter` item, that unlocks the chapters on the world map in a linear order. One of these options must be enabled, and the other must be disabled.
 
-**Example:**
+### Chests
 
-`Power Star,Stars that unlock doors and can dispell magic stairs.`
+This option makes opening the various chests scattered around the stages into location checks (which adds 82 locations into the multiworld).
 
-![](https://raw.githubusercontent.com/Knuxfan24/Freedom-Planet-2-Archipelago/refs/heads/master/readme_imgs/custom_sm64items.png)
-*An example of a populated directory for Super Mario 64, showing sprites for various items, as well a descriptions.txt file for some of them.*
+### Chest Tracers
 
-Custom sprites should ideally max out at 32x32 pixels.
+![](./readme_imgs/chest_tracer.png)
+*The Chest Tracer option in Shenlin Park.*
+
+This option is designed to make the chest searching easier, by placing arrows around the player which point in the direction of the unchecked chest locations in the active stage. These arrows can be toggled on and off with the F9 key or the Select button (which is also mapped to pause by default, so unmapping it is recommended).
+
+### Chest Tracer Items
+
+This is one of the options that is split into two, with both options needing to be set accordingly. The first option is `chest_tracer_items`, if this is enabled then each stage's chest tracer arrows will not show up until an item is received by the name of `Chest Tracer - [Stage Name]`. The `chest_tracer_global` option instead bundles all of these items into one generic `Chest Tracer` item. If one of these options is enabled, then the other must be disabled. Although both can be disabled to completely remove the tracer items and allow them to be used at any time (assuming the tracer option itself is on.)
+
+If a chest tracer item is enabled, then a stage will not logically expect its chests to be checked without the approriate tracer.
+
+### Strict Chest Tracers
+
+![](./readme_imgs/chest_lock.png)
+*A chest in Dragon Valley without its corresponding tracer item.*
+
+This option is an extension of the Chest Tracer Items, and thus requires one of the two to be enabled to have any effect. If this option is enabled, then a stage's chests will be entirely locked if its corresponding tracer has yet to be obtained. 
+
+### Shops
+
+Two seperate options, under the name of `milla_shop` and `vinyl_shop`. These two options will add location checks to their corresponding shop on the World Map (30 for Milla's, 60 for the Vinyl's). Either of these options can be enabled or disabled with no conflict to the other.
+
+### Item Information
+
+![](./readme_imgs/shop_noinfo.png)
+*Milla's shop with the shop_information option set to nothing.*
+
+An option under the name of `shop_information` that controls how much information is given regarding an item's appearance in either of the shops, the Battlesphere's challenge list and the end of stage Star Card (this includes Freedom Planet 2's own items, which all (barring a few traps) have sprites and descriptions by default). If set to `full`, then the item's full information will be shown, including its custom sprite is one is definied (see below). In addition the shops will show the item's custom description if definied, or will show whether the item is a Trap or Progression item if not.
+
+If set to `flags`, then the item's name and description will be hidden, but the shop description and general item appearance will still reveal whether the item is a Trap or Progression item if not.
+
+If set to `hidden`, then the item's sprite will always show the generic Archipelago logo and the name will be hidden, giving no indication as to whether the item is useful or not. Though the receiver's name and game will still be shown in the shop menu.
+
+If set to `nothing`, then the same visual blocks apply as the `hidden` option, except the shop will just show `An item for somebody.` in the description.
+
+### Shop Prices
+
+Two seperate options, under the name of `milla_shop_price` and `vinyl_shop_price`. These options control each shop's prices (with Milla's shop using Gold Gems and the Vinyl shop using Crystal Shards). Shorter games will likely want to use lower values (such as the defaults of 1 and 300 respectively), whereas longer games with more time for grinding may want to use higher values.
+
+### Extra Item Slots
+
+Although unused normally, the game can support expanding the player's Brave Stone and Potion equip capacity. The `extra_items` option adds four extra items, two each of `Extra Item Slot` and `Extra Potion Slot`, which allows the player to take advantage of this feature.
+
+### Trap Brave Stones
+
+An option that modifies how Brave Stones with negative effects are handled upon receive. With this option off the stone will simply be added to the player's inventory for future equipping if they so desrie. With it on, then the stone is automatically equipped (assuming it was received in a stage). This can lead to more unpredictable circumstances, such as the One-Hit KO or Life Oscillation Brave Stones being activated in the middle of a boss fight, adding more danger to the items.
+
+### Dangerous Time Limit
+
+An option that changes how the Time Limit Brave Stone behaves. In the vanilla game, running out of time simply reduces the end of stage Crystal Shard payout. With this option on, running out of time will instead kill the player on the spot, adding more risk to the Time Limit Brave Stone, especially if the Trap Brave Stones option is on, as receiving one mid stage could lead to an unexpected death.
+
+### DeathLink
+The usual Archipelago generic options are also present and work as in most implementations, although the DeathLink option has an extra choice in the form of `enable_survive`. If DeathLink is just set to enabled, then a DeathLink receive will cause the player to explode, sending them back to the last checkpoint. If Enable Survive is chosen, then the player will instead be knocked down, giving them the option to revive on the spot (although this comes with the usual base game risk of a low health pool).
+
+## Item Sprites and Descriptions
+
+![](./readme_imgs/shop_nodef.png)
+*The Vinyl shop menu, with no definition file present.*
+
+By default, items for other games in the Multiworld will have a generic Archipelago icon to represent them. This can be changed by creating item definition files for various games. To do this, create a `Sprites` directory within the `mod_overrides\Archipelago` directory, then create a directory with the target game's name. For this example, we'll use Super Mario 64, so we'd create a directory called `Super Mario 64`.
+
+Within our new directory, copy PNG files to serve as the sprites for the items in the game and then create a file called `items.json`. For each item, we want to add a definition. Let's add a definition for Super Mario 64's Power Stars, and another for the Cannon Unlocks found throughout the game (make sure the JSON begins with a `[` character and ends with a `]` character. An editor such as Visual Studio Code will highlight syntax errors).
+
+```json
+  {
+    "ItemNames": [
+      "Power Star"
+    ],
+    "Description": "A large golden star with eyes. A large amount of radiant power can be felt within it.",
+    "SpriteName": "Power Star"
+  }
+```
+
+```json
+  {
+    "ItemNames": [
+      "Cannon Unlock BoB",
+      "Cannon Unlock CCM",
+      "Cannon Unlock JRB",
+      "Cannon Unlock RR",
+      "Cannon Unlock SL",
+      "Cannon Unlock SSL",
+      "Cannon Unlock THI",
+      "Cannon Unlock TTM",
+      "Cannon Unlock WDW",
+      "Cannon Unlock WF"
+    ],
+    "Description": null,
+    "SpriteName": "Cannon Unlock"
+  },
+  {
+    "ItemNames": [
+      "Metal Cap"
+    ],
+    "Description": "A hat made of solid steel, protecting the wearer from all but the strongest forms of damage.",
+    "SpriteName": "Metal Cap"
+  }
+```
+
+The `ItemNames` key is an array of strings, which tells the game what items this entry is for. In the Cannon Unlock example, we've added the various different cannon unlock item names to this list, which will make each of them use this same entry.
+
+The `Descriptions` key should contain a short message to display in the shop menu. If this is not present (or left null as in the Cannon Unlock example) then the shop will simply read `An item for [x]'s [y].".
+
+Finally, the `SpriteName` key should contain the name of the PNG file for this item definition (minus the file extension). This is the sprite that will be used to replace the Archipelago logo for this item. If this is not present, left null or the file doesn't exist then the sprite will fall back on its usual Archipelago logo version.
+
+![](./readme_imgs/shop_wdef.png)
+*The Vinyl shop menu, with a properly set up definition file present.*
