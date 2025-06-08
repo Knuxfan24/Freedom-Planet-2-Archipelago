@@ -24,6 +24,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(FPStage), "Start")]
         private static void AddExtraObjects()
         {
+            // Check that we actually have slot data to reference, as this function can get called before we connect.
+            if (Plugin.slotData == null)
+                return;
+
             // Only do this if we're actually using chest locations.
             if ((long)Plugin.slotData["chests"] == 0)
                 return;
