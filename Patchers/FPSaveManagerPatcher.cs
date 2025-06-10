@@ -1,5 +1,4 @@
-﻿using BepInEx;
-using System.Reflection.Emit;
+﻿using System.Reflection.Emit;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {

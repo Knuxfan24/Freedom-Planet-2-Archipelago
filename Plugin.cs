@@ -1,4 +1,5 @@
 ﻿global using Archipelago.MultiClient.Net;
+global using BepInEx;
 global using Freedom_Planet_2_Archipelago.CustomData;
 global using HarmonyLib;
 global using System;
@@ -6,7 +7,6 @@ global using System.Collections.Generic;
 global using UnityEngine;
 
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
-using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using Freedom_Planet_2_Archipelago.Patchers;
@@ -115,7 +115,7 @@ namespace Freedom_Planet_2_Archipelago
 
             // Patch all the functions that need patching.
             Harmony.CreateAndPatchAll(typeof(AcrabellePieTrapPatcher));
-            //Harmony.CreateAndPatchAll(typeof(FPBaseEnemyPatcher)); // Disabled until I properly implement enemy sanity stuff.
+            Harmony.CreateAndPatchAll(typeof(EnemySanity));
             Harmony.CreateAndPatchAll(typeof(FPCameraPatcher));
             Harmony.CreateAndPatchAll(typeof(FPHudMasterPatcher));
             Harmony.CreateAndPatchAll(typeof(FPPlayerPatcher));

@@ -1,7 +1,6 @@
 ﻿using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Models;
-using BepInEx;
 using FP2Lib.Player;
 using Freedom_Planet_2_Archipelago.Patchers;
 using Newtonsoft.Json;

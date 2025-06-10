@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
@@ -53,6 +54,55 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     var nlBubble = GameObject.Instantiate(UnityEngine.GameObject.Find("NL_RisingBubble (12)"), new(20600, -984, 0), Quaternion.identity);
                     nlBubble.name = "Chest Bubble";
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Changes the moon sprite in Merga's battle depending on the other games in the multiworld.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPStage), "Start")]
+        private static void MoonEasterEgg()
+        {
+            // Check if we're in Merga's boss map.
+            if (SceneManager.GetActiveScene().name == "Bakunawa4Boss")
+            {
+                // Set up a list of graphic names.
+                List<string> moonGraphics = [];
+
+                // Loop through each player in the multiworld and add their moon graphic name if the file exists.
+                foreach (Archipelago.MultiClient.Net.Helpers.PlayerInfo player in Plugin.session.Players.AllPlayers)
+                {
+                    if (player.Game == "Sonic Adventure 2 Battle" && File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\shattered_moon.png") && !moonGraphics.Contains("shattered_moon"))
+                        moonGraphics.Add("shattered_moon");
+
+                    if (player.Game == "Majora's Mask Recompiled" && File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\majora_moon.png") && !moonGraphics.Contains("majora_moon"))
+                        moonGraphics.Add("majora_moon");
+                }
+
+                // Abort if we haven't gotten any moon graphics.
+                if (moonGraphics.Count == 0)
+                    return; 
+
+                // Pick and create a sprite out of a graphic.
+                Texture2D texture = new(230, 230) { filterMode = FilterMode.Trilinear };
+                texture.LoadImage(File.ReadAllBytes($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{moonGraphics[Plugin.rng.Next(moonGraphics.Count)]}.png"));
+                Sprite moonGraphic = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
+
+                // Edit all four moon objects.
+                MoonEdit(UnityEngine.GameObject.Find("Moon"));
+                MoonEdit(UnityEngine.GameObject.Find("Moon Overlay"));
+                MoonEdit(UnityEngine.GameObject.Find("Moon_Cutscene"));
+                MoonEdit(UnityEngine.GameObject.Find("Moon_Start"));
+
+                void MoonEdit(GameObject moon)
+                {
+                    if (moon != null)
+                    {
+                        moon.GetComponent<SpriteRenderer>().sprite = moonGraphic;
+                        moon.transform.position = new(320, -48, moon.transform.position.z);
+                    }
+                }
             }
         }
     }
