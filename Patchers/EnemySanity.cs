@@ -61,7 +61,6 @@
         [HarmonyPostfix][HarmonyPatch(typeof(MergaSupermoon), "State_Death")] static void MergaSuperMoon() => SendEnemyCheck("Merga (Super Moon)");
         [HarmonyPostfix][HarmonyPatch(typeof(MergaEclipse), "State_Death")] static void MergaEclipse() => SendEnemyCheck("Merga (Eclipse)");
         [HarmonyPostfix][HarmonyPatch(typeof(MergaLilith), "State_Death")] static void MergaLilith() => SendEnemyCheck("Merga (Lilith)");
-        [HarmonyPostfix][HarmonyPatch(typeof(PlayerBossMerga), "State_StageComplete")] static void MergaPalace() => SendEnemyCheck("Merga"); // TODO: Doesn't work.
         [HarmonyPostfix][HarmonyPatch(typeof(PlayerBossMerga), "State_KO2")] static void Merga() => SendEnemyCheck("Merga");
         [HarmonyPostfix][HarmonyPatch(typeof(MeteorRoller), "State_Death")] static void MeteorRoller() => SendEnemyCheck("Meteor Roller");
         [HarmonyPostfix][HarmonyPatch(typeof(MonsterCube), "State_Death")] static void MonsterCube() => SendEnemyCheck("Monster Cube");
@@ -137,8 +136,16 @@
                 case "PlayerBossAskal": SendEnemyCheck("Askal"); return;
                 case "PlayerBossCorazon": SendEnemyCheck("Corazon"); return;
                 case "PlayerBossKalaw": SendEnemyCheck("Captain Kalaw"); return;
+                case "PlayerBossMerga": SendEnemyCheck("Merga"); return;
                 case "PlayerBossSerpentine": SendEnemyCheck("Serpentine"); return;
-                default: Plugin.consoleLog.LogInfo(__instance.GetType().Name); return;
+
+                // If the plugin is compiled in Debug Mode, then log the KO'd boss.
+                // This causes some pretty severe console spam in Palace Courtyard and Hero Battle Royale.
+                default:
+                    #if DEBUG
+                    Plugin.consoleLog.LogInfo(__instance.GetType().Name);
+                    #endif
+                    return;
             }
         }
 
