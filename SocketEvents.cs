@@ -1,5 +1,6 @@
 ﻿using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Models;
+using Archipelago.MultiClient.Net.Packets;
 using Freedom_Planet_2_Archipelago.Patchers;
 
 namespace Freedom_Planet_2_Archipelago
@@ -70,6 +71,96 @@ namespace Freedom_Planet_2_Archipelago
 
             // Add the message to our sent queue so it'll take priority for the message label.
             Plugin.sentMessageQueue.Add(notifyMessage);
+        }
+
+        /// <summary>
+        /// Event handler for when we receive a packet from the Multiworld, only used for RingLink handling.
+        /// </summary>
+        public static void Socket_RingLinkPacket(ArchipelagoPacketBase packet)
+        {
+            switch (packet)
+            {
+                case BouncedPacket bouncedPacket when bouncedPacket.Tags.Contains("RingLink"):
+                    // Ignore the packet if we're the one who sent it.
+                    if (bouncedPacket.Data["source"].ToObject<int>() == Plugin.session.ConnectionInfo.Slot)
+                        return;
+
+                    // Get the value from the RingLink.
+                    int ringLinkValue = bouncedPacket.Data["amount"].ToObject<int>();
+
+                    // Check if the player exists.
+                    if (FPPlayerPatcher.player != null)
+                    {
+                        // Disable our send flag so we don't send the RingLink value back.
+                        FPSaveManagerPatcher.DisableRingLinkSend = true;
+
+                        // If the RingLink value is positive, then give us that amount of crystals.
+                        if (ringLinkValue > 0)
+                        {
+                            for (int i = 0; i < ringLinkValue; i++)
+                                FPSaveManager.AddCrystal(FPPlayerPatcher.player);
+                        }
+
+                        // If the RingLink value is negative, then remove that amount.
+                        if (ringLinkValue < 0)
+                        {
+                            FPPlayerPatcher.player.crystals -= ringLinkValue;
+                            FPPlayerPatcher.player.totalCrystals += ringLinkValue;
+
+                            // Clamp the values to 0 and the extra life cost respectively.
+                            if (FPPlayerPatcher.player.totalCrystals < 0)
+                                FPPlayerPatcher.player.totalCrystals = 0;
+                            if (FPPlayerPatcher.player.crystals > FPPlayerPatcher.player.extraLifeCost)
+                                FPPlayerPatcher.player.crystals = FPPlayerPatcher.player.extraLifeCost;
+
+                            // Check if the player has a shield.
+                            if (FPPlayerPatcher.player.shieldHealth > 0)
+                            {
+                                // Play the approriate sound effect for the shield.
+                                if (FPPlayerPatcher.player.shieldHealth > 1)
+                                    FPAudio.PlaySfx(FPPlayerPatcher.player.sfxShieldHit);
+                                else
+                                    FPAudio.PlaySfx(FPPlayerPatcher.player.sfxShieldBreak);
+
+                                // Reduce the player's shield health.
+                                FPPlayerPatcher.player.shieldHealth -= 1;
+
+                                // Create the shield hit flash.
+                                ShieldHit shieldHit2 = (ShieldHit)FPStage.CreateStageObject(ShieldHit.classID, FPPlayerPatcher.player.position.x, FPPlayerPatcher.player.position.y);
+                                shieldHit2.SetParentObject(FPPlayerPatcher.player);
+                                shieldHit2.remainingDuration = 60f - Mathf.Min((float)FPPlayerPatcher.player.shieldHealth * 3f, 30f);
+                            }
+
+                            // Check if the player has health to lose (a RingLink should never kill).
+                            else if (FPPlayerPatcher.player.health > 0)
+                            {
+                                // Play the damage sound effect.
+                                FPAudio.PlaySfx(FPPlayerPatcher.player.sfxHurt);
+
+                                // Either remove a health petal, or floor the health down to 0.
+                                if (FPPlayerPatcher.player.health > 1f)
+                                    FPPlayerPatcher.player.health -= 1f;
+                                else
+                                    FPPlayerPatcher.player.health = 0;
+                            }
+                        }
+
+                        // Reenable our send flag.
+                        FPSaveManagerPatcher.DisableRingLinkSend = false;
+                    }
+
+                    // If the player doesn't exist, then apply the RingLink straight to the save.
+                    else
+                    {
+                        FPSaveManager.totalCrystals += ringLinkValue;
+
+                        // Clamp the value to 0.
+                        if (FPSaveManager.totalCrystals < 0)
+                            FPSaveManager.totalCrystals = 0;
+                    }
+
+                    break;
+            }  
         }
     }
 }

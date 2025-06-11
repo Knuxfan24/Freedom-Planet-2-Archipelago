@@ -1,4 +1,6 @@
-﻿global using Archipelago.MultiClient.Net;
+﻿// TODO: Check if the BFF2000 needs a special DeathLink too.
+// TODO: Release "Found [x]'s [y]" messages.
+global using Archipelago.MultiClient.Net;
 global using BepInEx;
 global using Freedom_Planet_2_Archipelago.CustomData;
 global using HarmonyLib;
@@ -7,6 +9,7 @@ global using System.Collections.Generic;
 global using UnityEngine;
 
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
+using Archipelago.MultiClient.Net.Packets;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using Freedom_Planet_2_Archipelago.Patchers;
@@ -57,6 +60,9 @@ namespace Freedom_Planet_2_Archipelago
         // Trap based values.
         public static List<GameObject> playerPrefabs = []; // Only used by the Swap Trap, so we'll place it under this set.
         public static float MirrorTrapTimer = -1;
+
+        public static int RingLinkCrystalCount = 0;
+        public static float RingLinkTimer = 0;
 
         private void Awake()
         {
@@ -137,6 +143,7 @@ namespace Freedom_Planet_2_Archipelago
             Harmony.CreateAndPatchAll(typeof(MenuTitleScreenPatcher));
             Harmony.CreateAndPatchAll(typeof(MenuWorldMapConfirmPatcher));
             Harmony.CreateAndPatchAll(typeof(PlayerBossMergaPatcher));
+            Harmony.CreateAndPatchAll(typeof(PlayerShipPatcher));
         }
 
         private void Update()
@@ -200,6 +207,36 @@ namespace Freedom_Planet_2_Archipelago
 
                     // Remove 0.25 from the queue timer.
                     itemQueueTimer -= 0.25f;
+                }
+            }
+
+            // Increment the RingLink timer.
+            RingLinkTimer += Time.deltaTime;
+
+            // Check if the timer has reached 0.25.
+            if (RingLinkTimer >= 0.25f)
+            {
+                // Remove 0.25 from the RingLink timer.
+                RingLinkTimer -= 0.25f;
+
+                // Check if the Crystal count for the RingLink isn't 0.
+                if (RingLinkCrystalCount != 0)
+                {
+                    // Create a packet for this RingLink and send it out.
+                    BouncePacket packet = new()
+                    {
+                        Tags = ["RingLink"],
+                        Data = new()
+                        {
+                            { "time", (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds },
+                            { "source", Plugin.session.ConnectionInfo.Slot },
+                            { "amount", RingLinkCrystalCount }
+                        }
+                    };
+                    session.Socket.SendPacket(packet);
+
+                    // Reset the crystal count.
+                    RingLinkCrystalCount = 0;
                 }
             }
         

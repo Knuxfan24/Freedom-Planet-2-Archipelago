@@ -1,4 +1,5 @@
-﻿using System.Reflection.Emit;
+﻿using Archipelago.MultiClient.Net.Packets;
+using System.Reflection.Emit;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
@@ -9,6 +10,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         // Force the JSONs to save with indenting.
         static string FancifyJson(UnityEngine.Object obj) => JsonUtility.ToJson(obj, true);
+
+        public static bool DisableRingLinkSend = false;
 
         /// <summary>
         /// Overwrite the slot number when the game tries to check if a save exists.
@@ -138,6 +141,21 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     codes[i] = Transpilers.EmitDelegate(GetSavesPath);
 
             return codes;
+        }
+
+        /// <summary>
+        /// Updates the values for the RingLink.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPSaveManager), "AddCrystal")]
+        static void RingLinkPacket()
+        {
+            // Check that we should actually be sending a link and if RingLink is on.
+            if (!DisableRingLinkSend && (long)Plugin.slotData["ring_link"] != 0)
+            {
+                Plugin.RingLinkTimer = 0f;
+                Plugin.RingLinkCrystalCount++;
+            }
         }
     }
 }

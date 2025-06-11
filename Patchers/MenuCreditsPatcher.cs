@@ -34,5 +34,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     obj.transform.localPosition = position;
             }
         }
+
+        /// <summary>
+        /// Disconnects from the server upon exiting the credits.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(MenuCredits), "State_Wait")]
+        static void DisconnectOnExit() => Plugin.session.Socket.Disconnect();
     }
 }

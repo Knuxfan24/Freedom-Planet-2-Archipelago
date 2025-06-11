@@ -1,4 +1,7 @@
-﻿namespace Freedom_Planet_2_Archipelago.Patchers
+﻿using Archipelago.MultiClient.Net.Models;
+using System.Linq;
+
+namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class EnemySanity
     {
@@ -158,8 +161,24 @@
             long locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", enemyName);
 
             // Complete this location check if it exists.
-            if (Helpers.CheckLocationExists(locationIndex))
+            if (Helpers.CheckLocationExists(locationIndex) && !Plugin.session.Locations.AllLocationsChecked.Contains(locationIndex))
+            {
                 Plugin.session.Locations.CompleteLocationChecks(locationIndex);
+
+                // Scout the location we just completed.
+                ScoutedItemInfo _scoutedLocationInfo = null;
+                Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfo, [locationIndex]);
+
+                // Pause operation until the location is scouted.
+                while (_scoutedLocationInfo == null)
+                    System.Threading.Thread.Sleep(1);
+
+                // Add a message to the queue if this item is for someone else.
+                if (_scoutedLocationInfo.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                    Plugin.sentMessageQueue.Add($"Found {_scoutedLocationInfo.Player.Name}'s {_scoutedLocationInfo.ItemName}.");
+
+                void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _scoutedLocationInfo = scoutedLocationInfo.First().Value;
+            }
         }
     }
 }

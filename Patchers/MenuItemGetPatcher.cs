@@ -25,5 +25,23 @@
             // Save our files.
             Helpers.Save();
         }
+
+        /// <summary>
+        /// Removes 100 Rings upon buying a Vinyl, if RingLink is enabled.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MenuItemGet), "Start")]
+        static void DeductRingLink(ref FPPowerup ___powerup)
+        {
+            // Check that this is a Vinyl and that our slot data has the ring_link flag.
+            if (___powerup == FPPowerup.NONE/* && (long)Plugin.slotData["ring_link"] == 1*/)
+            {
+                // Remove our vinyl shop price from the RingLink value.
+                Plugin.RingLinkCrystalCount -= (int)(long)Plugin.slotData["vinyl_shop_price"];
+
+                // Reset the RingLink timer.
+                Plugin.RingLinkTimer = 0f;
+            }
+        }
     }
 }

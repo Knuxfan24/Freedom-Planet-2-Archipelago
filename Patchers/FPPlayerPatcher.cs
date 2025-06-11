@@ -152,6 +152,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 // Turn off our can send flag so we don't send a DeathLink of our own.
                 canSendDeathLink = false;
 
+                if (PlayerShipPatcher.player != null)
+                {
+                    player.health = -1;
+                    return;
+                }
+
                 // If the DeathLink slot value is just enable, then force run the player's crush action to blow them up.
                 if ((long)Plugin.slotData["death_link"] == 1)
                     player.Action_Crush();
@@ -223,7 +229,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// <paramref name="reason">The reason shown to other clients.</paramref>
         /// <paramref name="checkHealth">Whether or not this DeathLink should only activate at 0 health.</paramref>/>
         /// </summary>
-        static void SendDeathLink(string reason, bool checkHealth)
+        public static void SendDeathLink(string reason, bool checkHealth)
         {
             // If DeathLink is disabled, then don't run any of this code.
             if ((long)Plugin.slotData["death_link"] == 0)
