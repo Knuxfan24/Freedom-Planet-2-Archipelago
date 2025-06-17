@@ -115,14 +115,13 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// <summary>
         /// Determines if a chest should be unlocked.
         /// </summary>
-        /// <returns></returns>
         static bool UnlockChest()
         {
             // Check if we have strict chest tracers enabled.
             if ((long)Plugin.slotData["chest_tracer_strict"] == 1)
             {
                 // Check that the chest tracer items exist in some form in the first place.
-                if ((long)Plugin.slotData["chest_tracer_items"] != 0 || (long)Plugin.slotData["chest_tracer_global"] != 0)
+                if ((long)Plugin.slotData["chest_tracer_items"] != 0)
                 {
                     // Return whether or not this stage's chest tracer is acquired.
                     switch (FPStage.currentStage.stageID)
