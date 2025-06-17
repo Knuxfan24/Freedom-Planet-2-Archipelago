@@ -108,6 +108,12 @@ An option that changes how the Time Limit Brave Stone behaves. In the vanilla ga
 ### DeathLink
 The usual Archipelago generic options are also present and work as in most implementations, although the DeathLink option has an extra choice in the form of `enable_survive`. If DeathLink is just set to enabled, then a DeathLink receive will cause the player to explode, sending them back to the last checkpoint. If Enable Survive is chosen, then the player will instead be knocked down, giving them the option to revive on the spot (although this comes with the usual base game risk of a low health pool).
 
+### RingLink
+An option common to Sonic games, enabling RingLink will synchronise any Crystal Shards collected in a stage with the values of any other RingLink players. Any received Rings will be added to the Crystal Shard count in a stage (or applied to the save directly on the map), as will any Ring losses (which will also deal a point of damage to the player or their shield). Buying an item from the Vinyl shop will also deduct the cost from the RingLink set.
+
+> **Note:**
+> RingLink tends to cause minor hitches upon collecting Crystal Shards depending on the latency to the server.
+
 ## Item Sprites and Descriptions
 
 ![](./readme_imgs/shop_nodef.png)
