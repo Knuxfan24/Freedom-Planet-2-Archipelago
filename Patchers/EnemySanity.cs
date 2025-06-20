@@ -6,7 +6,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
     internal class EnemySanity
     {
         // Massive list of patches that handle calling the right send check depending on the enemy type and their state.
-        [HarmonyPostfix][HarmonyPatch(typeof(Acrabelle), "State_Death")] static void Arcabelle() => SendEnemyCheck("Arcabelle");
+        [HarmonyPostfix][HarmonyPatch(typeof(Acrabelle), "State_Death")] static void Acrabelle() => SendEnemyCheck("Acrabelle");
         [HarmonyPostfix][HarmonyPatch(typeof(AstralGolmech), "State_DestroyArms")] static void AstralGolmech_Aaa() => SendEnemyCheck("Astral Golmech (Aaa)");
         [HarmonyPostfix][HarmonyPatch(typeof(AstralGolmech), "State_DestroyRocks")] static void AstralGolmech_Askal() => SendEnemyCheck("Astral Golmech (Askal)");
         [HarmonyPostfix][HarmonyPatch(typeof(AquaTrooper), "State_Death")] static void AquaTrooper(AquaTrooper __instance) => CorruptedEnemy(__instance.faction, "Aqua Trooper");
@@ -137,13 +137,17 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             switch (__instance.GetType().Name)
             {
                 case "PlayerBossAskal": SendEnemyCheck("Askal"); return;
+                case "PlayerBossCarol": SendEnemyCheck("Carol"); return;
                 case "PlayerBossCorazon": SendEnemyCheck("Corazon"); return;
+                case "PlayerBossGong": SendEnemyCheck("General Gong"); return;
                 case "PlayerBossKalaw": SendEnemyCheck("Captain Kalaw"); return;
+                case "PlayerBossLilac": SendEnemyCheck("Lilac"); return;
                 case "PlayerBossMerga": SendEnemyCheck("Merga"); return;
+                case "PlayerBossMilla": SendEnemyCheck("Milla"); return;
+                case "PlayerBossNeera": SendEnemyCheck("Neera"); return;
                 case "PlayerBossSerpentine": SendEnemyCheck("Serpentine"); return;
 
                 // If the plugin is compiled in Debug Mode, then log the KO'd boss.
-                // This causes some pretty severe console spam in Palace Courtyard and Hero Battle Royale.
                 default:
                     #if DEBUG
                     Plugin.consoleLog.LogInfo(__instance.GetType().Name);

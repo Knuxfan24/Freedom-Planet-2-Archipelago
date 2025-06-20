@@ -91,7 +91,11 @@ If set to `nothing`, then the same visual blocks apply as the `hidden` option, e
 
 ### Shop Prices
 
-Two seperate options, under the name of `milla_shop_price` and `vinyl_shop_price`. These options control each shop's prices (with Milla's shop using Gold Gems and the Vinyl shop using Crystal Shards). Shorter games will likely want to use lower values (such as the defaults of 1 and 300 respectively), whereas longer games with more time for grinding may want to use higher values.
+Two seperate options, under the names of `milla_shop_price` and `vinyl_shop_price`. These options control each shop's prices (with Milla's shop using Gold Gems and the Vinyl shop using Crystal Shards). Shorter games will likely want to use lower values (such as the defaults of 1 and 300 respectively), whereas longer games with more time for grinding may want to use higher values.
+
+### Enemy Sanity
+
+Two seperate options, under the names of `enemies` and `bosses`. These options add extra locations for each enemy (adding 70 extra locations) and boss (adding 44 extra locations) type respectively. Killing an enemy type for the first time (even if the player isn't responsible for its death) will send its location out.
 
 ### Extra Item Slots
 
