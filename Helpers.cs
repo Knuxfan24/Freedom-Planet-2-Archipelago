@@ -375,6 +375,32 @@ namespace Freedom_Planet_2_Archipelago
                     }
                     break;
 
+                case "Spring Trap":
+                    // Loop through to create as many springs as we received (for the lols).
+                    for (int springIndex = 0; springIndex < item.Value; springIndex++)
+                    {
+                        // Check that the player exists and that the stage has finished registering its objects.
+                        if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
+                        {
+                            // Create a spring from the prefab and set its name to APSpringTrap.
+                            GameObject trapSpring = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("SpringTrap"));
+                            trapSpring.name = "APSpringTrap";
+
+                            // Set the spring's position, angle and rotation depending on the player's direction.
+                            if (FPPlayerPatcher.player.direction == FPDirection.FACING_RIGHT)
+                            {
+                                trapSpring.transform.position = new(FPPlayerPatcher.player.position.x + 64, FPPlayerPatcher.player.position.y, 0);
+                                trapSpring.GetComponent<Spring>().angle = 90;
+                                trapSpring.transform.rotation = Quaternion.Euler(0, 0, 90);
+                            }
+                            else
+                            {
+                                trapSpring.transform.position = new(FPPlayerPatcher.player.position.x - 64, FPPlayerPatcher.player.position.y, 0);
+                            }
+                        }
+                    }
+                    break;
+
                 // Unhandled items, throw an error into the console.
                 default: Plugin.consoleLog.LogError($"Item Type '{item.Key.ItemName}' (sent by '{item.Key.Source}' {item.Value} time(s)) not yet handled!"); return;
             }

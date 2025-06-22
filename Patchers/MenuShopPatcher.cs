@@ -320,6 +320,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case "Mirror Trap": return FPSaveManager.GetItemDescription(FPPowerup.MIRROR_LENS);
                         case "Swap Trap": return "Swaps the active player character for the remainder of the active stage.";
                         case "Pie Trap": return "Spawns one of Acrabelle's pies on the player's position.";
+                        case "Spring Trap": return "Spawns a spring in front of the player to send them backwards.";
                     }
                 }
 

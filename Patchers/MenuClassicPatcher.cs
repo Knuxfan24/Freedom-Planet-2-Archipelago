@@ -22,6 +22,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         static GameObject KeyCounter;
 
         /// <summary>
+        /// The counter used to track how many Enemy Sanity checks exist and how many are done.
+        /// </summary>
+        static GameObject EnemyCounter;
+
+        /// <summary>
         /// Sets up the classic menu.
         /// </summary>
         [HarmonyPrefix]
@@ -197,7 +202,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             }
             #endregion
 
-            #region Check Counter Indicator
+            #region Counters
             // Kill the Star Card and Vinyl sprites (we leave the Chest one intact for Chest Tracers).
             for (int spriteIndex = 0; spriteIndex <= 3; spriteIndex++)
                 __instance.hudCollectibleSprites[spriteIndex] = null;
@@ -215,6 +220,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Create the counters.
             CheckCounter = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("Check Counter"));
             KeyCounter = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("Key Counter"));
+            EnemyCounter = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("Enemy Counter"));
 
             // Load the Archipelago logo sprites.
             CounterSprites = Plugin.apAssetBundle.LoadAssetWithSubAssets<Sprite>("hud_ap");
@@ -511,6 +517,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             {
                 CheckCounter.gameObject.SetActive(false);
                 KeyCounter.gameObject.SetActive(false);
+                EnemyCounter.gameObject.SetActive(false);
                 return;
             }
 
@@ -519,6 +526,162 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 CheckCounter.gameObject.SetActive(false);
             else
                 CheckCounter.gameObject.SetActive(true);
+
+            // Check if we need to show the enemy counter.
+            if ((long)Plugin.slotData["enemies"] == 1 || (long)Plugin.slotData["bosses"] == 1)
+            {
+                // Show the counter.
+                EnemyCounter.gameObject.SetActive(true);
+
+                // Set up values to calculate how many enemy checks exist and how many are done.
+                int enemyCount = 0;
+                int defeatedEnemyCount = 0;
+
+                // Get the values for the enemies.
+                if ((long)Plugin.slotData["enemies"] == 1)
+                {
+                    EnemyLocations("Aqua Trooper");
+                    EnemyLocations("Corrupted Aqua Trooper");
+                    EnemyLocations("Beartle");
+                    EnemyLocations("Corrupted Beartle");
+                    EnemyLocations("Blast Cone");
+                    EnemyLocations("Bonecrawler");
+                    EnemyLocations("Bonespitter");
+                    EnemyLocations("Boom Beth");
+                    EnemyLocations("Bubblorbiter");
+                    EnemyLocations("Burro");
+                    EnemyLocations("Cocoon");
+                    EnemyLocations("Cow Horn");
+                    EnemyLocations("Crowitzer");
+                    EnemyLocations("Crustaceon");
+                    EnemyLocations("Dart Hog");
+                    EnemyLocations("Dino Walker");
+                    EnemyLocations("Corrupted Dino Walker");
+                    EnemyLocations("Drake Fly");
+                    EnemyLocations("Corrupted Drake Fly");
+                    EnemyLocations("Droplet Ship");
+                    EnemyLocations("Durugin");
+                    EnemyLocations("Fire Hopper");
+                    EnemyLocations("Flamingo");
+                    EnemyLocations("Flash Mouth");
+                    EnemyLocations("Corrupted Flash Mouth");
+                    EnemyLocations("Flying Saucer");
+                    EnemyLocations("Folding Snake");
+                    EnemyLocations("Gat Hog");
+                    EnemyLocations("Girder");
+                    EnemyLocations("Hellpo");
+                    EnemyLocations("Hijacked Police Car");
+                    EnemyLocations("Hot Plate");
+                    EnemyLocations("Iris");
+                    EnemyLocations("Jawdrop");
+                    EnemyLocations("Keon");
+                    EnemyLocations("Koi Cannon");
+                    EnemyLocations("Line Cutter");
+                    EnemyLocations("Macer");
+                    EnemyLocations("Manpowa");
+                    EnemyLocations("Mantis");
+                    EnemyLocations("Meteor Roller");
+                    EnemyLocations("Peller");
+                    EnemyLocations("Pendurum");
+                    EnemyLocations("Corrupted Pendurum");
+                    EnemyLocations("Pogo Snail");
+                    EnemyLocations("Prawn");
+                    EnemyLocations("Prawn To Be Wild");
+                    EnemyLocations("Raytracker");
+                    EnemyLocations("Corrupted Raytracker");
+                    EnemyLocations("Rifle Trooper");
+                    EnemyLocations("Saw Shrimp");
+                    EnemyLocations("Sentinel");
+                    EnemyLocations("Shockula");
+                    EnemyLocations("Softballer");
+                    EnemyLocations("Spy Turretus");
+                    EnemyLocations("Corrupted Spy Turretus");
+                    EnemyLocations("Stahp");
+                    EnemyLocations("Sword Trooper");
+                    EnemyLocations("Sword Wing");
+                    EnemyLocations("Tombstone Turretus");
+                    EnemyLocations("Torcher");
+                    EnemyLocations("Tower Cannon");
+                    EnemyLocations("Toy Decoy");
+                    EnemyLocations("Traumagotcha");
+                    EnemyLocations("Corrupted Traumagotcha");
+                    EnemyLocations("Troopish");
+                    EnemyLocations("Turretus");
+                    EnemyLocations("Corrupted Turretus");
+                    EnemyLocations("Water Hopper");
+                    EnemyLocations("Wood Hopper");
+                    EnemyLocations("Zombie Trooper");
+                }
+
+                // Get the values for the bosses.
+                if ((long)Plugin.slotData["bosses"] == 1)
+                {
+                    EnemyLocations("Acrabelle");
+                    EnemyLocations("Askal");
+                    EnemyLocations("Astral Golmech (Aaa)");
+                    EnemyLocations("Astral Golmech (Askal)");
+                    EnemyLocations("Beast One");
+                    EnemyLocations("Beast Two");
+                    EnemyLocations("Beast Three");
+                    EnemyLocations("BFF2000");
+                    EnemyLocations("Captain Kalaw");
+                    EnemyLocations("Carol");
+                    EnemyLocations("Corazon");
+                    EnemyLocations("Crabulon");
+                    EnemyLocations("Discord");
+                    EnemyLocations("Drake Cocoon");
+                    EnemyLocations("Duality");
+                    EnemyLocations("General Gong");
+                    EnemyLocations("Gnawsa Lock");
+                    EnemyLocations("Herald");
+                    EnemyLocations("Hundred Drillion");
+                    EnemyLocations("Kakugan");
+                    EnemyLocations("Lemon Bread");
+                    EnemyLocations("Lilac");
+                    EnemyLocations("Merga (Blue Moon)");
+                    EnemyLocations("Merga (Blood Moon)");
+                    EnemyLocations("Merga (Super Moon)");
+                    EnemyLocations("Merga (Eclipse)");
+                    EnemyLocations("Merga (Lilith)");
+                    EnemyLocations("Merga");
+                    EnemyLocations("Milla");
+                    EnemyLocations("Monster Cube");
+                    EnemyLocations("Neera");
+                    EnemyLocations("Proto Pincer");
+                    EnemyLocations("Rail Driver");
+                    EnemyLocations("Rosebud");
+                    EnemyLocations("Serpentine");
+                    EnemyLocations("Shell Growth");
+                    EnemyLocations("Storm Slider");
+                    EnemyLocations("Syntax Spider");
+                    EnemyLocations("Titan Armor");
+                    EnemyLocations("Trigger Joy");
+                    EnemyLocations("Trigger Lancer");
+                    EnemyLocations("Tunnel Driver");
+                    EnemyLocations("Weather Face");
+                    EnemyLocations("Wolf Armour");
+                }
+
+                // Set the text on the counter.
+                EnemyCounter.transform.GetChild(0).GetComponent<TextMesh>().text = $"{defeatedEnemyCount} / {enemyCount}";
+
+                void EnemyLocations(string locationName)
+                {
+                    // Get the index of the location for this enemy.
+                    long locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", locationName);
+
+                    // Check if this location exists.
+                    if (Helpers.CheckLocationExists(locationIndex))
+                    {
+                        // Increment the enemy count.
+                        enemyCount++;
+
+                        // If this location is already checked, then also increment the defeated enemy count.
+                        if (Plugin.session.Locations.AllLocationsChecked.Contains(locationIndex))
+                            defeatedEnemyCount++;
+                    }
+                }
+            }
 
             void GetLocations(string stageName)
             {
@@ -603,6 +766,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             {
                 CheckCounter.gameObject.SetActive(false);
                 KeyCounter.gameObject.SetActive(false);
+                EnemyCounter.gameObject.SetActive(false);
             }
             else
             {
