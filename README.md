@@ -109,6 +109,10 @@ An option that modifies how Brave Stones with negative effects are handled upon 
 
 An option that changes how the Time Limit Brave Stone behaves. In the vanilla game, running out of time simply reduces the end of stage Crystal Shard payout. With this option on, running out of time will instead kill the player on the spot, adding more risk to the Time Limit Brave Stone, especially if the Trap Brave Stones option is on, as receiving one mid stage could lead to an unexpected death.
 
+### Fast Weapon's Core
+
+An option that skips the actual stage of Weapon's Core and puts the player straight into the Bakunawa Fusion boss arena.
+
 ### DeathLink
 The usual Archipelago generic options are also present and work as in most implementations, although the DeathLink option has an extra choice in the form of `enable_survive`. If DeathLink is just set to enabled, then a DeathLink receive will cause the player to explode, sending them back to the last checkpoint. If Enable Survive is chosen, then the player will instead be knocked down, giving them the option to revive on the spot (although this comes with the usual base game risk of a low health pool).
 
