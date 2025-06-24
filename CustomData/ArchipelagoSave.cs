@@ -37,6 +37,11 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         /// The amount of Mirror Traps we've gotten from the server.
         /// </summary>
         public int MirrorTrapCount { get; set; }
+
+        /// <summary>
+        /// The amount of PowerPoint Traps we've gotten from the server.
+        /// </summary>
+        public int PowerPointTrapCount { get; set; }
         #endregion
 
         /// <summary>

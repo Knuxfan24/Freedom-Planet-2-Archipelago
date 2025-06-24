@@ -200,11 +200,13 @@ namespace Freedom_Planet_2_Archipelago
             // Set up counts for the items that need to not be over given.
             int goldGemCount = 0;
             int mirrorTrapCount = 0;
+            int powerPointTrapCount = 0;
 
             // Get the current save values for these items too.
             int saveGoldGemCount = Plugin.save.GoldGemCount;
             int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveMirrorTrapCount = Plugin.save.MirrorTrapCount;
+            int savePowerPointTrapCount = Plugin.save.PowerPointTrapCount;
 
             // Loop through each item and see if its one of the problem items. If so, then increment its count.
             foreach (KeyValuePair<ArchipelagoItem, int> item in Plugin.itemQueue)
@@ -213,6 +215,7 @@ namespace Freedom_Planet_2_Archipelago
                 {
                     case "Gold Gem": goldGemCount += item.Value; break;
                     case "Mirror Trap": mirrorTrapCount += item.Value; break;
+                    case "PowerPoint Trap": powerPointTrapCount += item.Value; break;
                 }
             }
 
@@ -223,16 +226,21 @@ namespace Freedom_Planet_2_Archipelago
             // Calculate the true counts for the multitude items.
             int trueGoldGemCount = goldGemCount - saveGoldGemCount;
             int trueMirrorTrapCount = mirrorTrapCount - saveMirrorTrapCount;
+            int truePowerPointTrapCount = powerPointTrapCount - savePowerPointTrapCount;
 
             // Set the AP save item counts to the correct values.
             Plugin.save.GoldGemCount = saveGoldGemCount + trueGoldGemCount;
             Plugin.save.MirrorTrapCount = saveMirrorTrapCount + trueMirrorTrapCount;
+            Plugin.save.PowerPointTrapCount = savePowerPointTrapCount + truePowerPointTrapCount;
 
             // Set our number of total gold gems to the correct value.
             FPSaveManager.totalGoldGems = fp2SaveGoldGemCount + trueGoldGemCount;
 
             // Set the mirror trap timer to the correct value.
             Plugin.MirrorTrapTimer = trueMirrorTrapCount * 30;
+
+            // Set the powerpoint trap timer to the correct value.
+            Plugin.PowerPointTrapTimer = truePowerPointTrapCount * 30;
 
             // Save the two files.
             Save();
@@ -359,6 +367,11 @@ namespace Freedom_Planet_2_Archipelago
                 case "Mirror Trap":
                     Plugin.MirrorTrapTimer += 30f * item.Value;
                     Plugin.save.MirrorTrapCount += item.Value;
+                    break;
+
+                case "PowerPoint Trap":
+                    Plugin.PowerPointTrapTimer += 30f * item.Value;
+                    Plugin.save.PowerPointTrapCount += item.Value;
                     break;
 
                 case "Pie Trap":

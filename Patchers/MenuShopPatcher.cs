@@ -317,10 +317,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case "Chest Tracer": return $"Reveals the locations of chests across Avalice.";
 
                         // Traps.
-                        case "Mirror Trap": return FPSaveManager.GetItemDescription(FPPowerup.MIRROR_LENS);
+                        case "Mirror Trap": return "The entire stage is flipped from right to left for 30 seconds.";
                         case "Swap Trap": return "Swaps the active player character for the remainder of the active stage.";
                         case "Pie Trap": return "Spawns one of Acrabelle's pies on the player's position.";
                         case "Spring Trap": return "Spawns a spring in front of the player to send them backwards.";
+                        case "PowerPoint Trap": return "Reduces the game's framerate to 15 frames per second for 30 seconds.";
                     }
                 }
 

@@ -35,7 +35,17 @@ Upon a successful connection, the game will save the settings into the mod's con
 
 For this implementation, the aim of the game is to unlock and complete Weapon's Core, which is locked behind a requirement of 32 Star Cards, 13 Time Capsules and access to the Bakunawa Stages. Present in the item pool are 48 Star Cards, 21 Time Capsules, unlocks for each chapter (affected by the options detailed below), extra slots for both Brave Stones and Potions (toggable in the options detailed below), tracers used for locating each stage's chests (affected by the options detailed below), each individual Brave Stone (some of which are treated as traps and have an option relating to them detailed below), each individual Potion and a few optional traps.
 
-These traps are the `Mirror Trap`, which enables the effect of the unused Mirror Lens item by flipping the whole stage horizontally (controls are also flipped accordingly), the `Swap Trap`, which swaps the player character to one of the other original four (modded characters are excluded from the swap pool, as they can be unpredictable in their implementation), the `Pie Trap`, which spawns one of Acrabelle's pies at the player's position, causing them to get stuck in it for a bit and the `Spring Trap`, which spawns a spring in front of the player character, pointing in the opposite direction to the one they are facing in.
+These traps are:
+
+- Mirror Trap: Enables the effect of the unused Mirror Lens item by flipping the whole stage horizontally (controls are also flipped accordingly) for 30 seconds (receiving a Mirror Trap while one is active will add another 30 seconds to the duration).
+
+- Swap Trap: Swaps the player character to one of the other original four (modded characters are excluded from the swap pool, as they can be unpredictable in their implementation).
+
+- Pie Trap: Spawns one of Acrabelle's pies at the player's position, causing them to get stuck in it for a bit.
+
+- Spring Trap: Spawns a spring in front of the player character, pointing in the opposite direction to the one they are facing in.
+
+- PowerPoint Trap: Drops the game's framerate down to 15 frames per seconds for 30 seconds (receiving a PowerPoint Trap while one is active will add another 30 seconds to the duration).
 
 ## Archipelago Options
 

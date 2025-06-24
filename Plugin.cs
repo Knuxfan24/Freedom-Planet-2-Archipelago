@@ -60,7 +60,9 @@ namespace Freedom_Planet_2_Archipelago
         // Trap based values.
         public static List<GameObject> playerPrefabs = []; // Only used by the Swap Trap, so we'll place it under this set.
         public static float MirrorTrapTimer = -1;
+        public static float PowerPointTrapTimer = -1;
 
+        // RingLink based values.
         public static int RingLinkCrystalCount = 0;
         public static float RingLinkTimer = 0;
 
@@ -245,6 +247,26 @@ namespace Freedom_Planet_2_Archipelago
             // Decrement the Mirror Trap's timer if it's higher than 0 and a player exists.
             if (MirrorTrapTimer > 0 && FPPlayerPatcher.player != null)
                 MirrorTrapTimer -= Time.deltaTime;
+
+            // Check if the PowerPoint Trap Timer is above 0.
+            if (PowerPointTrapTimer > 0)
+            {
+                // Set the game's framerate to 15 FPS.
+                Application.targetFrameRate = 15;
+
+                // Decrement the PowerPoint Trap Timer.
+                PowerPointTrapTimer -= Time.deltaTime;
+            }
+
+            // If not, then check if the timer is between -1 and 0.
+            else if (PowerPointTrapTimer <= 0 && PowerPointTrapTimer > -1)
+            {
+                // Set the PowerPoint Trap Timer to -1 so the framerate changes don't fire every frame.
+                PowerPointTrapTimer = -1;
+
+                // Reset the game's framerate to the default value.
+                FPSaveManager.SetTargetFPS();
+            }
         }
     }
 }
