@@ -24,6 +24,26 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         public static bool canSendDeathLink = true;
 
         /// <summary>
+        /// Whether or not we have a Powerup queued.
+        /// </summary>
+        public static bool hasBufferedPowerup;
+
+        /// <summary>
+        /// How many lives (if any) we have queued.
+        /// </summary>
+        public static int hasBufferedExtraLives;
+
+        /// <summary>
+        /// Whether or not we have an Invincibility queued.
+        /// </summary>
+        public static bool hasBufferedInvincibility;
+
+        /// <summary>
+        /// Whether or not we have a shield queued.
+        /// </summary>
+        public static FPItemBoxTypes hasBufferedShield = FPItemBoxTypes.BOX_CRATE;
+
+        /// <summary>
         /// The list of active Chest Tracers.
         /// </summary>
         static readonly List<GameObject> chestTracers = [];
@@ -131,12 +151,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         {
             // Check for the F9 key or Select button (which is frustratingly mapped to pause by default).
             if (Input.GetKeyDown(KeyCode.F9) || Input.GetKeyDown("joystick 1 button 8"))
-            {
                 foreach (var tracer in chestTracers)
-                {
                     tracer.transform.GetChild(0).gameObject.SetActive(!tracer.transform.GetChild(0).gameObject.activeSelf);
-                }    
-            }
         }
 
         /// <summary>
@@ -176,6 +192,194 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Turn our buffered flag back off.
                 hasBufferedDeathLink = false;
+            }
+        }
+
+        /// <summary>
+        /// Gives the player an amount of extra lives.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPPlayer), "Update")]
+        static void ReceiveExtraLives()
+        {
+            // Check that the stage has finished loading and that we have a Powerup waiting.
+            if (FPStage.objectsRegistered && hasBufferedExtraLives > 0)
+            {
+                // Loop through the amount of lives we have queued.
+                for (int i = 0; i < hasBufferedExtraLives; i++)
+                {
+                    // If we have less than 9, then give one.
+                    if (player.lives < 9)
+                        player.lives++;
+
+                    // Create a +1 icon for this life.
+                    // TODO: The spacing is weird, fiddle with that Y value calulcation more.
+                    CrystalBonus crystalBonus = (CrystalBonus)FPStage.CreateStageObject(CrystalBonus.classID, 292f, -((i + 1) * 64));
+                    crystalBonus.animator.Play("HUD_Add");
+                    crystalBonus.duration = 40f;
+                }
+
+                // Create the two stars coming off the player.
+                InvincibilityStar invincibilityStar = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
+                invincibilityStar.parentObject = player;
+                invincibilityStar.distance = 320f;
+                invincibilityStar.descend = true;
+                InvincibilityStar invincibilityStar2 = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
+                invincibilityStar2.parentObject = player;
+                invincibilityStar2.rotation = 180f;
+                invincibilityStar2.distance = 320f;
+                invincibilityStar2.descend = true;
+
+                // Play the Extra Life jingle.
+                FPAudio.PlayJingle(3);
+
+                // Reset our queued lives count.
+                hasBufferedExtraLives = 0;
+            }
+        }
+
+        /// <summary>
+        /// Gives the player invincibility.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPPlayer), "Update")]
+        static void ReceiveInvincibility()
+        {
+            // Check that the stage has finished loading and that we have an Invincibility waiting.
+            if (FPStage.objectsRegistered && hasBufferedInvincibility)
+            {
+                // Set the Invincibility and Flash time values.
+                player.invincibilityTime = Mathf.Max(player.invincibilityTime, 1200f);
+                player.flashTime = Mathf.Max(player.flashTime, 1200f);
+
+                // Create the two Invincibility stars.
+                InvincibilityStar invincibilityStar = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
+                invincibilityStar.parentObject = player;
+                InvincibilityStar invincibilityStar2 = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
+                invincibilityStar2.parentObject = player;
+                invincibilityStar2.rotation = 180f;
+
+                // Play the unused Invincibility jingle.
+                FPAudio.PlayJingle(FPAudio.JINGLE_INVINCIBILITY);
+
+                // Disable the Invincibility flag.
+                hasBufferedInvincibility = false;
+            }
+        }
+
+        /// <summary>
+        /// Gives the player a shield.
+        /// TODO: The shield sound doesn't play, likely gonna have to add it to the asset bundle.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPPlayer), "Update")]
+        static void ReceiveShield()
+        {
+            // Check that the stage has finished loading and that we have a Shield waiting.
+            if (FPStage.objectsRegistered && hasBufferedShield != FPItemBoxTypes.BOX_CRATE)
+            {
+                // Calculate how much health the shield should get.
+                int shieldHealth = 2 + player.potions[5];
+                if (player.IsPowerupActive(FPPowerup.STRONG_SHIELDS))
+                    shieldHealth += 3;
+
+                // Set the shield's health.
+                player.shieldHealth = Mathf.Min(player.shieldHealth + shieldHealth, (int)player.healthMax * 2);
+
+                // Spawn the orb for the shield.
+                ShieldOrb shieldOrb = (ShieldOrb)FPStage.CreateStageObject(ShieldOrb.classID, player.position.x, player.position.y + 60f);
+                shieldOrb.spawnLocation = player;
+                shieldOrb.parentObject = player;
+
+                // Set the shield type and play the correct animation for the orb.
+                switch (hasBufferedShield)
+                {
+                    case FPItemBoxTypes.BOX_WOODSHIELD:
+                        shieldOrb.animator.Play("Wood", 0, 0f);
+                        player.shieldID = 0;
+                        break;
+                    case FPItemBoxTypes.BOX_EARTHSHIELD:
+                        shieldOrb.animator.Play("Earth", 0, 0f);
+                        player.shieldID = 1;
+                        break;
+                    case FPItemBoxTypes.BOX_WATERSHIELD:
+                        shieldOrb.animator.Play("Water", 0, 0f);
+                        player.shieldID = 2;
+                        break;
+                    case FPItemBoxTypes.BOX_FIRESHIELD:
+                        shieldOrb.animator.Play("Fire", 0, 0f);
+                        player.shieldID = 3;
+                        break;
+                    case FPItemBoxTypes.BOX_METALSHIELD:
+                        shieldOrb.animator.Play("Metal", 0, 0f);
+                        player.shieldID = 4;
+                        break;
+                }
+
+                // Create the shield flash effect.
+                ShieldHit shieldHit = (ShieldHit)FPStage.CreateStageObject(ShieldHit.classID, player.position.x, player.position.y);
+                shieldHit.SetParentObject(player);
+                shieldHit.remainingDuration = 15f;
+                //FPAudio.PlaySfx(sfxShield[player.shieldID]);
+
+                // Reset the shield flag.
+                hasBufferedShield = FPItemBoxTypes.BOX_CRATE;
+            }
+        }
+
+        /// <summary>
+        /// Gives the player their character's powerup.
+        /// TODO: The collect sound doesn't play, likely gonna have to add it to the asset bundle.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPPlayer), "Update")]
+        static void ReceivePowerup()
+        {
+            // Check that the stage has finished loading and that we have a Powerup waiting.
+            if (FPStage.objectsRegistered && hasBufferedPowerup)
+            {
+                // Determine what to do based on the character ID.
+                switch (player.characterID)
+                {
+                    // For the base game characters, just copy the behaviour from the actual game's ItemFuel class.
+                    case FPCharacterID.LILAC:
+                        player.powerupTimer = Mathf.Max(player.powerupTimer, 600f);
+                        player.flashTime = Mathf.Max(player.flashTime, 600f);
+                        //FPAudio.PlaySfx(player.sfxCollect);
+                        break;
+
+                    case FPCharacterID.CAROL:
+                        if (player.state == new FPObjectState(player.State_GrindRail))
+                        {
+                            player.barTimer = 0f;
+                            player.Action_Jump();
+                        }
+                        player.Action_Carol_AddBike();
+                        break;
+                    case FPCharacterID.BIKECAROL:
+                        player.invincibilityTime = Mathf.Max(player.invincibilityTime, 240f);
+                        player.flashTime = Mathf.Max(player.flashTime, 240f);
+                        FPAudio.PlaySfx(16);
+                        break;
+
+                    case FPCharacterID.MILLA:
+                        player.Action_MillaMultiCube();
+                        //FPAudio.PlaySfx(sfxCollect);
+                        break;
+
+                    case FPCharacterID.NEERA:
+                        player.powerupTimer = Mathf.Max(player.powerupTimer, 600f);
+                        player.flashTime = Mathf.Max(player.flashTime, 600f);
+                        player.Action_SpeedShoes(1.5f);
+                        //FPAudio.PlaySfx(sfxCollect);
+                        break;
+
+                    // For modded characters, run their ItemFuelPickup action defined through FP2Lib (assuming the PlayerHandler has a character loaded).
+                    default: PlayerHandler.currentCharacter?.ItemFuelPickup(); break;
+                }
+
+                // Disable the Powerup flag.
+                hasBufferedPowerup = false;
             }
         }
 

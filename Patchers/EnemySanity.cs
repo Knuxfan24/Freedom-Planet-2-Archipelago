@@ -32,12 +32,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPostfix][HarmonyPatch(typeof(Discord), "State_Death")] static void Discord() => SendEnemyCheck("Discord");
         [HarmonyPostfix][HarmonyPatch(typeof(DiscordDoor), "State_Death")] static void DiscordMK2() => SendEnemyCheck("Discord");
         [HarmonyPostfix][HarmonyPatch(typeof(DrakeCoccoon), "State_Death")] static void DrakeCocoon() => SendEnemyCheck("Drake Cocoon");
-        [HarmonyPostfix][HarmonyPatch(typeof(DrakeFly), "State_Death")] static void DrakeFly() => SendEnemyCheck("Drake Fly");
+        [HarmonyPostfix][HarmonyPatch(typeof(DrakeFly), "State_Death")] static void DrakeFly(DrakeFly __instance) => CorruptedEnemy(__instance.faction, "Drake Fly");
         [HarmonyPostfix][HarmonyPatch(typeof(DropletShip), "State_Death")] static void DropletShip() => SendEnemyCheck("Droplet Ship");
         [HarmonyPostfix][HarmonyPatch(typeof(Duality), "State_Death")] static void Duality() => SendEnemyCheck("Duality");
         [HarmonyPostfix][HarmonyPatch(typeof(Durugin), "State_Death")] static void Durugin() => SendEnemyCheck("Durugin");
         [HarmonyPostfix][HarmonyPatch(typeof(FireHopper), "State_Death")] static void FireHopper() => SendEnemyCheck("Fire Hopper");
-        [HarmonyPostfix][HarmonyPatch(typeof(Flamingo), "State_Death")] static void Flamingo() => SendEnemyCheck("Flamingo");
+        [HarmonyPostfix][HarmonyPatch(typeof(Flamingo), "State_Death")] static void Flamingo(Flamingo __instance) => CorruptedEnemy(__instance.faction, "Flamingo");
         [HarmonyPostfix][HarmonyPatch(typeof(FlashMouth), "State_Death")] static void FlashMouth(FlashMouth __instance) => CorruptedEnemy(__instance.faction, "Flash Mouth");
         [HarmonyPostfix][HarmonyPatch(typeof(FlyingSaucer), "State_Death")] static void FlyingSaucer() => SendEnemyCheck("Flying Saucer");
         [HarmonyPostfix][HarmonyPatch(typeof(FoldingSnake), "State_Death")] static void FoldingSnake() => SendEnemyCheck("Folding Snake");

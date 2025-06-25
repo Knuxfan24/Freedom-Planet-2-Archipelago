@@ -1,11 +1,10 @@
 ﻿using Archipelago.MultiClient.Net.Models;
-using BepInEx;
 using FP2Lib.Player;
 using Freedom_Planet_2_Archipelago.Patchers;
 using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
-using UnityEngine;
+using System.Text;
 
 namespace Freedom_Planet_2_Archipelago
 {
@@ -194,28 +193,46 @@ namespace Freedom_Planet_2_Archipelago
 
         /// <summary>
         /// Handles sorting items that are stored in the AP save.
+        /// TODO: This feels really messy...
         /// </summary>
         public static void HandleStartItems()
         {
             // Set up counts for the items that need to not be over given.
-            int goldGemCount = 0;
             int mirrorTrapCount = 0;
             int powerPointTrapCount = 0;
+            int goldGemCount = 0;
+            int crystalCount = 0;
+            int extraLifeCount = 0;
+            int invincibilityCount = 0;
+            int shieldCount = 0;
+            int powerupCount = 0;
 
             // Get the current save values for these items too.
-            int saveGoldGemCount = Plugin.save.GoldGemCount;
-            int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveMirrorTrapCount = Plugin.save.MirrorTrapCount;
             int savePowerPointTrapCount = Plugin.save.PowerPointTrapCount;
+            int saveGoldGemCount = Plugin.save.GoldGemCount;
+            int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
+            int saveCrystalCount = Plugin.save.CrystalCount;
+            int fp2SaveCrystalCount = FPSaveManager.totalCrystals;
+            int saveExtraLifeCount = Plugin.save.ExtraLifeCount;
+            int saveInvincibilityCount = Plugin.save.InvincibilityCount;
+            int saveShieldCount = Plugin.save.ShieldCount;
+            int savePowerupCount = Plugin.save.PowerupCount;
 
             // Loop through each item and see if its one of the problem items. If so, then increment its count.
             foreach (KeyValuePair<ArchipelagoItem, int> item in Plugin.itemQueue)
             {
                 switch (item.Key.ItemName)
                 {
-                    case "Gold Gem": goldGemCount += item.Value; break;
                     case "Mirror Trap": mirrorTrapCount += item.Value; break;
                     case "PowerPoint Trap": powerPointTrapCount += item.Value; break;
+
+                    case "Gold Gem": goldGemCount += item.Value; break;
+                    case "Crystals": crystalCount += item.Value * 100; break;
+                    case "Extra Life": extraLifeCount += item.Value; break;
+                    case "Invincibility": invincibilityCount += item.Value; break;
+                    case "Wood Shield": case "Earth Shield": case "Water Shield": case "Fire Shield": case "Metal Shield": shieldCount += item.Value; break;
+                    case "Powerup": powerupCount += item.Value; break;
                 }
             }
 
@@ -227,20 +244,45 @@ namespace Freedom_Planet_2_Archipelago
             int trueGoldGemCount = goldGemCount - saveGoldGemCount;
             int trueMirrorTrapCount = mirrorTrapCount - saveMirrorTrapCount;
             int truePowerPointTrapCount = powerPointTrapCount - savePowerPointTrapCount;
+            int trueCrystalCount = crystalCount - saveCrystalCount;
+            int trueExtraLifeCount = extraLifeCount - saveExtraLifeCount;
+            int trueInvincibilityCount = invincibilityCount - saveInvincibilityCount;
+            int trueShieldCount = shieldCount - saveShieldCount;
+            int truePowerupCount = powerupCount - savePowerupCount;
 
             // Set the AP save item counts to the correct values.
             Plugin.save.GoldGemCount = saveGoldGemCount + trueGoldGemCount;
             Plugin.save.MirrorTrapCount = saveMirrorTrapCount + trueMirrorTrapCount;
             Plugin.save.PowerPointTrapCount = savePowerPointTrapCount + truePowerPointTrapCount;
-
-            // Set our number of total gold gems to the correct value.
-            FPSaveManager.totalGoldGems = fp2SaveGoldGemCount + trueGoldGemCount;
+            Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
+            Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
+            Plugin.save.InvincibilityCount = saveInvincibilityCount + trueInvincibilityCount;
+            Plugin.save.ShieldCount = saveShieldCount + trueShieldCount;
+            Plugin.save.PowerupCount = savePowerupCount + truePowerupCount;
 
             // Set the mirror trap timer to the correct value.
             Plugin.MirrorTrapTimer = trueMirrorTrapCount * 30;
 
             // Set the powerpoint trap timer to the correct value.
             Plugin.PowerPointTrapTimer = truePowerPointTrapCount * 30;
+
+            // Set our number of total gold gems to the correct value.
+            FPSaveManager.totalGoldGems = fp2SaveGoldGemCount + trueGoldGemCount;
+
+            // Set our number of total crystals to the correct value.
+            FPSaveManager.totalCrystals = fp2SaveCrystalCount + trueCrystalCount;
+
+            // If we don't actually have any extra lives, then reset the value in the player patcher.
+            if (trueExtraLifeCount == 0) FPPlayerPatcher.hasBufferedExtraLives = 0;
+
+            // If we don't actually have an invincibility, then reset the flag in the player patcher.
+            if (trueInvincibilityCount == 0) FPPlayerPatcher.hasBufferedInvincibility = false;
+
+            // If we don't actually have a shield, then reset the flag in the player patcher.
+            if (trueShieldCount == 0) FPPlayerPatcher.hasBufferedShield = FPItemBoxTypes.BOX_CRATE;
+
+            // If we don't actually have a powerup, then reset the flag in the player patcher.
+            if (truePowerupCount == 0) FPPlayerPatcher.hasBufferedPowerup = false;
 
             // Save the two files.
             Save();
@@ -258,7 +300,59 @@ namespace Freedom_Planet_2_Archipelago
                 case "Star Card": Plugin.save.StarCardCount += item.Value; break;
                 case "Time Capsule": Plugin.save.TimeCapsuleCount += item.Value; break;
                 case "Battlesphere Key": Plugin.save.BattlesphereKeyCount += item.Value; break;
-                case "Gold Gem": Plugin.save.GoldGemCount += item.Value; FPSaveManager.totalGoldGems += item.Value; break;
+
+                // Filler Items that (mostly) activate on the player.
+                case "Gold Gem":
+                    Plugin.save.GoldGemCount += item.Value;
+                    FPSaveManager.totalGoldGems += item.Value;
+                    break;
+
+                case "Crystals":
+                    Plugin.save.CrystalCount += item.Value * 100;
+
+                    if (FPPlayerPatcher.player != null)
+                        for (int i = 0; i < item.Value * 100; i++)
+                            FPSaveManager.AddCrystal(FPPlayerPatcher.player);
+                    else
+                        FPSaveManager.totalCrystals += item.Value * 100;
+
+                    break;
+
+                case "Extra Life":
+                    Plugin.save.ExtraLifeCount += item.Value;
+                    FPPlayerPatcher.hasBufferedExtraLives += item.Value;
+                    break;
+
+                case "Invincibility":
+                    Plugin.save.InvincibilityCount += item.Value;
+                    FPPlayerPatcher.hasBufferedInvincibility = true;
+                    break;
+
+                case "Wood Shield":
+                    Plugin.save.ShieldCount += item.Value;
+                    FPPlayerPatcher.hasBufferedShield = FPItemBoxTypes.BOX_WOODSHIELD;
+                    break;
+                case "Earth Shield":
+                    Plugin.save.ShieldCount += item.Value;
+                    FPPlayerPatcher.hasBufferedShield = FPItemBoxTypes.BOX_EARTHSHIELD;
+                    break;
+                case "Water Shield":
+                    Plugin.save.ShieldCount += item.Value;
+                    FPPlayerPatcher.hasBufferedShield = FPItemBoxTypes.BOX_WATERSHIELD;
+                    break;
+                case "Fire Shield":
+                    Plugin.save.ShieldCount += item.Value;
+                    FPPlayerPatcher.hasBufferedShield = FPItemBoxTypes.BOX_FIRESHIELD;
+                    break;
+                case "Metal Shield":
+                    Plugin.save.ShieldCount += item.Value;
+                    FPPlayerPatcher.hasBufferedShield = FPItemBoxTypes.BOX_METALSHIELD;
+                    break;
+
+                case "Powerup":
+                    Plugin.save.PowerupCount += item.Value;
+                    FPPlayerPatcher.hasBufferedPowerup = true;
+                    break;
 
                 // Progressive Chapters, which need a for loop to make sure we get them all, then a loop through the save to find the first locked chapter and unlock it.
                 case "Progressive Chapter":
@@ -527,6 +621,38 @@ namespace Freedom_Planet_2_Archipelago
                     // If even that failed to turn up a name, then return a generic one.
                     return "Somebody we have no knowledge of";
             }
+        }
+
+        /// <summary>
+        /// Converts a file path to a URL so that Unity's audio loader can get it, taken from https://github.com/Kuborros/MusicReplacer/blob/master/MusicReplacer/Plugin.cs#L30.
+        /// </summary>
+        /// <param name="filePath">The path to the file we're wanting to load.</param>
+        /// <returns>The "URL" of the file.</returns>
+        public static string FilePathToFileUrl(string filePath)
+        {
+            StringBuilder uri = new();
+            foreach (char v in filePath)
+            {
+                if ((v >= 'a' && v <= 'z') || (v >= 'A' && v <= 'Z') || (v >= '0' && v <= '9') ||
+                  v == '+' || v == '/' || v == ':' || v == '.' || v == '-' || v == '_' || v == '~' ||
+                  v > '\xFF')
+                {
+                    uri.Append(v);
+                }
+                else if (v == Path.DirectorySeparatorChar || v == Path.AltDirectorySeparatorChar)
+                {
+                    uri.Append('/');
+                }
+                else
+                {
+                    uri.Append(string.Format("%{0:X2}", (int)v));
+                }
+            }
+            if (uri.Length >= 2 && uri[0] == '/' && uri[1] == '/') // UNC path
+                uri.Insert(0, "file:");
+            else
+                uri.Insert(0, "file:///");
+            return uri.ToString();
         }
     }
 }

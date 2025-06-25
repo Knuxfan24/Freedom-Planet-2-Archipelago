@@ -66,6 +66,9 @@ namespace Freedom_Planet_2_Archipelago
         public static int RingLinkCrystalCount = 0;
         public static float RingLinkTimer = 0;
 
+        // Dictionary of custom sounds for item receives.
+        public static Dictionary<string, AudioClip> ItemSounds = [];
+
         private void Awake()
         {
             // Set up the logger.
@@ -81,6 +84,31 @@ namespace Freedom_Planet_2_Archipelago
             // Create the Archipelago Saves directory if it doesn't exist.
             if (!Directory.Exists($@"{Paths.GameRootPath}\Archipelago Saves"))
                 Directory.CreateDirectory($@"{Paths.GameRootPath}\Archipelago Saves");
+
+            // Check if the sounds directory exists.
+            if (Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sounds\"))
+            {
+                // Loop through each WAV file in the sounds directory.
+                foreach (string wavFile in Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sounds\", "*.wav"))
+                {
+                    using (WWW audioLoader = new(Helpers.FilePathToFileUrl(wavFile)))
+                    {
+                        // Freeze the game until the audio loader is done.
+                        while (!audioLoader.isDone)
+                            System.Threading.Thread.Sleep(1);
+
+                        // Create an audio clip from the loaded file.
+                        AudioClip audio = audioLoader.GetAudioClip(false, true, AudioType.WAV);
+
+                        // Freeze the application until the audio clip is loaded fully.
+                        while (!(audio.loadState == AudioDataLoadState.Loaded))
+                            System.Threading.Thread.Sleep(1);
+
+                        // Add the loaded audio to our dictionary of audio clips.
+                        ItemSounds.Add(Path.GetFileNameWithoutExtension(wavFile).ToLower(), audio);
+                    }
+                }
+            }
 
             // Get the player prefabs from the game itself.
             foreach (GameObject obj in UnityEngine.Resources.FindObjectsOfTypeAll<GameObject>())
@@ -197,8 +225,8 @@ namespace Freedom_Planet_2_Archipelago
                             // Set up a message to display, depending on various factors.
                             string message = $"Recieved {item.Key.ItemName} from {item.Key.Source}.";
                             if (item.Key.Source == session.Players.GetPlayerName(session.ConnectionInfo.Slot)) message = $"Found your {item.Key.ItemName}.";
-                            if (item.Value > 1) message = $"Recieved {item.Value} {item.Key.ItemName}s from {item.Key.Source}.";
-                            if (item.Key.Source == session.Players.GetPlayerName(session.ConnectionInfo.Slot) && item.Value > 1) message = $"Found {item.Value} of your {item.Key.ItemName}s.";
+                            if (item.Value > 1) message = $"Recieved {item.Key.ItemName} ({item.Value}x) from {item.Key.Source}.";
+                            if (item.Key.Source == session.Players.GetPlayerName(session.ConnectionInfo.Slot) && item.Value > 1) message = $"Found your {item.Key.ItemName} ({item.Value}x).";
 
                             // Set the banner to the expand state and pass our message to it.
                             messageBanner.GetComponent<MessageBanner>().state = messageBanner.GetComponent<MessageBanner>().State_Expand;
@@ -206,6 +234,10 @@ namespace Freedom_Planet_2_Archipelago
 
                             // Play the item get sound.
                             FPAudio.PlaySfx(FPAudio.SFX_ITEMGET);
+
+                            // If we have a sound for this item, then play it too.
+                            if (ItemSounds.ContainsKey(item.Key.ItemName.ToLower()))
+                                FPAudio.PlaySfx(ItemSounds[item.Key.ItemName.ToLower()]);
                         }
                     }
 

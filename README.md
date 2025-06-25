@@ -105,7 +105,7 @@ Two seperate options, under the names of `milla_shop_price` and `vinyl_shop_pric
 
 ### Enemy Sanity
 
-Two seperate options, under the names of `enemies` and `bosses`. These options add extra locations for each enemy (adding 71 extra locations) and boss (adding 44 extra locations) type respectively. Killing an enemy type for the first time (even if the player isn't responsible for its death) will send its location out.
+Two seperate options, under the names of `enemies` and `bosses`. These options add extra locations for each enemy (adding 72 extra locations) and boss (adding 44 extra locations) type respectively. Killing an enemy type for the first time (even if the player isn't responsible for its death) will send its location out.
 
 ### Extra Item Slots
 

@@ -29,11 +29,6 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         public int BattlesphereKeyCount { get; set; }
 
         /// <summary>
-        /// The amount of Gold Gems we've gotten from the server.
-        /// </summary>
-        public int GoldGemCount { get; set; }
-
-        /// <summary>
         /// The amount of Mirror Traps we've gotten from the server.
         /// </summary>
         public int MirrorTrapCount { get; set; }
@@ -42,6 +37,36 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         /// The amount of PowerPoint Traps we've gotten from the server.
         /// </summary>
         public int PowerPointTrapCount { get; set; }
+
+        /// <summary>
+        /// The amount of Gold Gems we've gotten from the server.
+        /// </summary>
+        public int GoldGemCount { get; set; }
+
+        /// <summary>
+        /// The amount of Crystals we've gotten from the server.
+        /// </summary>
+        public int CrystalCount { get; set; }
+
+        /// <summary>
+        /// The amount of Extra Lives we've gotten from the server.
+        /// </summary>
+        public int ExtraLifeCount { get; set; }
+
+        /// <summary>
+        /// The amount of Invincibilities we've gotten from the server.
+        /// </summary>
+        public int InvincibilityCount { get; set; }
+
+        /// <summary>
+        /// The amount of Shields we've gotten from the server.
+        /// </summary>
+        public int ShieldCount { get; set; }
+
+        /// <summary>
+        /// The amount of Powerups we've gotten from the server.
+        /// </summary>
+        public int PowerupCount { get; set; }
         #endregion
 
         /// <summary>
