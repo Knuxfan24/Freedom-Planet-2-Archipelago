@@ -192,6 +192,21 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 // Reset the chest tracers to remove this chest from it.
                 FPPlayerPatcher.CreateChestTracers();
 
+                // Check if this item is a trap.
+                // TODO: This seems to occasionally fire on none trap items?
+                if (_scoutedLocationInfo.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Trap)
+                {
+                    // Set the player's override animator to our one containing the character's shocked animation.
+                    // We skip Carol's bike state, as we don't replace her animation, thanks to her lacking a suitable shocked one (might use her look up animation?)
+                    switch (FPPlayerPatcher.player.characterID)
+                    {
+                        case FPCharacterID.LILAC: FPPlayerPatcher.overrideAnimator = new(Plugin.apAssetBundle.LoadAsset<RuntimeAnimatorController>("Lilac Shock")); break;
+                        case FPCharacterID.CAROL: FPPlayerPatcher.overrideAnimator = new(Plugin.apAssetBundle.LoadAsset<RuntimeAnimatorController>("Carol Shock")); break;
+                        case FPCharacterID.MILLA: FPPlayerPatcher.overrideAnimator = new(Plugin.apAssetBundle.LoadAsset<RuntimeAnimatorController>("Milla Shock")); break;
+                        case FPCharacterID.NEERA: FPPlayerPatcher.overrideAnimator = new(Plugin.apAssetBundle.LoadAsset<RuntimeAnimatorController>("Neera Shock")); break;
+                    }
+                }
+
                 void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _scoutedLocationInfo = scoutedLocationInfo.First().Value;
             }
         }

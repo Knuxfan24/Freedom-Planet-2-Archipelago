@@ -53,7 +53,7 @@ namespace Freedom_Planet_2_Archipelago
         // The list of "Sent [x] to [y]" messages.
         public static List<string> sentMessageQueue = [];
 
-        // Random character selector
+        // Random character selector.
         public static System.Random rng = new(); // Also used by the Swap Trap.
         public static bool usingRandomCharacter = false;
 
@@ -68,6 +68,12 @@ namespace Freedom_Planet_2_Archipelago
 
         // Dictionary of custom sounds for item receives.
         public static Dictionary<string, AudioClip> ItemSounds = [];
+
+        // Arrays of audio clips for each character finding a trap item in a chest.
+        public static AudioClip[] LilacTrapSounds = [];
+        public static AudioClip[] CarolTrapSounds = [];
+        public static AudioClip[] MillaTrapSounds = [];
+        public static AudioClip[] NeeraTrapSounds = [];
 
         private void Awake()
         {
@@ -148,6 +154,20 @@ namespace Freedom_Planet_2_Archipelago
             messageBanner = GameObject.Instantiate(apAssetBundle.LoadAsset<GameObject>("Message Label"));
             messageBanner.AddComponent<MessageBanner>();
             DontDestroyOnLoad(messageBanner);
+
+            // Loop through each asset.
+            foreach (string asset in apAssetBundle.GetAllAssetNames())
+            {
+                // Check if this asset is an OGG file.
+                if (Path.GetExtension(asset) == ".ogg")
+                {
+                    // Add this asset to the approriate array if its one of our voice files.
+                    if (Path.GetFileNameWithoutExtension(asset).StartsWith("fp2_lilac")) LilacTrapSounds = LilacTrapSounds.AddToArray(apAssetBundle.LoadAsset<AudioClip>(Path.GetFileNameWithoutExtension(asset)));
+                    if (Path.GetFileNameWithoutExtension(asset).StartsWith("fp2_carol")) CarolTrapSounds = CarolTrapSounds.AddToArray(apAssetBundle.LoadAsset<AudioClip>(Path.GetFileNameWithoutExtension(asset)));
+                    if (Path.GetFileNameWithoutExtension(asset).StartsWith("fp2_milla")) MillaTrapSounds = MillaTrapSounds.AddToArray(apAssetBundle.LoadAsset<AudioClip>(Path.GetFileNameWithoutExtension(asset)));
+                    if (Path.GetFileNameWithoutExtension(asset).StartsWith("fp2_neera")) NeeraTrapSounds = NeeraTrapSounds.AddToArray(apAssetBundle.LoadAsset<AudioClip>(Path.GetFileNameWithoutExtension(asset)));
+                }
+            }
 
             // Patch all the functions that need patching.
             Harmony.CreateAndPatchAll(typeof(AcrabellePieTrapPatcher));

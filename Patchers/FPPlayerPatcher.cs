@@ -49,6 +49,21 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         static readonly List<GameObject> chestTracers = [];
 
         /// <summary>
+        /// An animator containing the character's shocked animation.
+        /// </summary>
+        public static AnimatorOverrideController overrideAnimator = null;
+        
+        /// <summary>
+        /// The character's original animator.
+        /// </summary>
+        private static RuntimeAnimatorController storedAnimator = null;
+        
+        /// <summary>
+        /// The character's original vaItemGet AudioClip array.
+        /// </summary>
+        private static AudioClip[] storedItemVoices = null;
+
+        /// <summary>
         /// Initial set up of the player's object.
         /// </summary>
         [HarmonyPostfix]
@@ -269,7 +284,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Gives the player a shield.
-        /// TODO: The shield sound doesn't play, likely gonna have to add it to the asset bundle.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "Update")]
@@ -291,28 +305,33 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 shieldOrb.spawnLocation = player;
                 shieldOrb.parentObject = player;
 
-                // Set the shield type and play the correct animation for the orb.
+                // Set the shield type, play the correct animation for the orb and play the correct sound.
                 switch (hasBufferedShield)
                 {
                     case FPItemBoxTypes.BOX_WOODSHIELD:
                         shieldOrb.animator.Play("Wood", 0, 0f);
                         player.shieldID = 0;
+                        FPAudio.PlaySfx(Plugin.apAssetBundle.LoadAsset<AudioClip>("ShieldWood"));
                         break;
                     case FPItemBoxTypes.BOX_EARTHSHIELD:
                         shieldOrb.animator.Play("Earth", 0, 0f);
                         player.shieldID = 1;
+                        FPAudio.PlaySfx(Plugin.apAssetBundle.LoadAsset<AudioClip>("ShieldEarth"));
                         break;
                     case FPItemBoxTypes.BOX_WATERSHIELD:
                         shieldOrb.animator.Play("Water", 0, 0f);
                         player.shieldID = 2;
+                        FPAudio.PlaySfx(Plugin.apAssetBundle.LoadAsset<AudioClip>("ShieldWater"));
                         break;
                     case FPItemBoxTypes.BOX_FIRESHIELD:
                         shieldOrb.animator.Play("Fire", 0, 0f);
                         player.shieldID = 3;
+                        FPAudio.PlaySfx(Plugin.apAssetBundle.LoadAsset<AudioClip>("ShieldFire"));
                         break;
                     case FPItemBoxTypes.BOX_METALSHIELD:
                         shieldOrb.animator.Play("Metal", 0, 0f);
                         player.shieldID = 4;
+                        FPAudio.PlaySfx(Plugin.apAssetBundle.LoadAsset<AudioClip>("ShieldMetal"));
                         break;
                 }
 
@@ -320,7 +339,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 ShieldHit shieldHit = (ShieldHit)FPStage.CreateStageObject(ShieldHit.classID, player.position.x, player.position.y);
                 shieldHit.SetParentObject(player);
                 shieldHit.remainingDuration = 15f;
-                //FPAudio.PlaySfx(sfxShield[player.shieldID]);
 
                 // Reset the shield flag.
                 hasBufferedShield = FPItemBoxTypes.BOX_CRATE;
@@ -329,7 +347,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Gives the player their character's powerup.
-        /// TODO: The collect sound doesn't play, likely gonna have to add it to the asset bundle.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "Update")]
@@ -345,7 +362,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     case FPCharacterID.LILAC:
                         player.powerupTimer = Mathf.Max(player.powerupTimer, 600f);
                         player.flashTime = Mathf.Max(player.flashTime, 600f);
-                        //FPAudio.PlaySfx(player.sfxCollect);
+                        FPAudio.PlaySfx(Plugin.apAssetBundle.LoadAsset<AudioClip>("Enter"));
                         break;
 
                     case FPCharacterID.CAROL:
@@ -364,14 +381,14 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                     case FPCharacterID.MILLA:
                         player.Action_MillaMultiCube();
-                        //FPAudio.PlaySfx(sfxCollect);
+                        FPAudio.PlaySfx(Plugin.apAssetBundle.LoadAsset<AudioClip>("Enter"));
                         break;
 
                     case FPCharacterID.NEERA:
                         player.powerupTimer = Mathf.Max(player.powerupTimer, 600f);
                         player.flashTime = Mathf.Max(player.flashTime, 600f);
                         player.Action_SpeedShoes(1.5f);
-                        //FPAudio.PlaySfx(sfxCollect);
+                        FPAudio.PlaySfx(Plugin.apAssetBundle.LoadAsset<AudioClip>("Enter"));
                         break;
 
                     // For modded characters, run their ItemFuelPickup action defined through FP2Lib (assuming the PlayerHandler has a character loaded).
@@ -902,6 +919,67 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
             // Stop the original function from running.
             return false;
+        }
+
+        /// <summary>
+        /// Edits a few of the player's values when getting a trap item from a chest.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPPlayer), "State_ItemGet")]
+        static void GetTrapItemEdit()
+        {
+            // If we don't have an override animator set (because we're a custom character for example), then abort.
+            if (overrideAnimator == null)
+                return;
+
+            // Check the timer and animation like in the original State_ItemGet.
+            if (player.genericTimer > 30f && player.currentAnimation != "ItemGet")
+            {
+                // If we don't have a stored animator, then store our current one.
+                if (storedAnimator == null)
+                    storedAnimator = player.animator.runtimeAnimatorController;
+
+                // Check if we haven't already stored the voice array.
+                if (storedItemVoices == null)
+                {
+                    // Store the voice array.
+                    storedItemVoices = player.vaItemGet;
+
+                    // Swap the voice array for the one from the asset bundle.
+                    // We skip Carol's bike state, as we don't replace her animation, thanks to her lacking a suitable shocked one (might use her look up animation?)
+                    switch (player.characterID)
+                    {
+                        case FPCharacterID.LILAC: player.vaItemGet = Plugin.LilacTrapSounds; break;
+                        case FPCharacterID.CAROL: player.vaItemGet = Plugin.CarolTrapSounds; break;
+                        case FPCharacterID.MILLA: player.vaItemGet = Plugin.MillaTrapSounds; break;
+                        case FPCharacterID.NEERA: player.vaItemGet = Plugin.NeeraTrapSounds; break;
+                    }
+                }
+
+                // Replace the animator with our override one.
+                player.animator.runtimeAnimatorController = overrideAnimator;
+            }
+        }
+
+        /// <summary>
+        /// Reverts the edit so that we actually have animations again.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPPlayer), "Update")]
+        static void RevertTrapItemEdit()
+        {
+            // Check if we have an override and stored animator set, and that we're not in the ItemGet animation anymore.
+            if (overrideAnimator != null && storedAnimator != null && player.currentAnimation != "ItemGet")
+            {
+                // Undo the edits. 
+                player.animator.runtimeAnimatorController = storedAnimator;
+                player.vaItemGet = storedItemVoices;
+
+                // Reset the values to null.
+                overrideAnimator = null;
+                storedAnimator = null;
+                storedItemVoices = null;
+            }
         }
     }
 }
