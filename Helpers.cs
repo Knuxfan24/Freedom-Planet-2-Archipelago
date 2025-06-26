@@ -92,11 +92,31 @@ namespace Freedom_Planet_2_Archipelago
             {
                 switch (scoutedLocationInfo.ItemName)
                 {
-                    // Multitude Items.
-                    case "Gold Gem": return Plugin.apAssetBundle.LoadAsset<Sprite>("gold_gem");
+                    // Key Items.
                     case "Star Card": return Plugin.apAssetBundle.LoadAsset<Sprite>("star_card");
                     case "Time Capsule": return Plugin.apAssetBundle.LoadAsset<Sprite>("time_capsule");
                     case "Battlesphere Key": return Plugin.apAssetBundle.LoadAsset<Sprite>("battlesphere_key");
+
+                    // Filler Items.
+                    case "Gold Gem": return Plugin.apAssetBundle.LoadAsset<Sprite>("gold_gem");
+                    case "Crystals": return Plugin.apAssetBundle.LoadAsset<Sprite>("crystals");
+                    case "Invincibility": return Plugin.apAssetBundle.LoadAsset<Sprite>("invincibility");
+                    case "Wood Shield": return Plugin.apAssetBundle.LoadAsset<Sprite>("wood_shield");
+                    case "Earth Shield": return Plugin.apAssetBundle.LoadAsset<Sprite>("earth_shield");
+                    case "Water Shield": return Plugin.apAssetBundle.LoadAsset<Sprite>("water_shield");
+                    case "Fire Shield": return Plugin.apAssetBundle.LoadAsset<Sprite>("fire_shield");
+                    case "Metal Shield": return Plugin.apAssetBundle.LoadAsset<Sprite>("metal_shield");
+
+                    // Extra Life, done seperately as we swap it out depending on the player character.
+                    case "Extra Life":
+                        switch (FPSaveManager.character)
+                        {
+                            case FPCharacterID.LILAC: return Plugin.apAssetBundle.LoadAsset<Sprite>("extra_life_lilac");
+                            case FPCharacterID.CAROL: case FPCharacterID.BIKECAROL: return Plugin.apAssetBundle.LoadAsset<Sprite>("extra_life_carol");
+                            case FPCharacterID.MILLA: return Plugin.apAssetBundle.LoadAsset<Sprite>("extra_life_milla");
+                            case FPCharacterID.NEERA: return Plugin.apAssetBundle.LoadAsset<Sprite>("extra_life_neera");
+                            default: return PlayerHandler.GetPlayableCharaByFPCharacterId(FPSaveManager.character).livesIconAnim[0];
+                        }
 
                     // Extra Item Slots.
                     case "Extra Item Slot": case "Extra Potion Slot": return Plugin.apAssetBundle.LoadAsset<Sprite>("extra_slots");
@@ -173,7 +193,8 @@ namespace Freedom_Planet_2_Archipelago
                     case "Chest Tracer - Inversion Dynamo":
                     case "Chest Tracer - Lunar Cannon": return Plugin.apAssetBundle.LoadAsset<Sprite>("chest_tracer");
 
-                    // Powerup Start, done seperately as we swap it out depending on the player character.
+                    // Powerup and Powerup Start, done seperately as we swap it out depending on the player character.
+                    case "Powerup":
                     case "Powerup Start":
                         switch (FPSaveManager.character)
                         {
@@ -200,6 +221,7 @@ namespace Freedom_Planet_2_Archipelago
             // Set up counts for the items that need to not be over given.
             int mirrorTrapCount = 0;
             int powerPointTrapCount = 0;
+            int zoomTrapCount = 0;
             int goldGemCount = 0;
             int crystalCount = 0;
             int extraLifeCount = 0;
@@ -210,6 +232,7 @@ namespace Freedom_Planet_2_Archipelago
             // Get the current save values for these items too.
             int saveMirrorTrapCount = Plugin.save.MirrorTrapCount;
             int savePowerPointTrapCount = Plugin.save.PowerPointTrapCount;
+            int saveZoomTrapCount = Plugin.save.ZoomTrapCount;
             int saveGoldGemCount = Plugin.save.GoldGemCount;
             int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveCrystalCount = Plugin.save.CrystalCount;
@@ -226,6 +249,7 @@ namespace Freedom_Planet_2_Archipelago
                 {
                     case "Mirror Trap": mirrorTrapCount += item.Value; break;
                     case "PowerPoint Trap": powerPointTrapCount += item.Value; break;
+                    case "Zoom Trap": zoomTrapCount += item.Value; break;
 
                     case "Gold Gem": goldGemCount += item.Value; break;
                     case "Crystals": crystalCount += item.Value * 100; break;
@@ -244,6 +268,7 @@ namespace Freedom_Planet_2_Archipelago
             int trueGoldGemCount = goldGemCount - saveGoldGemCount;
             int trueMirrorTrapCount = mirrorTrapCount - saveMirrorTrapCount;
             int truePowerPointTrapCount = powerPointTrapCount - savePowerPointTrapCount;
+            int trueZoomTrapCount = zoomTrapCount - saveZoomTrapCount;
             int trueCrystalCount = crystalCount - saveCrystalCount;
             int trueExtraLifeCount = extraLifeCount - saveExtraLifeCount;
             int trueInvincibilityCount = invincibilityCount - saveInvincibilityCount;
@@ -254,17 +279,17 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.save.GoldGemCount = saveGoldGemCount + trueGoldGemCount;
             Plugin.save.MirrorTrapCount = saveMirrorTrapCount + trueMirrorTrapCount;
             Plugin.save.PowerPointTrapCount = savePowerPointTrapCount + truePowerPointTrapCount;
+            Plugin.save.ZoomTrapCount = saveZoomTrapCount + trueZoomTrapCount;
             Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
             Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
             Plugin.save.InvincibilityCount = saveInvincibilityCount + trueInvincibilityCount;
             Plugin.save.ShieldCount = saveShieldCount + trueShieldCount;
             Plugin.save.PowerupCount = savePowerupCount + truePowerupCount;
 
-            // Set the mirror trap timer to the correct value.
+            // Set the trap timers to the correct value.
             Plugin.MirrorTrapTimer = trueMirrorTrapCount * 30;
-
-            // Set the powerpoint trap timer to the correct value.
             Plugin.PowerPointTrapTimer = truePowerPointTrapCount * 30;
+            Plugin.ZoomTrapTimer = trueZoomTrapCount * 30;
 
             // Set our number of total gold gems to the correct value.
             FPSaveManager.totalGoldGems = fp2SaveGoldGemCount + trueGoldGemCount;
@@ -466,6 +491,11 @@ namespace Freedom_Planet_2_Archipelago
                 case "PowerPoint Trap":
                     Plugin.PowerPointTrapTimer += 30f * item.Value;
                     Plugin.save.PowerPointTrapCount += item.Value;
+                    break;
+
+                case "Zoom Trap":
+                    Plugin.ZoomTrapTimer += 30f * item.Value;
+                    Plugin.save.ZoomTrapCount += item.Value;
                     break;
 
                 case "Pie Trap":

@@ -1,4 +1,5 @@
 ﻿using Archipelago.MultiClient.Net.Models;
+using FP2Lib.Player;
 using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
@@ -233,11 +234,32 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 {
                     switch (location.ItemName)
                     {
-                        // Multitude Items.
-                        case "Gold Gem": return FPSaveManager.GetCollectableDescription(1);
+                        // Key Items.
                         case "Star Card": return "Keys for unlocking distant lands.";
                         case "Time Capsule": return FPSaveManager.GetCollectableDescription(7);
                         case "Battlesphere Key": return "Unlocks a challenge in The Battlesphere.";
+
+                        // Filler Items.
+                        case "Gold Gem": return FPSaveManager.GetCollectableDescription(1);
+                        case "Crystals": return FPSaveManager.GetCollectableDescription(0);
+                        case "Extra Life": return "Grants an additional stock.";
+                        case "Invincibility": return "Grants temporary invincibility.";
+                        case "Wood Shield": return "Grants a Wood Shield.";
+                        case "Earth Shield": return "Grants an Earth Shield.";
+                        case "Water Shield": return "Grants a Water Shield.";
+                        case "Fire Shield": return "Grants a Fire Shield.";
+                        case "Metal Shield": return "Grants a Metal Shield.";
+
+                        // Powerup, done seperately as we swap it out depending on the player character.
+                        case "Powerup":
+                            switch (FPSaveManager.character)
+                            {
+                                case FPCharacterID.LILAC: return "Grants an Energizer Sphere";
+                                case FPCharacterID.CAROL: case FPCharacterID.BIKECAROL: return "Grants a Fuel Tank";
+                                case FPCharacterID.MILLA: return "Grants a Multi Cube";
+                                case FPCharacterID.NEERA: return "Grants Speed Skates";
+                                default: return "Grants your character's unique powerup";
+                            }
 
                         // Extra Item Slots.
                         case "Extra Item Slot": return "Allows equipping an extra Brave Stone.";
@@ -322,6 +344,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case "Pie Trap": return "Spawns one of Acrabelle's pies on the player's position.";
                         case "Spring Trap": return "Spawns a spring in front of the player to send them backwards.";
                         case "PowerPoint Trap": return "Reduces the game's framerate to 15 frames per second for 30 seconds.";
+                        case "Zoom Trap": return "Zooms the camera in for 30 seconds.";
                     }
                 }
 

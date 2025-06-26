@@ -39,6 +39,11 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         public int PowerPointTrapCount { get; set; }
 
         /// <summary>
+        /// The amount of Zoom Traps we've gotten from the server.
+        /// </summary>
+        public int ZoomTrapCount { get; set; }
+
+        /// <summary>
         /// The amount of Gold Gems we've gotten from the server.
         /// </summary>
         public int GoldGemCount { get; set; }
