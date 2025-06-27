@@ -484,7 +484,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         }
 
         /// <summary>
-        /// Removes the call to FPAudio.PlaySFX that plays the item get sound, as its also used for the label which spawns immediately after a chest open anyway.
+        /// Removes a few lines in State_ItemGet.
         /// </summary>
         [HarmonyTranspiler]
         [HarmonyPatch(typeof(FPPlayer), "State_ItemGet")]
@@ -492,12 +492,97 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         {
             var codes = new List<CodeInstruction>(instructions);
 
+            // Remove the FPAudio.PlaySFX call that plays the item get sound, as its also used for the label which spawns immediately after a chest open anyway.
             codes[53].opcode = OpCodes.Nop;
             codes[54].opcode = OpCodes.Nop;
 
+            // Remove the direction forcing.
+            codes[55].opcode = OpCodes.Nop;
+            codes[56].opcode = OpCodes.Nop;
+            codes[57].opcode = OpCodes.Nop;
+
+            // Remove the if statement that causes the voice line to play.
+            for (int i = 110; i <= 126; i++)
+                codes[i].opcode = OpCodes.Nop;
+
             return codes.AsEnumerable();
         }
-    
+
+        /// <summary>
+        /// Edits a few of the player's values when getting a trap item from a chest.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPPlayer), "State_ItemGet")]
+        static void GetTrapItemEdit()
+        {
+            // If we don't have an override animator set (because we're a custom character or this chest isn't a trap), then restore some of the transpiles and abort.
+            if (overrideAnimator == null)
+            {
+                if (player.genericTimer > 30f && player.currentAnimation != "ItemGet")
+                    player.direction = FPDirection.FACING_RIGHT;
+
+                if (player.genericTimer > 60f && player.genericTimer < 70f)
+                {
+                    player.genericTimer += 10f;
+                    player.Action_PlayVoiceArray("ItemGet");
+                }
+
+                return;
+            }
+
+            // Check the timer and animation like in the original State_ItemGet.
+            if (player.genericTimer > 30f && player.currentAnimation != "ItemGet")
+            {
+                // If we don't have a stored animator, then store our current one.
+                if (storedAnimator == null)
+                    storedAnimator = player.animator.runtimeAnimatorController;
+
+                // Check if we haven't already stored the voice array.
+                if (storedItemVoices == null)
+                {
+                    // Store the voice array.
+                    storedItemVoices = player.vaItemGet;
+
+                    // Swap the voice array for the one from the asset bundle.
+                    // We skip Carol's bike state, as we don't replace her animation, thanks to her lacking a suitable shocked one (might use her look up animation?)
+                    switch (player.characterID)
+                    {
+                        case FPCharacterID.LILAC: player.vaItemGet = Plugin.LilacTrapSounds; break;
+                        case FPCharacterID.CAROL: player.vaItemGet = Plugin.CarolTrapSounds; break;
+                        case FPCharacterID.MILLA: player.vaItemGet = Plugin.MillaTrapSounds; break;
+                        case FPCharacterID.NEERA: player.vaItemGet = Plugin.NeeraTrapSounds; break;
+                    }
+
+                    // Play a sound from our new voice array (rather than delaying it).
+                    player.Action_PlayVoiceArray("ItemGet");
+                }
+
+                // Replace the animator with our override one.
+                player.animator.runtimeAnimatorController = overrideAnimator;
+            }
+        }
+
+        /// <summary>
+        /// Reverts the edit so that we actually have animations again.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPPlayer), "Update")]
+        static void RevertTrapItemEdit()
+        {
+            // Check if we have an override and stored animator set, and that we're not in the ItemGet animation anymore.
+            if (overrideAnimator != null && storedAnimator != null && player.currentAnimation != "ItemGet")
+            {
+                // Undo the edits. 
+                player.animator.runtimeAnimatorController = storedAnimator;
+                player.vaItemGet = storedItemVoices;
+
+                // Reset the values to null.
+                overrideAnimator = null;
+                storedAnimator = null;
+                storedItemVoices = null;
+            }
+        }
+
         /// <summary>
         /// Handles swapping the player out if a Swap Trap comes in.
         /// </summary>
@@ -919,67 +1004,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
             // Stop the original function from running.
             return false;
-        }
-
-        /// <summary>
-        /// Edits a few of the player's values when getting a trap item from a chest.
-        /// </summary>
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(FPPlayer), "State_ItemGet")]
-        static void GetTrapItemEdit()
-        {
-            // If we don't have an override animator set (because we're a custom character for example), then abort.
-            if (overrideAnimator == null)
-                return;
-
-            // Check the timer and animation like in the original State_ItemGet.
-            if (player.genericTimer > 30f && player.currentAnimation != "ItemGet")
-            {
-                // If we don't have a stored animator, then store our current one.
-                if (storedAnimator == null)
-                    storedAnimator = player.animator.runtimeAnimatorController;
-
-                // Check if we haven't already stored the voice array.
-                if (storedItemVoices == null)
-                {
-                    // Store the voice array.
-                    storedItemVoices = player.vaItemGet;
-
-                    // Swap the voice array for the one from the asset bundle.
-                    // We skip Carol's bike state, as we don't replace her animation, thanks to her lacking a suitable shocked one (might use her look up animation?)
-                    switch (player.characterID)
-                    {
-                        case FPCharacterID.LILAC: player.vaItemGet = Plugin.LilacTrapSounds; break;
-                        case FPCharacterID.CAROL: player.vaItemGet = Plugin.CarolTrapSounds; break;
-                        case FPCharacterID.MILLA: player.vaItemGet = Plugin.MillaTrapSounds; break;
-                        case FPCharacterID.NEERA: player.vaItemGet = Plugin.NeeraTrapSounds; break;
-                    }
-                }
-
-                // Replace the animator with our override one.
-                player.animator.runtimeAnimatorController = overrideAnimator;
-            }
-        }
-
-        /// <summary>
-        /// Reverts the edit so that we actually have animations again.
-        /// </summary>
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(FPPlayer), "Update")]
-        static void RevertTrapItemEdit()
-        {
-            // Check if we have an override and stored animator set, and that we're not in the ItemGet animation anymore.
-            if (overrideAnimator != null && storedAnimator != null && player.currentAnimation != "ItemGet")
-            {
-                // Undo the edits. 
-                player.animator.runtimeAnimatorController = storedAnimator;
-                player.vaItemGet = storedItemVoices;
-
-                // Reset the values to null.
-                overrideAnimator = null;
-                storedAnimator = null;
-                storedItemVoices = null;
-            }
         }
     }
 }
