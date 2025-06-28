@@ -56,12 +56,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// <summary>
         /// The character's original animator.
         /// </summary>
-        private static RuntimeAnimatorController storedAnimator = null;
+        public static RuntimeAnimatorController storedAnimator = null;
         
         /// <summary>
         /// The character's original vaItemGet AudioClip array.
         /// </summary>
-        private static AudioClip[] storedItemVoices = null;
+        public static AudioClip[] storedItemVoices = null;
 
         /// <summary>
         /// Initial set up of the player's object.

@@ -1,5 +1,4 @@
-﻿// TODO: This managed to crash the game when receiving one on stage clear?
-namespace Freedom_Planet_2_Archipelago.Patchers
+﻿namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class AcrabellePieTrapPatcher
     {

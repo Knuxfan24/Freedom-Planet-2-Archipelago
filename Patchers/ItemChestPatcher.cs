@@ -193,9 +193,13 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 FPPlayerPatcher.CreateChestTracers();
 
                 // Check if this item is a trap.
-                // TODO: This seems to occasionally fire on none trap items?
                 if (_scoutedLocationInfo.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Trap)
                 {
+                    // Reset the overrides in case of a stale reference.
+                    FPPlayerPatcher.overrideAnimator = null;
+                    FPPlayerPatcher.storedAnimator = null;
+                    FPPlayerPatcher.storedItemVoices = null;
+
                     // Set the player's override animator to our one containing the character's shocked animation.
                     // We skip Carol's bike state, as we don't replace her animation, thanks to her lacking a suitable shocked one (might use her look up animation?)
                     switch (FPPlayerPatcher.player.characterID)
