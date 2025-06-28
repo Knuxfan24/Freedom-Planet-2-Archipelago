@@ -204,6 +204,12 @@ namespace Freedom_Planet_2_Archipelago
                             case FPCharacterID.NEERA: return Plugin.apAssetBundle.LoadAsset<Sprite>("powerup_start_neera");
                             default: return PlayerHandler.GetPlayableCharaByFPCharacterId(FPSaveManager.character).itemFuel;
                         }
+
+                    // Traps
+                    case "Aaa Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("aaa_trap");
+                    case "Pie Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("pie_trap");
+                    case "Spring Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("spring_trap");
+                    case "Zoom Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("zoom_trap");
                 }
 
             }
