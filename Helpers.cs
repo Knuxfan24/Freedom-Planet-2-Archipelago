@@ -222,6 +222,7 @@ namespace Freedom_Planet_2_Archipelago
             int mirrorTrapCount = 0;
             int powerPointTrapCount = 0;
             int zoomTrapCount = 0;
+            int aaaTrapCount = 0;
             int goldGemCount = 0;
             int crystalCount = 0;
             int extraLifeCount = 0;
@@ -233,6 +234,7 @@ namespace Freedom_Planet_2_Archipelago
             int saveMirrorTrapCount = Plugin.save.MirrorTrapCount;
             int savePowerPointTrapCount = Plugin.save.PowerPointTrapCount;
             int saveZoomTrapCount = Plugin.save.ZoomTrapCount;
+            int saveAaaTrapCount = Plugin.save.AaaTrapCount;
             int saveGoldGemCount = Plugin.save.GoldGemCount;
             int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveCrystalCount = Plugin.save.CrystalCount;
@@ -250,6 +252,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Mirror Trap": mirrorTrapCount += item.Value; break;
                     case "PowerPoint Trap": powerPointTrapCount += item.Value; break;
                     case "Zoom Trap": zoomTrapCount += item.Value; break;
+                    case "Aaa Trap": aaaTrapCount += item.Value; break;
 
                     case "Gold Gem": goldGemCount += item.Value; break;
                     case "Crystals": crystalCount += item.Value * 100; break;
@@ -264,11 +267,15 @@ namespace Freedom_Planet_2_Archipelago
             foreach (KeyValuePair<ArchipelagoItem, int> item in Plugin.itemQueue)
                 HandleItem(item);
 
+            for (int i = 0; i < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; i++)
+                Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[i] = new();
+
             // Calculate the true counts for the multitude items.
             int trueGoldGemCount = goldGemCount - saveGoldGemCount;
             int trueMirrorTrapCount = mirrorTrapCount - saveMirrorTrapCount;
             int truePowerPointTrapCount = powerPointTrapCount - savePowerPointTrapCount;
             int trueZoomTrapCount = zoomTrapCount - saveZoomTrapCount;
+            int trueAaaTrapCount = aaaTrapCount - saveAaaTrapCount;
             int trueCrystalCount = crystalCount - saveCrystalCount;
             int trueExtraLifeCount = extraLifeCount - saveExtraLifeCount;
             int trueInvincibilityCount = invincibilityCount - saveInvincibilityCount;
@@ -280,6 +287,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.save.MirrorTrapCount = saveMirrorTrapCount + trueMirrorTrapCount;
             Plugin.save.PowerPointTrapCount = savePowerPointTrapCount + truePowerPointTrapCount;
             Plugin.save.ZoomTrapCount = saveZoomTrapCount + trueZoomTrapCount;
+            Plugin.save.AaaTrapCount = saveAaaTrapCount + trueAaaTrapCount;
             Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
             Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
             Plugin.save.InvincibilityCount = saveInvincibilityCount + trueInvincibilityCount;
@@ -308,6 +316,22 @@ namespace Freedom_Planet_2_Archipelago
 
             // If we don't actually have a powerup, then reset the flag in the player patcher.
             if (truePowerupCount == 0) FPPlayerPatcher.hasBufferedPowerup = false;
+
+            // Loop through the amount of Aaa Traps we got.
+            for (int voiceLineIndex = 0; voiceLineIndex < trueAaaTrapCount; voiceLineIndex++)
+            {
+                // Loop through each entry in the queue.
+                for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
+                {
+                    // If this entry isn't populated already, then add a random line to it, mark it as active, then stop looping.
+                    if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name != "Aaa")
+                    {
+                        Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = Plugin.AaaTrapLines[Plugin.rng.Next(Plugin.AaaTrapLines.Count)];
+                        Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].active = true;
+                        break;
+                    }
+                }
+            }
 
             // Save the two files.
             Save();
@@ -533,6 +557,24 @@ namespace Freedom_Planet_2_Archipelago
                             else
                             {
                                 trapSpring.transform.position = new(FPPlayerPatcher.player.position.x - 64, FPPlayerPatcher.player.position.y, 0);
+                            }
+                        }
+                    }
+                    break;
+
+                case "Aaa Trap":
+                    // Loop through between 3 to 10 times.
+                    for (int voiceLineIndex = 0; voiceLineIndex < Plugin.rng.Next(3, 11); voiceLineIndex++)
+                    {
+                        // Loop through each entry in the queue.
+                        for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
+                        {
+                            // If this entry isn't populated already, then add a random line to it, mark it as active, then stop looping.
+                            if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name != "Aaa")
+                            {
+                                Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = Plugin.AaaTrapLines[Plugin.rng.Next(Plugin.AaaTrapLines.Count)];
+                                Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].active = true;
+                                break;
                             }
                         }
                     }

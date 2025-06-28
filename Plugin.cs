@@ -62,6 +62,8 @@ namespace Freedom_Planet_2_Archipelago
         public static float MirrorTrapTimer = -1;
         public static float PowerPointTrapTimer = -1;
         public static float ZoomTrapTimer = -1;
+        public static GameObject AaaTrap;
+        public static List<DialogQueue> AaaTrapLines = [];
 
         // RingLink based values.
         public static int RingLinkCrystalCount = 0;
@@ -155,6 +157,19 @@ namespace Freedom_Planet_2_Archipelago
             messageBanner = GameObject.Instantiate(apAssetBundle.LoadAsset<GameObject>("Message Label"));
             messageBanner.AddComponent<MessageBanner>();
             DontDestroyOnLoad(messageBanner);
+
+            // Create the Aaa Trap object.
+            AaaTrap = GameObject.Instantiate(apAssetBundle.LoadAsset<GameObject>("AaaTrap"));
+            DontDestroyOnLoad(AaaTrap);
+
+            // Get the dialog from the Aaa Trap prefab and clear it.
+            for (int i = 0; i < AaaTrap.GetComponent<PlayerDialog>().queue.Length; i++)
+            {
+                if (AaaTrap.GetComponent<PlayerDialog>().queue[i].name == "Aaa")
+                    AaaTrapLines.Add(AaaTrap.GetComponent<PlayerDialog>().queue[i]);
+
+                AaaTrap.GetComponent<PlayerDialog>().queue[i] = new();
+            }
 
             // Loop through each asset.
             foreach (string asset in apAssetBundle.GetAllAssetNames())
