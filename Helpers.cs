@@ -324,17 +324,21 @@ namespace Freedom_Planet_2_Archipelago
             if (truePowerupCount == 0) FPPlayerPatcher.hasBufferedPowerup = false;
 
             // Loop through the amount of Aaa Traps we got.
-            for (int voiceLineIndex = 0; voiceLineIndex < trueAaaTrapCount; voiceLineIndex++)
+            for (int trapIndex = 0; trapIndex < trueAaaTrapCount; trapIndex++)
             {
-                // Loop through each entry in the queue.
-                for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
+                // Loop through between 3 to 10 times.
+                for (int voiceLineIndex = 0; voiceLineIndex < Plugin.rng.Next(3, 11); voiceLineIndex++)
                 {
-                    // If this entry isn't populated already, then add a random line to it, mark it as active, then stop looping.
-                    if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name != "Aaa")
+                    // Loop through each entry in the queue.
+                    for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
                     {
-                        Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = Plugin.AaaTrapLines[Plugin.rng.Next(Plugin.AaaTrapLines.Count)];
-                        Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].active = true;
-                        break;
+                        // If this entry isn't populated already, then add a random line to it, mark it as active, then stop looping.
+                        if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name != "Aaa")
+                        {
+                            Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = Plugin.AaaTrapLines[Plugin.rng.Next(Plugin.AaaTrapLines.Count)];
+                            Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].active = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -569,18 +573,25 @@ namespace Freedom_Planet_2_Archipelago
                     break;
 
                 case "Aaa Trap":
-                    // Loop through between 3 to 10 times.
-                    for (int voiceLineIndex = 0; voiceLineIndex < Plugin.rng.Next(3, 11); voiceLineIndex++)
+                    // Increment the trap count in the save.
+                    Plugin.save.AaaTrapCount += item.Value;
+
+                    // Loop through based on the amount of traps.
+                    for (int trapIndex = 0; trapIndex < item.Value; trapIndex++)
                     {
-                        // Loop through each entry in the queue.
-                        for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
+                        // Loop through between 3 to 10 times.
+                        for (int voiceLineIndex = 0; voiceLineIndex < Plugin.rng.Next(3, 11); voiceLineIndex++)
                         {
-                            // If this entry isn't populated already, then add a random line to it, mark it as active, then stop looping.
-                            if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name != "Aaa")
+                            // Loop through each entry in the queue.
+                            for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
                             {
-                                Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = Plugin.AaaTrapLines[Plugin.rng.Next(Plugin.AaaTrapLines.Count)];
-                                Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].active = true;
-                                break;
+                                // If this entry isn't populated already, then add a random line to it, mark it as active, then stop looping.
+                                if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name != "Aaa")
+                                {
+                                    Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = Plugin.AaaTrapLines[Plugin.rng.Next(Plugin.AaaTrapLines.Count)];
+                                    Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].active = true;
+                                    break;
+                                }
                             }
                         }
                     }
