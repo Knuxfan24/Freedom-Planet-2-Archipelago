@@ -2,6 +2,7 @@
 using FP2Lib.Player;
 using Freedom_Planet_2_Archipelago.Patchers;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -210,6 +211,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Pie Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("pie_trap");
                     case "Spring Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("spring_trap");
                     case "Zoom Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("zoom_trap");
+                    case "Spike Ball Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("spike_ball_trap");
                 }
 
             }
@@ -273,8 +275,12 @@ namespace Freedom_Planet_2_Archipelago
             foreach (KeyValuePair<ArchipelagoItem, int> item in Plugin.itemQueue)
                 HandleItem(item);
 
+            // Clear out the Aaa Trap queue.
             for (int i = 0; i < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; i++)
                 Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[i] = new();
+
+            // Clear out the buffered trap queue.
+            Plugin.BufferedTraps.Clear();
 
             // Calculate the true counts for the multitude items.
             int trueGoldGemCount = goldGemCount - saveGoldGemCount;
@@ -515,6 +521,8 @@ namespace Freedom_Planet_2_Archipelago
                 case "Swap Trap":
                     if (FPPlayerPatcher.player != null)
                         FPPlayerPatcher.SwapTrap();
+                    else
+                        Plugin.BufferedTraps.Add(item.Key);
                     break;
 
                 case "Mirror Trap":
@@ -543,6 +551,8 @@ namespace Freedom_Planet_2_Archipelago
                             GameObject trapPie = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("PieTrap"));
                             trapPie.name = "APPieTrap";
                         }
+                        else
+                            Plugin.BufferedTraps.Add(item.Key);
                     }
                     break;
 
@@ -569,6 +579,8 @@ namespace Freedom_Planet_2_Archipelago
                                 trapSpring.transform.position = new(FPPlayerPatcher.player.position.x - 64, FPPlayerPatcher.player.position.y, 0);
                             }
                         }
+                        else
+                            Plugin.BufferedTraps.Add(item.Key);
                     }
                     break;
 
@@ -595,6 +607,27 @@ namespace Freedom_Planet_2_Archipelago
                             }
                         }
                     }
+                    break;
+
+
+                case "Spike Ball Trap":
+                    // Check that the player exists and that the stage has finished registering its objects.
+                    if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
+                    {
+                        for (int i = 0; i < item.Value; i++)
+                        {
+                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x - 400, FPPlayerPatcher.player.transform.position.y, FPPlayerPatcher.player.transform.position.z), 10f);
+                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x - 400, FPPlayerPatcher.player.transform.position.y + 64, FPPlayerPatcher.player.transform.position.z), 10f);
+                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x - 400, FPPlayerPatcher.player.transform.position.y + 128, FPPlayerPatcher.player.transform.position.z), 10f);
+                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x - 400, FPPlayerPatcher.player.transform.position.y + 192, FPPlayerPatcher.player.transform.position.z), 10f);
+                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x + 400, FPPlayerPatcher.player.transform.position.y, FPPlayerPatcher.player.transform.position.z), -10f);
+                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x + 400, FPPlayerPatcher.player.transform.position.y + 64, FPPlayerPatcher.player.transform.position.z), -10f);
+                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x + 400, FPPlayerPatcher.player.transform.position.y + 128, FPPlayerPatcher.player.transform.position.z), -10f);
+                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x + 400, FPPlayerPatcher.player.transform.position.y + 192, FPPlayerPatcher.player.transform.position.z), -10f);
+                        }
+                    }
+                    else
+                        Plugin.BufferedTraps.Add(item.Key);
                     break;
 
                 // Unhandled items, throw an error into the console.
@@ -693,7 +726,15 @@ namespace Freedom_Planet_2_Archipelago
         /// <returns>The character name.</returns>
         public static string GetPlayer()
         {
-            switch (FPSaveManager.character)
+            // Determine our character ID.
+            int character = -1;
+
+            if (FPPlayerPatcher.player != null)
+                character = (int)FPPlayerPatcher.player.characterID;
+            else
+                character = (int)FPSaveManager.character;
+
+            switch ((FPCharacterID)character)
             {
                 // Return a vanilla character's name.
                 case FPCharacterID.LILAC: return "Lilac";
@@ -710,6 +751,25 @@ namespace Freedom_Planet_2_Archipelago
                     // If even that failed to turn up a name, then return a generic one.
                     return "Somebody we have no knowledge of";
             }
+        }
+
+        public static void SpawnSpikeBall(Vector3 position, float velocity)
+        {
+            // Create a spikeball from the prefab.
+            GameObject trapSpikeBall = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("SpikeBallTrap"));
+
+            // Set the spikeball's name.
+            trapSpikeBall.name = "APSpikeBallTrap";
+            
+            // Set the position and x velocity.
+            trapSpikeBall.transform.position = position;
+            trapSpikeBall.GetComponent<MacerBall>().velocity.x = velocity;
+
+            // Set the explode timer.
+            trapSpikeBall.GetComponent<MacerBall>().explodeTimer = Plugin.rng.Next(120, 241);
+
+            // Make the spikeball rebound when hitting the player.
+            trapSpikeBall.GetComponent<MacerBall>().reboundOnHit = true;
         }
 
         /// <summary>

@@ -64,6 +64,8 @@ namespace Freedom_Planet_2_Archipelago
         public static float ZoomTrapTimer = -1;
         public static GameObject AaaTrap;
         public static List<DialogQueue> AaaTrapLines = [];
+        public static List<ArchipelagoItem> BufferedTraps = [];
+        public static float BufferTrapTimer = -1;
 
         // RingLink based values.
         public static int RingLinkCrystalCount = 0;
@@ -354,6 +356,35 @@ namespace Freedom_Planet_2_Archipelago
 
                 // Zoom the camera back out to 1.
                 FPCamera.stageCamera.RequestZoom(1f, FPCamera.ZoomPriority_VeryHigh);
+            }
+
+            // If we have a buffered trap and the timer isn't running, then randomly select a time between 5 and 30.
+            if (BufferedTraps.Count > 0 && BufferTrapTimer == -1)
+                BufferTrapTimer = rng.Next(5, 31);
+
+            // Decrement the Buffered Trap Timer if the player exists.
+            if (BufferTrapTimer > 0 && FPPlayerPatcher.player != null)
+                BufferTrapTimer -= Time.deltaTime;
+
+            // Check if the timer is between -1 and 0.
+            if (BufferTrapTimer <= 0 && BufferTrapTimer > -1)
+            {
+                // Activate the trap we're waiting for.
+                Helpers.HandleItem(new(BufferedTraps[0], 1));
+
+                // Show a message for the activated trap.
+                if (BufferedTraps[0].Source == session.Players.GetPlayerName(session.ConnectionInfo.Slot))
+                    sentMessageQueue.Add($"Activating your {BufferedTraps[0].ItemName}.");
+                else
+                    sentMessageQueue.Add($"Activating {BufferedTraps[0].ItemName} from {BufferedTraps[0].Source}.");
+
+                // If we have a sound for this item, then play it too.
+                if (ItemSounds.ContainsKey(BufferedTraps[0].ItemName.ToLower()))
+                    FPAudio.PlaySfx(ItemSounds[BufferedTraps[0].ItemName.ToLower()]);
+
+                // Remove this trap from the list and reset the timer.
+                BufferedTraps.RemoveAt(0);
+                BufferTrapTimer = -1;
             }
         }
     }
