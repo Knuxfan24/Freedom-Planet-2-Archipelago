@@ -62,6 +62,7 @@ namespace Freedom_Planet_2_Archipelago
         public static float MirrorTrapTimer = -1;
         public static float PowerPointTrapTimer = -1;
         public static float ZoomTrapTimer = -1;
+        public static float PixellationTrapTimer = -1;
         public static GameObject AaaTrap;
         public static List<DialogQueue> AaaTrapLines = [];
         public static List<ArchipelagoItem> BufferedTraps = [];
@@ -356,6 +357,34 @@ namespace Freedom_Planet_2_Archipelago
 
                 // Zoom the camera back out to 1.
                 FPCamera.stageCamera.RequestZoom(1f, FPCamera.ZoomPriority_VeryHigh);
+            }
+
+            // Check if the Pixellation Trap Timer is above 0.
+            if (PixellationTrapTimer > 0)
+            {
+                // Check if the message label is currently idle.
+                if (messageBanner.GetComponent<MessageBanner>().state == messageBanner.GetComponent<MessageBanner>().State_Idle)
+                {
+                    // Force the game to render at 25% scale.
+                    FPCamera.stageCamera.ResizeRenderTextures(0.25f);
+
+                    // Decrement the Pixellation Trap Timer.
+                    PixellationTrapTimer -= Time.deltaTime;
+                }
+
+                // If the label isn't idle, then restore the normal internal scale so it can actually be read.
+                else
+                    FPCamera.stageCamera.ResizeRenderTextures(FPSaveManager.screenInternalScale);
+            }
+
+            // If not, then check if the timer is between -1 and 0.
+            else if (PixellationTrapTimer <= 0 && PixellationTrapTimer > -1)
+            {
+                // Set the PowerPoint Trap Timer to -1 so the framerate change doesn't fire every frame.
+                PixellationTrapTimer = -1;
+
+                // Reset the game's framerate to the default value.
+                FPCamera.stageCamera.ResizeRenderTextures(FPSaveManager.screenInternalScale);
             }
 
             // If we have a buffered trap and the timer isn't running, then randomly select a time between 5 and 30.

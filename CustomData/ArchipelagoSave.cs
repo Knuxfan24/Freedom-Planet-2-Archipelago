@@ -44,9 +44,29 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         public int ZoomTrapCount { get; set; }
 
         /// <summary>
+        /// The amount of Pie Traps we've gotten from the server.
+        /// </summary>
+        public int PieTrapCount { get; set; }
+
+        /// <summary>
+        /// The amount of Spring Traps we've gotten from the server.
+        /// </summary>
+        public int SpringTrapCount { get; set; }
+
+        /// <summary>
         /// The amount of Aaa Traps we've gotten from the server.
         /// </summary>
         public int AaaTrapCount { get; set; }
+
+        /// <summary>
+        /// The amount of Spike Ball Traps we've gotten from the server.
+        /// </summary>
+        public int SpikeBallTrapCount { get; set; }
+
+        /// <summary>
+        /// The amount of Pixellation Traps we've gotten from the server.
+        /// </summary>
+        public int PixellationTrapCount { get; set; }
 
         /// <summary>
         /// The amount of Gold Gems we've gotten from the server.

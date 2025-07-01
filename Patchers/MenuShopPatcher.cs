@@ -346,7 +346,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case "PowerPoint Trap": return "Reduces the game's framerate to 15 frames per second for 30 seconds.";
                         case "Zoom Trap": return "Zooms the camera in for 30 seconds.";
                         case "Aaa Trap": return "Causes Aaa to scream for a while.";
-                        case "Spike Ball Trap": return "Throws eight Macer spike balls at the player..";
+                        case "Spike Ball Trap": return "Throws eight Macer spike balls at the player.";
+                        case "Pixellation Trap": return "Heavily pixellates the viewport.";
                     }
                 }
 

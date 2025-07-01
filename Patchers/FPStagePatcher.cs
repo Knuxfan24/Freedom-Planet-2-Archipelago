@@ -59,6 +59,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Changes the moon sprite in Merga's battle depending on the other games in the multiworld.
+        /// TODO: Test this change.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(FPStage), "Start")]
@@ -70,15 +71,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 // Set up a list of graphic names.
                 List<string> moonGraphics = [];
 
-                // Loop through each player in the multiworld and add their moon graphic name if the file exists.
+                // Loop through each player in the multiworld and add their moon graphic if the file exists.
                 foreach (Archipelago.MultiClient.Net.Helpers.PlayerInfo player in Plugin.session.Players.AllPlayers)
-                {
-                    if (player.Game == "Sonic Adventure 2 Battle" && File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\shattered_moon.png") && !moonGraphics.Contains("shattered_moon"))
-                        moonGraphics.Add("shattered_moon");
-
-                    if (player.Game == "Majora's Mask Recompiled" && File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\majora_moon.png") && !moonGraphics.Contains("majora_moon"))
-                        moonGraphics.Add("majora_moon");
-                }
+                    if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{player.Game}\merga_moon.png") && !moonGraphics.Contains($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{player.Game}\shattered_moon.png"))
+                        moonGraphics.Add($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{player.Game}\merga_moon.png");
 
                 // Abort if we haven't gotten any moon graphics.
                 if (moonGraphics.Count == 0)
@@ -86,7 +82,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Pick and create a sprite out of a graphic.
                 Texture2D texture = new(230, 230) { filterMode = FilterMode.Trilinear };
-                texture.LoadImage(File.ReadAllBytes($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{moonGraphics[Plugin.rng.Next(moonGraphics.Count)]}.png"));
+                texture.LoadImage(File.ReadAllBytes(moonGraphics[Plugin.rng.Next(moonGraphics.Count)]));
                 Sprite moonGraphic = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
 
                 // Edit all four moon objects.

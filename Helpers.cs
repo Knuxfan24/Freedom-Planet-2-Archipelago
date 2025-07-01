@@ -212,6 +212,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Spring Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("spring_trap");
                     case "Zoom Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("zoom_trap");
                     case "Spike Ball Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("spike_ball_trap");
+                    case "Pixellation Trap": return apLogo[3];
                 }
 
             }
@@ -223,6 +224,7 @@ namespace Freedom_Planet_2_Archipelago
         /// <summary>
         /// Handles sorting items that are stored in the AP save.
         /// TODO: This feels really messy...
+        /// TODO: Trap buffer?
         /// </summary>
         public static void HandleStartItems()
         {
@@ -230,7 +232,11 @@ namespace Freedom_Planet_2_Archipelago
             int mirrorTrapCount = 0;
             int powerPointTrapCount = 0;
             int zoomTrapCount = 0;
+            int pieTrapCount = 0;
+            int springTrapCount = 0;
             int aaaTrapCount = 0;
+            int spikeballTrapCount = 0;
+            int pixellationTrapCount = 0;
             int goldGemCount = 0;
             int crystalCount = 0;
             int extraLifeCount = 0;
@@ -242,7 +248,11 @@ namespace Freedom_Planet_2_Archipelago
             int saveMirrorTrapCount = Plugin.save.MirrorTrapCount;
             int savePowerPointTrapCount = Plugin.save.PowerPointTrapCount;
             int saveZoomTrapCount = Plugin.save.ZoomTrapCount;
+            int savePieTrapCount = Plugin.save.PieTrapCount;
+            int saveSpringTrapCount = Plugin.save.SpringTrapCount;
             int saveAaaTrapCount = Plugin.save.AaaTrapCount;
+            int savePixellationTrapCount = Plugin.save.PixellationTrapCount;
+            int saveSpikeballTrapCount = Plugin.save.SpikeBallTrapCount;
             int saveGoldGemCount = Plugin.save.GoldGemCount;
             int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveCrystalCount = Plugin.save.CrystalCount;
@@ -260,7 +270,11 @@ namespace Freedom_Planet_2_Archipelago
                     case "Mirror Trap": mirrorTrapCount += item.Value; break;
                     case "PowerPoint Trap": powerPointTrapCount += item.Value; break;
                     case "Zoom Trap": zoomTrapCount += item.Value; break;
+                    case "Pie Trap": pieTrapCount += item.Value; break;
+                    case "Spring Trap": springTrapCount += item.Value; break;
                     case "Aaa Trap": aaaTrapCount += item.Value; break;
+                    case "Spike Ball Trap": spikeballTrapCount += item.Value; break;
+                    case "Pixellation Trap": pixellationTrapCount += item.Value; break;
 
                     case "Gold Gem": goldGemCount += item.Value; break;
                     case "Crystals": crystalCount += item.Value * 100; break;
@@ -287,7 +301,11 @@ namespace Freedom_Planet_2_Archipelago
             int trueMirrorTrapCount = mirrorTrapCount - saveMirrorTrapCount;
             int truePowerPointTrapCount = powerPointTrapCount - savePowerPointTrapCount;
             int trueZoomTrapCount = zoomTrapCount - saveZoomTrapCount;
+            int truePieTrapCount = pieTrapCount - savePieTrapCount;
+            int trueSpringTrapCount = springTrapCount - saveSpringTrapCount;
             int trueAaaTrapCount = aaaTrapCount - saveAaaTrapCount;
+            int trueSpikeballTrapCount = spikeballTrapCount - saveSpikeballTrapCount;
+            int truePixellationTrapCount = pixellationTrapCount - savePixellationTrapCount;
             int trueCrystalCount = crystalCount - saveCrystalCount;
             int trueExtraLifeCount = extraLifeCount - saveExtraLifeCount;
             int trueInvincibilityCount = invincibilityCount - saveInvincibilityCount;
@@ -299,7 +317,11 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.save.MirrorTrapCount = saveMirrorTrapCount + trueMirrorTrapCount;
             Plugin.save.PowerPointTrapCount = savePowerPointTrapCount + truePowerPointTrapCount;
             Plugin.save.ZoomTrapCount = saveZoomTrapCount + trueZoomTrapCount;
+            Plugin.save.PieTrapCount = savePieTrapCount + truePieTrapCount;
+            Plugin.save.SpringTrapCount = saveSpringTrapCount + trueSpringTrapCount;
             Plugin.save.AaaTrapCount = saveAaaTrapCount + trueAaaTrapCount;
+            Plugin.save.SpikeBallTrapCount = saveSpikeballTrapCount + trueSpikeballTrapCount;
+            Plugin.save.PixellationTrapCount = savePixellationTrapCount + truePixellationTrapCount;
             Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
             Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
             Plugin.save.InvincibilityCount = saveInvincibilityCount + trueInvincibilityCount;
@@ -310,6 +332,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.MirrorTrapTimer = trueMirrorTrapCount * 30;
             Plugin.PowerPointTrapTimer = truePowerPointTrapCount * 30;
             Plugin.ZoomTrapTimer = trueZoomTrapCount * 30;
+            Plugin.PixellationTrapTimer = truePixellationTrapCount * 30;
 
             // Set our number of total gold gems to the correct value.
             FPSaveManager.totalGoldGems = fp2SaveGoldGemCount + trueGoldGemCount;
@@ -541,6 +564,9 @@ namespace Freedom_Planet_2_Archipelago
                     break;
 
                 case "Pie Trap":
+                    // Increment the trap count in the save.
+                    Plugin.save.PieTrapCount += item.Value;
+
                     // Loop through to create as many pies as we received (for the lols).
                     for (int pieIndex = 0; pieIndex < item.Value; pieIndex++)
                     {
@@ -557,6 +583,9 @@ namespace Freedom_Planet_2_Archipelago
                     break;
 
                 case "Spring Trap":
+                    // Increment the trap count in the save.
+                    Plugin.save.SpringTrapCount += item.Value;
+
                     // Loop through to create as many springs as we received (for the lols).
                     for (int springIndex = 0; springIndex < item.Value; springIndex++)
                     {
@@ -609,8 +638,8 @@ namespace Freedom_Planet_2_Archipelago
                     }
                     break;
 
-
                 case "Spike Ball Trap":
+                    Plugin.save.SpikeBallTrapCount += item.Value;
                     // Check that the player exists and that the stage has finished registering its objects.
                     if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
                     {
@@ -628,6 +657,11 @@ namespace Freedom_Planet_2_Archipelago
                     }
                     else
                         Plugin.BufferedTraps.Add(item.Key);
+                    break;
+
+                case "Pixellation Trap":
+                    Plugin.PixellationTrapTimer += 30f * item.Value;
+                    Plugin.save.PixellationTrapCount += item.Value;
                     break;
 
                 // Unhandled items, throw an error into the console.
