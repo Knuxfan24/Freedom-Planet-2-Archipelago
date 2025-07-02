@@ -237,6 +237,7 @@ namespace Freedom_Planet_2_Archipelago
             int aaaTrapCount = 0;
             int spikeballTrapCount = 0;
             int pixellationTrapCount = 0;
+            int railTrapCount = 0;
             int goldGemCount = 0;
             int crystalCount = 0;
             int extraLifeCount = 0;
@@ -253,6 +254,7 @@ namespace Freedom_Planet_2_Archipelago
             int saveAaaTrapCount = Plugin.save.AaaTrapCount;
             int savePixellationTrapCount = Plugin.save.PixellationTrapCount;
             int saveSpikeballTrapCount = Plugin.save.SpikeBallTrapCount;
+            int saveRailTrapCount = Plugin.save.RailTrapCount;
             int saveGoldGemCount = Plugin.save.GoldGemCount;
             int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveCrystalCount = Plugin.save.CrystalCount;
@@ -275,6 +277,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Aaa Trap": aaaTrapCount += item.Value; break;
                     case "Spike Ball Trap": spikeballTrapCount += item.Value; break;
                     case "Pixellation Trap": pixellationTrapCount += item.Value; break;
+                    case "Rail Trap": railTrapCount += item.Value; break;
 
                     case "Gold Gem": goldGemCount += item.Value; break;
                     case "Crystals": crystalCount += item.Value * 100; break;
@@ -296,6 +299,9 @@ namespace Freedom_Planet_2_Archipelago
             // Clear out the buffered trap queue.
             Plugin.BufferedTraps.Clear();
 
+            // Remove any rail traps.
+            Plugin.RailTrap = false;
+
             // Calculate the true counts for the multitude items.
             int trueGoldGemCount = goldGemCount - saveGoldGemCount;
             int trueMirrorTrapCount = mirrorTrapCount - saveMirrorTrapCount;
@@ -306,6 +312,7 @@ namespace Freedom_Planet_2_Archipelago
             int trueAaaTrapCount = aaaTrapCount - saveAaaTrapCount;
             int trueSpikeballTrapCount = spikeballTrapCount - saveSpikeballTrapCount;
             int truePixellationTrapCount = pixellationTrapCount - savePixellationTrapCount;
+            int trueRailTrapCount = railTrapCount - saveRailTrapCount;
             int trueCrystalCount = crystalCount - saveCrystalCount;
             int trueExtraLifeCount = extraLifeCount - saveExtraLifeCount;
             int trueInvincibilityCount = invincibilityCount - saveInvincibilityCount;
@@ -322,6 +329,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.save.AaaTrapCount = saveAaaTrapCount + trueAaaTrapCount;
             Plugin.save.SpikeBallTrapCount = saveSpikeballTrapCount + trueSpikeballTrapCount;
             Plugin.save.PixellationTrapCount = savePixellationTrapCount + truePixellationTrapCount;
+            Plugin.save.RailTrapCount = saveRailTrapCount + trueRailTrapCount;
             Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
             Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
             Plugin.save.InvincibilityCount = saveInvincibilityCount + trueInvincibilityCount;
@@ -662,6 +670,11 @@ namespace Freedom_Planet_2_Archipelago
                 case "Pixellation Trap":
                     Plugin.PixellationTrapTimer += 30f * item.Value;
                     Plugin.save.PixellationTrapCount += item.Value;
+                    break;
+
+                case "Rail Trap":
+                    Plugin.RailTrap = true;
+                    Plugin.save.RailTrapCount += item.Value;
                     break;
 
                 // Unhandled items, throw an error into the console.

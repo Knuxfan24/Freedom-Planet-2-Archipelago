@@ -69,6 +69,11 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         public int PixellationTrapCount { get; set; }
 
         /// <summary>
+        /// The amount of Rail Traps we've gotten from the server.
+        /// </summary>
+        public int RailTrapCount { get; set; }
+
+        /// <summary>
         /// The amount of Gold Gems we've gotten from the server.
         /// </summary>
         public int GoldGemCount { get; set; }

@@ -66,6 +66,7 @@ namespace Freedom_Planet_2_Archipelago
         public static GameObject AaaTrap;
         public static List<DialogQueue> AaaTrapLines = [];
         public static List<ArchipelagoItem> BufferedTraps = [];
+        public static bool RailTrap = false;
         public static float BufferTrapTimer = -1;
 
         // RingLink based values.
@@ -414,6 +415,27 @@ namespace Freedom_Planet_2_Archipelago
                 // Remove this trap from the list and reset the timer.
                 BufferedTraps.RemoveAt(0);
                 BufferTrapTimer = -1;
+            }
+
+            if (RailTrap)
+            {
+                // Get all the objects that have a collider.
+                Collider2D[] colliderObjects = UnityEngine.Object.FindObjectsOfType<Collider2D>();
+
+                // Loop through each object with a collider.
+                foreach (Collider2D colliderObject in colliderObjects)
+                {
+                    // Check that this collider's object doesn't already have a rail.
+                    if (colliderObject.gameObject.GetComponent<GrindRail>() == null)
+                    {
+                        // Create and attach a rail to the object.
+                        GrindRail rail = colliderObject.gameObject.AddComponent<GrindRail>();
+
+                        // Set the rail sounds from the asset bundle.
+                        rail.sfxRailStart = apAssetBundle.LoadAsset<AudioClip>("GrindRail_Start");
+                        rail.sfxRailLoop = apAssetBundle.LoadAsset<AudioClip>("GrindRail_Loop");
+                    }
+                }
             }
         }
     }

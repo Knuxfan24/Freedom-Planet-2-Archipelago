@@ -347,7 +347,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case "Zoom Trap": return "Zooms the camera in for 30 seconds.";
                         case "Aaa Trap": return "Causes Aaa to scream for a while.";
                         case "Spike Ball Trap": return "Throws eight Macer spike balls at the player.";
-                        case "Pixellation Trap": return "Heavily pixellates the viewport.";
+                        case "Pixellation Trap": return "Heavily pixellates the viewport for 30 seconds.";
+                        case "Rail Trap": return "Makes every solid surface in the stage into a grind rail.";
                     }
                 }
 

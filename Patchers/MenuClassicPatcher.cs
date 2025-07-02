@@ -47,6 +47,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 Helpers.Save();
             }
 
+            // Disable the Rail Trap if its active.
+            if (Plugin.RailTrap)
+                Plugin.RailTrap = false;
+
             #region Shop Setup
             // Create the array for Milla's shop, setting its length to 30 then setting the index of each item linerally from 2.
             __instance.itemsForSale = new FPPowerup[30];
