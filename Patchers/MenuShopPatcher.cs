@@ -76,8 +76,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             void GatherSpritesAndLocations(int itemCount, string shop)
             {
                 // Loop through and get the location indices for this shop.
-                for (int i = 1; i <= itemCount; i++)
-                    locationIDs.Add(Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{shop} Shop Item {i}"));
+                for (int itemIndex = 1; itemIndex <= itemCount; itemIndex++)
+                    locationIDs.Add(Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{shop} Shop Item {itemIndex}"));
 
                 // Scout the locations for this shop.
                 Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfo, [.. locationIDs]);
@@ -88,8 +88,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Get the sprites for the items in this shop.
                 List<Sprite> sprites = [];
-                for (int i = 0; i < itemCount; i++)
-                    sprites.Add(Helpers.GetItemSprite(_ScoutedLocationInfo.ElementAt(i).Value, true));
+                for (int spriteIndex = 0; spriteIndex < itemCount; spriteIndex++)
+                    sprites.Add(Helpers.GetItemSprite(_ScoutedLocationInfo.ElementAt(spriteIndex).Value, true));
                 Sprites = [.. sprites];
 
                 // If our shop information setting is set to full, then also send hints for the items in this shop.
@@ -104,8 +104,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         hintableItems *= 2;
 
                     // Loop through and get the location indices for this shop's hints.
-                    for (int i = 1; i <= hintableItems; i++)
-                        locationIDs.Add(Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{shop} Shop Item {i}"));
+                    for (int hintIndex = 1; hintIndex <= hintableItems; hintIndex++)
+                        locationIDs.Add(Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{shop} Shop Item {hintIndex}"));
 
                     // Scout for the hints for these locations.
                     // TODO: If an item is purchased before being hinted for, then it makes the hint each time despite the annouce setting. MultiClient bug?
@@ -131,15 +131,15 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Handle replacing the sprite on the item depending on the shop type.
             if (!___payWithCrystals)
             {
-                for (int i = 0; i < ___powerups.Length; i++)
-                    if (___powerups[i].digitValue > 1 && (i + ___detailListOffset) < 30)
-                        ___powerups[i].GetComponent<SpriteRenderer>().sprite = Sprites[i + ___detailListOffset];
+                for (int powerupIndex = 0; powerupIndex < ___powerups.Length; powerupIndex++)
+                    if (___powerups[powerupIndex].digitValue > 1 && (powerupIndex + ___detailListOffset) < 30)
+                        ___powerups[powerupIndex].GetComponent<SpriteRenderer>().sprite = Sprites[powerupIndex + ___detailListOffset];
             }
             else
             {
-                for (int i = 0; i < ___vinyls.Length; i++)
-                    if (___vinyls[i].digitValue != 0 && (i + ___detailListOffset) < 60)
-                        ___vinyls[i].GetComponent<SpriteRenderer>().sprite = Sprites[i + ___detailListOffset];
+                for (int vinylIndex = 0; vinylIndex < ___vinyls.Length; vinylIndex++)
+                    if (___vinyls[vinylIndex].digitValue != 0 && (vinylIndex + ___detailListOffset) < 60)
+                        ___vinyls[vinylIndex].GetComponent<SpriteRenderer>().sprite = Sprites[vinylIndex + ___detailListOffset];
             }
 
             // Only replace the item name and description if it's unlocked.

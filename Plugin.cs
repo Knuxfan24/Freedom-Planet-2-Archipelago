@@ -167,12 +167,12 @@ namespace Freedom_Planet_2_Archipelago
             DontDestroyOnLoad(AaaTrap);
 
             // Get the dialog from the Aaa Trap prefab and clear it.
-            for (int i = 0; i < AaaTrap.GetComponent<PlayerDialog>().queue.Length; i++)
+            for (int aaaIndex = 0; aaaIndex < AaaTrap.GetComponent<PlayerDialog>().queue.Length; aaaIndex++)
             {
-                if (AaaTrap.GetComponent<PlayerDialog>().queue[i].name == "Aaa")
-                    AaaTrapLines.Add(AaaTrap.GetComponent<PlayerDialog>().queue[i]);
+                if (AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex].name == "Aaa")
+                    AaaTrapLines.Add(AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex]);
 
-                AaaTrap.GetComponent<PlayerDialog>().queue[i] = new();
+                AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex] = new();
             }
 
             // Loop through each asset.

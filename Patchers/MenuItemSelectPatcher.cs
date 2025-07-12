@@ -25,8 +25,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         {
             var codes = new List<CodeInstruction>(instructions);
 
-            for (int i = 56; i <= 117; i++)
-                codes[i].opcode = OpCodes.Nop;
+            for (int codeIndex = 56; codeIndex <= 117; codeIndex++)
+                codes[codeIndex].opcode = OpCodes.Nop;
 
             return codes.AsEnumerable();
         }

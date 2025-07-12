@@ -52,8 +52,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
             // Get the sprites for the items in the Battlesphere.
             List<Sprite> sprites = [];
-            for (int i = 0; i < 18; i++)
-                sprites.Add(Helpers.GetItemSprite(_ScoutedLocationInfo.ElementAt(i).Value, true));
+            for (int spriteIndex = 0; spriteIndex < 18; spriteIndex++)
+                sprites.Add(Helpers.GetItemSprite(_ScoutedLocationInfo.ElementAt(spriteIndex).Value, true));
             Sprites = [.. sprites];
 
             void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _ScoutedLocationInfo = scoutedLocationInfo;
@@ -159,8 +159,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         {
             var codes = new List<CodeInstruction>(instructions);
 
-            for (int i = 122; i <= 126; i++)
-                codes[i].opcode = OpCodes.Nop;
+            for (int codeIndex = 122; codeIndex <= 126; codeIndex++)
+                codes[codeIndex].opcode = OpCodes.Nop;
 
             return codes.AsEnumerable();
         }
@@ -170,8 +170,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         {
             var codes = new List<CodeInstruction>(instructions);
 
-            for (int i = 748; i <= 752; i++)
-                codes[i].opcode = OpCodes.Nop;
+            for (int codeIndex = 748; codeIndex <= 752; codeIndex++)
+                codes[codeIndex].opcode = OpCodes.Nop;
 
             return codes.AsEnumerable();
         }

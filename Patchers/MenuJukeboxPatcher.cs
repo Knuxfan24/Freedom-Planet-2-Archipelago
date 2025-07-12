@@ -12,10 +12,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         {
             var codes = new List<CodeInstruction>(instructions);
 
-            for (int i = 113; i <= 135; i++)
-                codes[i].opcode = OpCodes.Nop;
-            for (int i = 152; i <= 160; i++)
-                codes[i].opcode = OpCodes.Nop;
+            for (int codeIndex = 113; codeIndex <= 135; codeIndex++)
+                codes[codeIndex].opcode = OpCodes.Nop;
+            for (int codeIndex = 152; codeIndex <= 160; codeIndex++)
+                codes[codeIndex].opcode = OpCodes.Nop;
 
             return codes.AsEnumerable();
         }
@@ -25,12 +25,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         {
             var codes = new List<CodeInstruction>(instructions);
 
-            for (int i = 254; i <= 262; i++)
-                codes[i].opcode = OpCodes.Nop;
-            for (int i = 274; i <= 283; i++)
-                codes[i].opcode = OpCodes.Nop;
-            for (int i = 318; i <= 326; i++)
-                codes[i].opcode = OpCodes.Nop;
+            for (int codeIndex = 254; codeIndex <= 262; codeIndex++)
+                codes[codeIndex].opcode = OpCodes.Nop;
+            for (int codeIndex = 274; codeIndex <= 283; codeIndex++)
+                codes[codeIndex].opcode = OpCodes.Nop;
+            for (int codeIndex = 318; codeIndex <= 326; codeIndex++)
+                codes[codeIndex].opcode = OpCodes.Nop;
 
             return codes.AsEnumerable();
         }

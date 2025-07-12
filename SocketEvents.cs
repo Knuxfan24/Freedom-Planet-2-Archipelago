@@ -97,7 +97,7 @@ namespace Freedom_Planet_2_Archipelago
                         // If the RingLink value is positive, then give us that amount of crystals.
                         if (ringLinkValue > 0)
                         {
-                            for (int i = 0; i < ringLinkValue; i++)
+                            for (int ringIndex = 0; ringIndex < ringLinkValue; ringIndex++)
                                 FPSaveManager.AddCrystal(FPPlayerPatcher.player);
                         }
 

@@ -221,7 +221,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             if (FPStage.objectsRegistered && hasBufferedExtraLives > 0)
             {
                 // Loop through the amount of lives we have queued.
-                for (int i = 0; i < hasBufferedExtraLives; i++)
+                for (int lifeIndex = 0; lifeIndex < hasBufferedExtraLives; lifeIndex++)
                 {
                     // If we have less than 9, then give one.
                     if (player.lives < 9)
@@ -229,7 +229,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                     // Create a +1 icon for this life.
                     // TODO: The spacing is weird, fiddle with that Y value calulcation more.
-                    CrystalBonus crystalBonus = (CrystalBonus)FPStage.CreateStageObject(CrystalBonus.classID, 292f, -((i + 1) * 64));
+                    CrystalBonus crystalBonus = (CrystalBonus)FPStage.CreateStageObject(CrystalBonus.classID, 292f, -((lifeIndex + 1) * 64));
                     crystalBonus.animator.Play("HUD_Add");
                     crystalBonus.duration = 40f;
                 }
@@ -502,8 +502,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             codes[57].opcode = OpCodes.Nop;
 
             // Remove the if statement that causes the voice line to play.
-            for (int i = 110; i <= 126; i++)
-                codes[i].opcode = OpCodes.Nop;
+            for (int codeIndex = 110; codeIndex <= 126; codeIndex++)
+                codes[codeIndex].opcode = OpCodes.Nop;
 
             return codes.AsEnumerable();
         }
@@ -817,7 +817,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 player.audioChannel = new AudioSource[6];
 
                 // Loop through and set up the six audio sources.
-                for (int i = 0; i < 6; i++)
+                for (int audioIndex = 0; audioIndex < 6; audioIndex++)
                 {
                     // Create a new game object with the name "PlayerAudioSource".
                     GameObject gameObject = new("PlayerAudioSource");
@@ -826,13 +826,13 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     gameObject.transform.parent = player.gameObject.transform;
 
                     // Add an audio source to this slot in the array.
-                    player.audioChannel[i] = gameObject.AddComponent<AudioSource>();
+                    player.audioChannel[audioIndex] = gameObject.AddComponent<AudioSource>();
 
                     // Set this slot in the array's volume to our saved sound volume.
-                    player.audioChannel[i].volume = FPSaveManager.volumeSfx;
+                    player.audioChannel[audioIndex].volume = FPSaveManager.volumeSfx;
 
                     // Set this slot's play on awake value to false.
-                    player.audioChannel[i].playOnAwake = false;
+                    player.audioChannel[audioIndex].playOnAwake = false;
                 }
 
                 // Set up the volume on audio channel 0 to our saved voice volume.

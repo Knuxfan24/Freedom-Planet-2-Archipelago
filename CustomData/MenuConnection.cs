@@ -322,8 +322,8 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                 Plugin.usingRandomCharacter = false;
 
             // Reveal all the map tiles.
-            for (int i = 0; i < FPSaveManager.mapTileReveal.Length; i++)
-                FPSaveManager.mapTileReveal[i] = true;
+            for (int tileIndex = 0; tileIndex < FPSaveManager.mapTileReveal.Length; tileIndex++)
+                FPSaveManager.mapTileReveal[tileIndex] = true;
 
             // Save our two files.
             Helpers.Save();

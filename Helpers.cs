@@ -293,8 +293,8 @@ namespace Freedom_Planet_2_Archipelago
                 HandleItem(item);
 
             // Clear out the Aaa Trap queue.
-            for (int i = 0; i < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; i++)
-                Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[i] = new();
+            for (int aaaIndex = 0; aaaIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; aaaIndex++)
+                Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex] = new();
 
             // Clear out the buffered trap queue.
             Plugin.BufferedTraps.Clear();
@@ -407,7 +407,7 @@ namespace Freedom_Planet_2_Archipelago
                     Plugin.save.CrystalCount += item.Value * 100;
 
                     if (FPPlayerPatcher.player != null)
-                        for (int i = 0; i < item.Value * 100; i++)
+                        for (int crystalIndex = 0; crystalIndex < item.Value * 100; crystalIndex++)
                             FPSaveManager.AddCrystal(FPPlayerPatcher.player);
                     else
                         FPSaveManager.totalCrystals += item.Value * 100;
@@ -651,7 +651,7 @@ namespace Freedom_Planet_2_Archipelago
                     // Check that the player exists and that the stage has finished registering its objects.
                     if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
                     {
-                        for (int i = 0; i < item.Value; i++)
+                        for (int spikeBallIndex = 0; spikeBallIndex < item.Value; spikeBallIndex++)
                         {
                             SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x - 400, FPPlayerPatcher.player.transform.position.y, FPPlayerPatcher.player.transform.position.z), 10f);
                             SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x - 400, FPPlayerPatcher.player.transform.position.y + 64, FPPlayerPatcher.player.transform.position.z), 10f);

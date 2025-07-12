@@ -54,26 +54,26 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             #region Shop Setup
             // Create the array for Milla's shop, setting its length to 30 then setting the index of each item linerally from 2.
             __instance.itemsForSale = new FPPowerup[30];
-            for (int i = 0; i < __instance.itemsForSale.Length; i++)
-                __instance.itemsForSale[i] = (FPPowerup)(i + 2);
+            for (int itemIndex = 0; itemIndex < __instance.itemsForSale.Length; itemIndex++)
+                __instance.itemsForSale[itemIndex] = (FPPowerup)(itemIndex + 2);
 
             // Create the array for the Gold Gem cost for Milla's shop, setting all 30 values to 1. 
             __instance.itemCosts = Enumerable.Repeat(1, 30).ToArray();
 
             // Create the array for the Star Card requirements for Milla's shop, setting its length to 30 then setting the value of each item linerally from 1.
             __instance.starCardRequirements = new int[30];
-            for (int i = 0; i < __instance.starCardRequirements.Length; i++)
-                __instance.starCardRequirements[i] = i + 1;
+            for (int requirementIndex = 0; requirementIndex < __instance.starCardRequirements.Length; requirementIndex++)
+                __instance.starCardRequirements[requirementIndex] = requirementIndex + 1;
 
             // Create the array for the Vinyl shop, setting its length to 60 then setting the index of each item linerally from 1.
             __instance.musicForSale = new FPMusicTrack[60];
-            for (int i = 0; i < __instance.musicForSale.Length; i++)
-                __instance.musicForSale[i] = ((FPMusicTrack)(i + 1));
+            for (int itemIndex = 0; itemIndex < __instance.musicForSale.Length; itemIndex++)
+                __instance.musicForSale[itemIndex] = ((FPMusicTrack)(itemIndex + 1));
 
             // Create the array for the Star Card requirements for the Vinyl shop, setting its length to 60 then setting the value of each item linerally from 1, divided by 2 then rounded up.
             __instance.musicStarCardRequirements = new int[60];
-            for (int i = 0; i < __instance.musicStarCardRequirements.Length; i++)
-                __instance.musicStarCardRequirements[i] = (int)Math.Ceiling((double)(i + 1) / 2);
+            for (int requirementIndex = 0; requirementIndex < __instance.musicStarCardRequirements.Length; requirementIndex++)
+                __instance.musicStarCardRequirements[requirementIndex] = (int)Math.Ceiling((double)(requirementIndex + 1) / 2);
             #endregion
 
             #region Stage Locks
@@ -731,13 +731,13 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 AddLocation();
 
                 // Loop through for the chests (we do up to 8 because Tidal Gate has that many).
-                for (int i = 0; i <= 8; i++)
+                for (int chestIndex = 0; chestIndex <= 8; chestIndex++)
                 {
                     // Get the location index for this chest index.
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{stageName} - Chest {i}");
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{stageName} - Chest {chestIndex}");
 
                     // If this index is 0, then check for Chest without a number (for stages with only a single chest).
-                    if (i == 0)
+                    if (chestIndex == 0)
                         locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{stageName} - Chest");
 
                     AddLocation();
@@ -787,8 +787,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         {
             var codes = new List<CodeInstruction>(instructions);
 
-            for (int i = 10; i <= 45; i++)
-                codes[i].opcode = OpCodes.Nop;
+            for (int codeIndex = 10; codeIndex <= 45; codeIndex++)
+                codes[codeIndex].opcode = OpCodes.Nop;
 
             return codes.AsEnumerable();
         }
