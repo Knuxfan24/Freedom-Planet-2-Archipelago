@@ -66,6 +66,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(MenuArenaChallengeSelect), "Start")]
         static void SetupChallengeList(MenuArenaChallengeSelect __instance)
         {
+            // Disable the Rail Trap if its active.
+            if (Plugin.RailTrap)
+                Plugin.RailTrap = false;
+
             // Force the key count down to 18 if its somehow higher than that.
             if (Plugin.save.BattlesphereKeyCount > 18)
                 Plugin.save.BattlesphereKeyCount = 18;
