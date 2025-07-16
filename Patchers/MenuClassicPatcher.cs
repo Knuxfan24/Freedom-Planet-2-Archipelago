@@ -121,6 +121,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Set up a list of hardcoded positions to place the lock panels.
             List<Vector3> positions =
             [
+                // Prologue
+                new(520, -400, 0),
+                new(712, -400, 0),
+
                 // Mystery in the Frozen North
                 new(712, -232, 0),
                 new(904, -232, 0),
@@ -168,6 +172,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Set up a list of the stage indices that need lock panels.
             List<int> stageIndices =
             [
+                // Prologue
+                0, 1,
+
                 // Mystery in the Frozen North
                 4, 5, 6, 7,
                 
@@ -204,6 +211,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 __instance.stages[stageIndices[lockPanelIndex]].lockedPanel = lockPanel.GetComponent<SpriteRenderer>();
                 __instance.stages[stageIndices[lockPanelIndex]].starCardText = lockPanel.transform.GetChild(0).GetComponent<MenuText>();
             }
+            
+            // If the chapter setup is set to open, then remove all the Star Card locks (minus Weapon's Core's).
+            if ((long)Plugin.slotData["chapters"] == 2)
+                for (int stageIndex = 0;  stageIndex < __instance.stages.Length; stageIndex++)
+                    if (stageIndex != 30)
+                        __instance.stages[stageIndex].starCardRequirement = 0;
             #endregion
 
             #region Counters
@@ -263,66 +276,45 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                             // Determine if this panel needs removing based on the stage index and chapter unlocks.
                             switch (stageIndex)
                             {
-                                case 2:
-                                case 3:
-                                    if (Plugin.save.ChapterUnlocks[1])
-                                        __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false);
-                                    break;
+                                case 0: if (Plugin.save.StageUnlocks[0]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 1: if (Plugin.save.StageUnlocks[1]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
 
-                                case 4:
-                                case 5:
-                                case 6:
-                                case 7:
-                                    if (Plugin.save.ChapterUnlocks[0])
-                                        __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false);
-                                    break;
+                                case 4: if (Plugin.save.StageUnlocks[2]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 5: if (Plugin.save.StageUnlocks[3]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 6: if (Plugin.save.StageUnlocks[4]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 7: if (Plugin.save.StageUnlocks[5]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
 
-                                case 8:
-                                case 9:
-                                case 10:
-                                    if (Plugin.save.ChapterUnlocks[2])
-                                        __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false);
-                                    break;
+                                case 2: if (Plugin.save.StageUnlocks[6]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 3: if (Plugin.save.StageUnlocks[7]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
 
-                                case 11:
-                                case 12:
-                                case 13:
-                                case 14:
-                                case 15:
-                                    if (Plugin.save.ChapterUnlocks[3])
-                                        __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false);
-                                    break;
+                                case 8: if (Plugin.save.StageUnlocks[8]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 9: if (Plugin.save.StageUnlocks[9]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 10: if (Plugin.save.StageUnlocks[10]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
 
-                                case 18:
-                                case 19:
-                                    if (Plugin.save.ChapterUnlocks[4])
-                                        __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false);
-                                    break;
+                                case 11: if (Plugin.save.StageUnlocks[11]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 12: if (Plugin.save.StageUnlocks[12]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 13: if (Plugin.save.StageUnlocks[13]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 14: if (Plugin.save.StageUnlocks[14]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 15: if (Plugin.save.StageUnlocks[15]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
 
-                                case 16:
-                                case 17:
-                                    if (Plugin.save.ChapterUnlocks[5])
-                                        __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false);
-                                    break;
+                                case 18: if (Plugin.save.StageUnlocks[16]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 19: if (Plugin.save.StageUnlocks[17]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
 
-                                case 20:
-                                case 21:
-                                case 22:
-                                    if (Plugin.save.ChapterUnlocks[6])
-                                        __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false);
-                                    break;
+                                case 16: if (Plugin.save.StageUnlocks[18]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 17: if (Plugin.save.StageUnlocks[19]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
 
-                                case 23:
-                                case 32:
-                                case 24:
-                                case 25:
-                                case 26:
-                                case 27:
-                                case 28:
-                                case 29:
-                                    if (Plugin.save.ChapterUnlocks[7])
-                                        __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false);
-                                    break;
+                                case 20: if (Plugin.save.StageUnlocks[20]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 21: if (Plugin.save.StageUnlocks[21]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 22: if (Plugin.save.StageUnlocks[22]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+
+                                case 23: if (Plugin.save.StageUnlocks[23]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 32: if (Plugin.save.StageUnlocks[24]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 24: if (Plugin.save.StageUnlocks[25]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 25: if (Plugin.save.StageUnlocks[26]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 26: if (Plugin.save.StageUnlocks[27]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 27: if (Plugin.save.StageUnlocks[28]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 28: if (Plugin.save.StageUnlocks[29]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
+                                case 29: if (Plugin.save.StageUnlocks[30]) __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false); break;
 
                                 // Weapon's Core works differently, as it needs Time Capsules as well.
                                 case 30:
@@ -350,9 +342,14 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                             else
                                 __instance.stages[stageIndex].starCardRequirement = 0;
 
-                            // Shift the text over to the left and display the word "Chapter".
+                            // Shift the text over to the left.
                             __instance.stages[stageIndex].starCardText.gameObject.transform.localPosition = Vector3.zero;
-                            __instance.stages[stageIndex].starCardText.GetComponent<TextMesh>().text = "Chapter";
+
+                            // Display the word "Chapter" or "Access" depending on the chapter mode.
+                            if ((long)Plugin.slotData["chapters"] != 2)
+                                __instance.stages[stageIndex].starCardText.GetComponent<TextMesh>().text = "Chapter";
+                            else
+                                __instance.stages[stageIndex].starCardText.GetComponent<TextMesh>().text = "Access";
 
                             // Get the Star Card Icon for this stage.
                             GameObject icon = __instance.stages[stageIndex].lockedPanel.gameObject.transform.GetChild(1).gameObject;
@@ -376,7 +373,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         }
 
                         // If we do have enough Time Capsules and the chapter is unlocked, then disable the lock.
-                        else if (Plugin.save.ChapterUnlocks[7])
+                        else if (Plugin.save.StageUnlocks[31])
                         {
                             __instance.stages[stageIndex].starCardRequirement = 0;
                             __instance.stages[stageIndex].lockedPanel.gameObject.SetActive(false);

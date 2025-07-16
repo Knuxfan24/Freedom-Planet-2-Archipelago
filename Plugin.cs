@@ -82,6 +82,8 @@ namespace Freedom_Planet_2_Archipelago
         public static AudioClip[] MillaTrapSounds = [];
         public static AudioClip[] NeeraTrapSounds = [];
 
+        public static List<DialogQueue> WeaponsCoreUnlockLines = [];
+
         private void Awake()
         {
             // Set up the logger.
@@ -166,12 +168,18 @@ namespace Freedom_Planet_2_Archipelago
             AaaTrap = GameObject.Instantiate(apAssetBundle.LoadAsset<GameObject>("AaaTrap"));
             DontDestroyOnLoad(AaaTrap);
 
-            // Get the dialog from the Aaa Trap prefab and clear it.
+            // Loop through the dialog in the Aaa trap.
             for (int aaaIndex = 0; aaaIndex < AaaTrap.GetComponent<PlayerDialog>().queue.Length; aaaIndex++)
             {
+                // If the character is set to Aaa, then add it to the trap list.
                 if (AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex].name == "Aaa")
                     AaaTrapLines.Add(AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex]);
 
+                // If the character is set to Serpentine, then add it to the Weapon's Core Unlock Lines list.
+                if (AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex].name == "Serpentine")
+                    WeaponsCoreUnlockLines.Add(AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex]);
+
+                // Clear out this entry in the Aaa trap.
                 AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex] = new();
             }
 

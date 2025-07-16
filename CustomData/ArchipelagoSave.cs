@@ -105,10 +105,10 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         #endregion
 
         /// <summary>
-        /// The Chapter Unlocks we've received from the server.
+        /// The Stage Unlocks we've received from the server.
         /// </summary>
         [JsonIgnore]
-        public bool[] ChapterUnlocks { get; set; } = new bool[8];
+        public bool[] StageUnlocks { get; set; } = new bool[32];
 
         /// <summary>
         /// The Chest Tracers we've received from the server.
@@ -127,6 +127,11 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         /// </summary>
         [JsonIgnore]
         public bool[] Potions { get; set; } = new bool[9];
+
+        /// <summary>
+        /// Whether or not the Serpentine lines for Weapon's Core being unlocked have played.
+        /// </summary>
+        public bool WeaponsCoreAccess { get; set; }
 
         public ArchipelagoSave() { }
         public ArchipelagoSave(int slot)

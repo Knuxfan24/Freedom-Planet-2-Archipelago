@@ -228,6 +228,13 @@ namespace Freedom_Planet_2_Archipelago
         /// </summary>
         public static void HandleStartItems()
         {
+            // If we're not using the open mode, then unlock Dragon Valley and Shenlin Park.
+            if ((long)Plugin.slotData["chapters"] != 2)
+            {
+                Plugin.save.StageUnlocks[0] = true;
+                Plugin.save.StageUnlocks[1] = true;
+            }
+
             // Set up counts for the items that need to not be over given.
             int mirrorTrapCount = 0;
             int powerPointTrapCount = 0;
@@ -454,26 +461,160 @@ namespace Freedom_Planet_2_Archipelago
                 case "Progressive Chapter":
                     for (int itemIndex = 0; itemIndex < item.Value; itemIndex++)
                     {
-                        for (int chapterIndex = 0; chapterIndex < Plugin.save.ChapterUnlocks.Length; chapterIndex++)
+                        for (int stageIndex = 0; stageIndex < Plugin.save.StageUnlocks.Length; stageIndex++)
                         {
-                            if (!Plugin.save.ChapterUnlocks[chapterIndex])
+                            if (!Plugin.save.StageUnlocks[stageIndex])
                             {
-                                Plugin.save.ChapterUnlocks[chapterIndex] = true;
+                                switch (stageIndex)
+                                {
+                                    case 2:
+                                        Plugin.save.StageUnlocks[2] = true;
+                                        Plugin.save.StageUnlocks[3] = true;
+                                        Plugin.save.StageUnlocks[4] = true;
+                                        Plugin.save.StageUnlocks[5] = true;
+                                        break;
+
+                                    case 6:
+                                        Plugin.save.StageUnlocks[6] = true;
+                                        Plugin.save.StageUnlocks[7] = true;
+                                        break;
+
+                                    case 8:
+                                        Plugin.save.StageUnlocks[8] = true;
+                                        Plugin.save.StageUnlocks[9] = true;
+                                        Plugin.save.StageUnlocks[10] = true;
+                                        break;
+
+                                    case 11:
+                                        Plugin.save.StageUnlocks[11] = true;
+                                        Plugin.save.StageUnlocks[12] = true;
+                                        Plugin.save.StageUnlocks[13] = true;
+                                        Plugin.save.StageUnlocks[14] = true;
+                                        Plugin.save.StageUnlocks[15] = true;
+                                        break;
+
+                                    case 16:
+                                        Plugin.save.StageUnlocks[16] = true;
+                                        Plugin.save.StageUnlocks[17] = true;
+                                        break;
+
+                                    case 18:
+                                        Plugin.save.StageUnlocks[18] = true;
+                                        Plugin.save.StageUnlocks[19] = true;
+                                        break;
+
+                                    case 20:
+                                        Plugin.save.StageUnlocks[20] = true;
+                                        Plugin.save.StageUnlocks[21] = true;
+                                        Plugin.save.StageUnlocks[22] = true;
+                                        break;
+
+                                    case 23:
+                                        Plugin.save.StageUnlocks[23] = true;
+                                        Plugin.save.StageUnlocks[24] = true;
+                                        Plugin.save.StageUnlocks[25] = true;
+                                        Plugin.save.StageUnlocks[26] = true;
+                                        Plugin.save.StageUnlocks[27] = true;
+                                        Plugin.save.StageUnlocks[28] = true;
+                                        Plugin.save.StageUnlocks[29] = true;
+                                        Plugin.save.StageUnlocks[30] = true;
+                                        Plugin.save.StageUnlocks[31] = true;
+                                        break;
+                                }
+
                                 break;
                             }
                         }
                     }
                     break;
 
-                // Chapter Unlocks, which just change the value of their index in the chapter unlocks array.
-                case "Mystery of the Frozen North": Plugin.save.ChapterUnlocks[0] = true; break;
-                case "Sky Pirate Panic": Plugin.save.ChapterUnlocks[1] = true; break;
-                case "Enter the Battlesphere": Plugin.save.ChapterUnlocks[2] = true; break;
-                case "Globe Opera": Plugin.save.ChapterUnlocks[3] = true; break;
-                case "Justice in the Sky Paradise": Plugin.save.ChapterUnlocks[4] = true; break;
-                case "Robot Wars! Snake VS Tarsier": Plugin.save.ChapterUnlocks[5] = true; break;
-                case "Echoes of the Dragon War": Plugin.save.ChapterUnlocks[6] = true; break;
-                case "Bakunawa": Plugin.save.ChapterUnlocks[7] = true; break;
+                // Chapter Unlocks, which change values in the save's stage unlock array.
+                case "Mystery of the Frozen North":
+                    Plugin.save.StageUnlocks[2] = true;
+                    Plugin.save.StageUnlocks[3] = true;
+                    Plugin.save.StageUnlocks[4] = true;
+                    Plugin.save.StageUnlocks[5] = true;
+                    break;
+                
+                case "Sky Pirate Panic":
+                    Plugin.save.StageUnlocks[6] = true;
+                    Plugin.save.StageUnlocks[7] = true;
+                    break;
+
+                case "Enter the Battlesphere":
+                    Plugin.save.StageUnlocks[8] = true;
+                    Plugin.save.StageUnlocks[9] = true;
+                    Plugin.save.StageUnlocks[10] = true;
+                    break;
+
+                case "Globe Opera":
+                    Plugin.save.StageUnlocks[11] = true;
+                    Plugin.save.StageUnlocks[12] = true;
+                    Plugin.save.StageUnlocks[13] = true;
+                    Plugin.save.StageUnlocks[14] = true;
+                    Plugin.save.StageUnlocks[15] = true;
+                    break;
+
+                case "Justice in the Sky Paradise":
+                    Plugin.save.StageUnlocks[16] = true;
+                    Plugin.save.StageUnlocks[17] = true;
+                    break;
+
+                case "Robot Wars! Snake VS Tarsier":
+                    Plugin.save.StageUnlocks[18] = true;
+                    Plugin.save.StageUnlocks[19] = true;
+                    break;
+
+                case "Echoes of the Dragon War":
+                    Plugin.save.StageUnlocks[20] = true;
+                    Plugin.save.StageUnlocks[21] = true;
+                    Plugin.save.StageUnlocks[22] = true;
+                    break;
+
+                case "Bakunawa":
+                    Plugin.save.StageUnlocks[23] = true;
+                    Plugin.save.StageUnlocks[24] = true;
+                    Plugin.save.StageUnlocks[25] = true;
+                    Plugin.save.StageUnlocks[26] = true;
+                    Plugin.save.StageUnlocks[27] = true;
+                    Plugin.save.StageUnlocks[28] = true;
+                    Plugin.save.StageUnlocks[29] = true;
+                    Plugin.save.StageUnlocks[30] = true;
+                    Plugin.save.StageUnlocks[31] = true;
+                    break;
+
+                // Stage Unlocks, which set a single value in the save's stage unlock array.
+                case "Dragon Valley": Plugin.save.StageUnlocks[0] = true; break;
+                case "Shenlin Park": Plugin.save.StageUnlocks[1] = true; break;
+                case "Tiger Falls": Plugin.save.StageUnlocks[2] = true; break;
+                case "Robot Graveyard": Plugin.save.StageUnlocks[3] = true; break;
+                case "Shade Armory": Plugin.save.StageUnlocks[4] = true; break;
+                case "Snowfields": Plugin.save.StageUnlocks[5] = true; break;
+                case "Avian Museum": Plugin.save.StageUnlocks[6] = true; break;
+                case "Airship Sigwada": Plugin.save.StageUnlocks[7] = true; break;
+                case "Phoenix Highway": Plugin.save.StageUnlocks[8] = true; break;
+                case "Zao Land": Plugin.save.StageUnlocks[9] = true; break;
+                case "The Battlesphere": Plugin.save.StageUnlocks[10] = true; break;
+                case "Globe Opera 1": Plugin.save.StageUnlocks[11] = true; break;
+                case "Globe Opera 2": Plugin.save.StageUnlocks[12] = true; break;
+                case "Auditorium": Plugin.save.StageUnlocks[13] = true; break;
+                case "Palace Courtyard": Plugin.save.StageUnlocks[14] = true; break;
+                case "Tidal Gate": Plugin.save.StageUnlocks[15] = true; break;
+                case "Sky Bridge": Plugin.save.StageUnlocks[16] = true; break;
+                case "Lightning Tower": Plugin.save.StageUnlocks[17] = true; break;
+                case "Zulon Jungle": Plugin.save.StageUnlocks[18] = true; break;
+                case "Nalao Lake": Plugin.save.StageUnlocks[19] = true; break;
+                case "Ancestral Forge": Plugin.save.StageUnlocks[20] = true; break;
+                case "Magma Starscape": Plugin.save.StageUnlocks[21] = true; break;
+                case "Diamond Point": Plugin.save.StageUnlocks[22] = true; break;
+                case "Gravity Bubble": Plugin.save.StageUnlocks[23] = true; break;
+                case "Bakunawa Chase": Plugin.save.StageUnlocks[24] = true; break;
+                case "Bakunawa Rush": Plugin.save.StageUnlocks[25] = true; break;
+                case "Refinery Room": Plugin.save.StageUnlocks[26] = true; break;
+                case "Clockwork Arboretum": Plugin.save.StageUnlocks[27] = true; break;
+                case "Inversion Dynamo": Plugin.save.StageUnlocks[28] = true; break;
+                case "Lunar Cannon": Plugin.save.StageUnlocks[29] = true; break;
+                case "Merga": Plugin.save.StageUnlocks[30] = true; break;
 
                 // Chest Tracers, which just change the value of their index in the chest tracer array.
                 case "Chest Tracer - Dragon Valley": Plugin.save.ChestTracers[0] = true; break;
@@ -684,6 +825,32 @@ namespace Freedom_Planet_2_Archipelago
             // If this is a chest tracer and the player is active, then recreate the tracers.
             if (item.Key.ItemName.StartsWith("Chest Tracer") && FPPlayerPatcher.player != null)
                 FPPlayerPatcher.CreateChestTracers();
+
+            // Check if the Weapon's Core access flag isn't set and that we have enough items to access it.
+            if (!Plugin.save.WeaponsCoreAccess && Plugin.save.StarCardCount >= 32 && Plugin.save.TimeCapsuleCount >= 13)
+            {
+                // Determine if Weapon's Core's chapter is unlocked.
+                bool shouldPlay = true;
+                if ((long)Plugin.slotData["chapters"] != 2 && !Plugin.save.StageUnlocks[23])
+                    shouldPlay = false;
+
+                // Check if we should play the Weapon's Core lines.
+                if (shouldPlay)
+                {
+                    // Clear out the Aaa trap (as we reuse it).
+                    for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
+                        Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = new();
+
+                    // Set the lines in the queue and mark them as active.
+                    Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[0] = Plugin.WeaponsCoreUnlockLines[0];
+                    Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[1] = Plugin.WeaponsCoreUnlockLines[1];
+                    Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[0].active = true;
+                    Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[1].active = true;
+                }
+
+                // Set the flag so this only happens once.
+                Plugin.save.WeaponsCoreAccess = true;
+            }
 
             // Save the two files.
             Save();

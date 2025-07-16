@@ -302,6 +302,10 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             // Unlock the "Empty" item for both the Brave Stones and Potions so the menu doesn't freak out and break.
             Plugin.save.BraveStones[0] = true;
             Plugin.save.Potions[0] = true;
+
+            // If the chapter option is set to open, then unlock the Weapon's Core panel, as it doesn't have a stage item in this state.
+            if ((long)Plugin.slotData["chapters"] == 2)
+                Plugin.save.StageUnlocks[31] = true;
             #endregion
 
             #region Freedom Planet 2 Save Setup/Loading
