@@ -311,6 +311,40 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case "Bakunawa": return "Allows access to Gravity Bubble, Bakunawa Chase, Bakunawa Rush, Refinery Room, Clockwork Arboretum, Inversion Dynamo, Lunar Cannon, Merga and Weapon's Core.";
                         case "Progressive Chapter": return "Unlocks the next chapter's set of stages.";
 
+                        // Stages
+                        case "Dragon Valley":
+                        case "Shenlin Park":
+                        case "Tiger Falls":
+                        case "Robot Graveyard":
+                        case "Shade Armory":
+                        case "Snowfields":
+                        case "Avian Museum":
+                        case "Airship Sigwada":
+                        case "Phoenix Highway":
+                        case "Zao Land":
+                        case "The Battlesphere":
+                        case "Globe Opera 1":
+                        case "Globe Opera 2":
+                        case "Auditorium":
+                        case "Palace Courtyard":
+                        case "Tidal Gate":
+                        case "Sky Bridge":
+                        case "Lightning Tower":
+                        case "Zulon Jungle":
+                        case "Nalao Lake":
+                        case "Ancestral Forge":
+                        case "Magma Starscape":
+                        case "Diamond Point":
+                        case "Gravity Bubble":
+                        case "Bakunawa Chase":
+                        case "Bakunawa Rush":
+                        case "Refinery Room":
+                        case "Clockwork Arboretum":
+                        case "Inversion Dynamo":
+                        case "Lunar Cannon":
+                        case "Merga": return $"Allows access to {location.ItemName}.";
+
+
                         // Chest Tracers.
                         case "Chest Tracer - Dragon Valley":
                         case "Chest Tracer - Shenlin Park":

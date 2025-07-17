@@ -156,7 +156,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Water Charm": return Plugin.apAssetBundle.LoadAsset<Sprite>("charm_water");
                     case "Wood Charm": return Plugin.apAssetBundle.LoadAsset<Sprite>("charm_wood");
 
-                    // Chapters.
+                    // Chapters/Stages.
                     case "Progressive Chapter":
                     case "Mystery of the Frozen North":
                     case "Sky Pirate Panic":
@@ -165,7 +165,38 @@ namespace Freedom_Planet_2_Archipelago
                     case "Justice in the Sky Paradise":
                     case "Robot Wars! Snake VS Tarsier":
                     case "Echoes of the Dragon War":
-                    case "Bakunawa": return Plugin.apAssetBundle.LoadAsset<Sprite>("chapter");
+                    case "Bakunawa":
+                    case "Dragon Valley":
+                    case "Shenlin Park":
+                    case "Tiger Falls":
+                    case "Robot Graveyard":
+                    case "Shade Armory":
+                    case "Snowfields":
+                    case "Avian Museum":
+                    case "Airship Sigwada":
+                    case "Phoenix Highway":
+                    case "Zao Land":
+                    case "The Battlesphere":
+                    case "Globe Opera 1":
+                    case "Globe Opera 2":
+                    case "Auditorium":
+                    case "Palace Courtyard":
+                    case "Tidal Gate":
+                    case "Sky Bridge":
+                    case "Lightning Tower":
+                    case "Zulon Jungle":
+                    case "Nalao Lake":
+                    case "Ancestral Forge":
+                    case "Magma Starscape":
+                    case "Diamond Point":
+                    case "Gravity Bubble":
+                    case "Bakunawa Chase":
+                    case "Bakunawa Rush":
+                    case "Refinery Room":
+                    case "Clockwork Arboretum":
+                    case "Inversion Dynamo":
+                    case "Lunar Cannon":
+                    case "Merga": return Plugin.apAssetBundle.LoadAsset<Sprite>("chapter");
 
                     // Chest Tracers.
                     case "Chest Tracer":
