@@ -199,6 +199,7 @@ namespace Freedom_Planet_2_Archipelago
 
             // Patch all the functions that need patching.
             Harmony.CreateAndPatchAll(typeof(AcrabellePieTrapPatcher));
+            Harmony.CreateAndPatchAll(typeof(ArenaRetryMenuPatcher));
             Harmony.CreateAndPatchAll(typeof(EnemySanity));
             Harmony.CreateAndPatchAll(typeof(FPAudioPatcher));
             Harmony.CreateAndPatchAll(typeof(FPCameraPatcher));
@@ -212,6 +213,7 @@ namespace Freedom_Planet_2_Archipelago
             Harmony.CreateAndPatchAll(typeof(MenuArenaChallengeSelectPatcher));
             Harmony.CreateAndPatchAll(typeof(MenuClassicPatcher));
             Harmony.CreateAndPatchAll(typeof(MenuClassicShopHubPatcher));
+            Harmony.CreateAndPatchAll(typeof(MenuContinuePatcher));
             Harmony.CreateAndPatchAll(typeof(MenuCreditsPatcher));
             Harmony.CreateAndPatchAll(typeof(MenuGlobalPausePatcher));
             Harmony.CreateAndPatchAll(typeof(MenuItemGetPatcher));
