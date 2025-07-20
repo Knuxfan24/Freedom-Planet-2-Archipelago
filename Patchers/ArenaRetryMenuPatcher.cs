@@ -7,7 +7,7 @@
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(ArenaRetryMenu), "Start")]
-        static void MenuSetup(ArenaRetryMenu)
+        static void MenuSetup()
         {
             if (Plugin.RailTrap)
                 Plugin.RailTrap = false;
