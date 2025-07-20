@@ -76,13 +76,13 @@ namespace Freedom_Planet_2_Archipelago
         /// <summary>
         /// Event handler for when we receive a packet from the Multiworld, only used for RingLink handling.
         /// </summary>
-        public static void Socket_RingLinkPacket(ArchipelagoPacketBase packet)
+        public static void Socket_LinkPackets(ArchipelagoPacketBase packet)
         {
             switch (packet)
             {
                 case BouncedPacket bouncedPacket when bouncedPacket.Tags.Contains("RingLink"):
-                    // Ignore the packet if we're the one who sent it.
-                    if (bouncedPacket.Data["source"].ToObject<int>() == Plugin.session.ConnectionInfo.Slot)
+                    // Ignore the packet if we're the one who sent it or RingLink is disabled.
+                    if (bouncedPacket.Data["source"].ToObject<int>() == Plugin.session.ConnectionInfo.Slot || ((long)Plugin.slotData["ring_link"] == 0))
                         return;
 
                     // Get the value from the RingLink.
@@ -160,7 +160,87 @@ namespace Freedom_Planet_2_Archipelago
                     }
 
                     break;
+
+                case BouncedPacket bouncedPacket when bouncedPacket.Tags.Contains("TrapLink"):
+                    // Ignore the packet if we're the one who sent it or TrapLink is disabled.
+                    if (bouncedPacket.Data["source"].ToObject<string>() == Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot) || ((long)Plugin.slotData["trap_link"] == 0))
+                        return;
+
+                    // Whether or not we've been in a position to receive the linked trap.
+                    bool received = false;
+
+                    // Handle the traps and what they should link to.
+                    // TODO: Trap Brave Stones as well? A couple of traps could map better to those.
+                    switch (bouncedPacket.Data["trap_name"].ToObject<string>())
+                    {
+                        case "Swap Trap":
+                            if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
+                                AddTrap(bouncedPacket, "Swap Trap");
+                            break;
+
+                        case "Mirror Trap":
+                        case "Confusion Trap": // Sonic Adventure 2
+                        case "Reverse Trap": // Super Mario World, Sonic Adventure DX and Sonic Adventure 2
+                            AddTrap(bouncedPacket, "Mirror Trap");
+                            break;
+
+                        case "Pie Trap":
+                        case "Chaos Control Trap": // Sonic Adventure 2
+                        case "Stun Trap": // Super Mario World
+                            if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
+                                AddTrap(bouncedPacket, "Pie Trap");
+                            break;
+
+                        case "Spring Trap":
+                            if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
+                                AddTrap(bouncedPacket, "Spring Trap");
+                            break;
+
+                        case "PowerPoint Trap":
+                            AddTrap(bouncedPacket, "PowerPoint Trap");
+                            break;
+
+                        case "Zoom Trap":
+                            AddTrap(bouncedPacket, "Zoom Trap");
+                            break;
+
+                        case "Aaa Trap":
+                        case "OmoTrap": // Sonic Adventure 2
+                        case "Exposition Trap": // Sonic Adventure 2
+                        case "Cutscene Trap": // Sonic Adventure 2
+                        case "Literature Trap": // Super Mario World and Sonic Adventure 2
+                            AddTrap(bouncedPacket, "Aaa Trap");
+                            break;
+
+                        case "Spike Ball Trap":
+                        case "Thwimp Trap": // Super Mario World
+                        case "Police Trap": // Sonic Adventure DX
+                        case "Buyon Trap": // Sonic Adventure DX
+                            if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
+                                AddTrap(bouncedPacket, "Spike Ball Trap");
+                            break;
+
+                        case "Pixellation Trap":
+                            AddTrap(bouncedPacket, "Pixellation Trap");
+                            break;
+
+                        case "Rail Trap":
+                        case "Ice Trap": // Super Mario World, Sonic Adventure DX and Sonic Adventure 2
+                            AddTrap(bouncedPacket, "Rail Trap");
+                            break;
+                    }
+
+                    if (received)
+                        Plugin.sentMessageQueue.Add($"{bouncedPacket.Data["source"]} linked a {bouncedPacket.Data["trap_name"]}!");
+
+                    void AddTrap(BouncedPacket bouncedPacket, string trapName)
+                    {
+                        Plugin.TrapLinks.Add(new ArchipelagoItem(trapName, bouncedPacket.Data["source"].ToObject<string>()));
+                        received = true;
+                    }
+                    break;
             }  
+
         }
     }
 }

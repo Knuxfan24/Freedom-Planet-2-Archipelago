@@ -344,7 +344,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case "Lunar Cannon":
                         case "Merga": return $"Allows access to {location.ItemName}.";
 
-
                         // Chest Tracers.
                         case "Chest Tracer - Dragon Valley":
                         case "Chest Tracer - Shenlin Park":

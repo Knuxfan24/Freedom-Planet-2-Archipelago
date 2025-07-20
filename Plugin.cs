@@ -66,6 +66,7 @@ namespace Freedom_Planet_2_Archipelago
         public static GameObject AaaTrap;
         public static List<DialogQueue> AaaTrapLines = [];
         public static List<ArchipelagoItem> BufferedTraps = [];
+        public static List<ArchipelagoItem> TrapLinks = [];
         public static bool RailTrap = false;
         public static float BufferTrapTimer = -1;
 
@@ -315,7 +316,7 @@ namespace Freedom_Planet_2_Archipelago
                         Data = new()
                         {
                             { "time", (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds },
-                            { "source", Plugin.session.ConnectionInfo.Slot },
+                            { "source", session.ConnectionInfo.Slot },
                             { "amount", RingLinkCrystalCount }
                         }
                     };
@@ -425,6 +426,12 @@ namespace Freedom_Planet_2_Archipelago
                 // Remove this trap from the list and reset the timer.
                 BufferedTraps.RemoveAt(0);
                 BufferTrapTimer = -1;
+            }
+
+            if (TrapLinks.Count > 0)
+            {
+                Helpers.HandleItem(new(TrapLinks[0], 1));
+                TrapLinks.RemoveAt(0);
             }
 
             if (RailTrap)

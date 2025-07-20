@@ -1,8 +1,8 @@
 ﻿using Archipelago.MultiClient.Net.Models;
+using Archipelago.MultiClient.Net.Packets;
 using FP2Lib.Player;
 using Freedom_Planet_2_Archipelago.Patchers;
 using Newtonsoft.Json;
-using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -328,7 +328,7 @@ namespace Freedom_Planet_2_Archipelago
 
             // Give all the items the server has to us.
             foreach (KeyValuePair<ArchipelagoItem, int> item in Plugin.itemQueue)
-                HandleItem(item);
+                HandleItem(item, true);
 
             // Clear out the Aaa Trap queue.
             for (int aaaIndex = 0; aaaIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; aaaIndex++)
@@ -426,7 +426,8 @@ namespace Freedom_Planet_2_Archipelago
         /// Handle actually receiving items from the multiworld.
         /// </summary>
         /// <param name="item">The information on this item and the quantity.</param>
-        public static void HandleItem(KeyValuePair<ArchipelagoItem, int> item)
+        /// <param name="fromStart">Whether we're running this from the initial connection, used to stop TrapLinks.</param>
+        public static void HandleItem(KeyValuePair<ArchipelagoItem, int> item, bool fromStart = false)
         {
             switch (item.Key.ItemName)
             {
@@ -722,6 +723,7 @@ namespace Freedom_Planet_2_Archipelago
 
                 // Traps.
                 case "Swap Trap":
+                    SendTrapLink();
                     if (FPPlayerPatcher.player != null)
                         FPPlayerPatcher.SwapTrap();
                     else
@@ -729,21 +731,25 @@ namespace Freedom_Planet_2_Archipelago
                     break;
 
                 case "Mirror Trap":
+                    SendTrapLink();
                     Plugin.MirrorTrapTimer += 30f * item.Value;
                     Plugin.save.MirrorTrapCount += item.Value;
                     break;
 
                 case "PowerPoint Trap":
+                    SendTrapLink();
                     Plugin.PowerPointTrapTimer += 30f * item.Value;
                     Plugin.save.PowerPointTrapCount += item.Value;
                     break;
 
                 case "Zoom Trap":
+                    SendTrapLink();
                     Plugin.ZoomTrapTimer += 30f * item.Value;
                     Plugin.save.ZoomTrapCount += item.Value;
                     break;
 
                 case "Pie Trap":
+                    SendTrapLink();
                     // Increment the trap count in the save.
                     Plugin.save.PieTrapCount += item.Value;
 
@@ -763,6 +769,7 @@ namespace Freedom_Planet_2_Archipelago
                     break;
 
                 case "Spring Trap":
+                    SendTrapLink();
                     // Increment the trap count in the save.
                     Plugin.save.SpringTrapCount += item.Value;
 
@@ -794,6 +801,7 @@ namespace Freedom_Planet_2_Archipelago
                     break;
 
                 case "Aaa Trap":
+                    SendTrapLink();
                     // Increment the trap count in the save.
                     Plugin.save.AaaTrapCount += item.Value;
 
@@ -819,6 +827,7 @@ namespace Freedom_Planet_2_Archipelago
                     break;
 
                 case "Spike Ball Trap":
+                    SendTrapLink();
                     Plugin.save.SpikeBallTrapCount += item.Value;
                     // Check that the player exists and that the stage has finished registering its objects.
                     if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
@@ -840,11 +849,13 @@ namespace Freedom_Planet_2_Archipelago
                     break;
 
                 case "Pixellation Trap":
+                    SendTrapLink();
                     Plugin.PixellationTrapTimer += 30f * item.Value;
                     Plugin.save.PixellationTrapCount += item.Value;
                     break;
 
                 case "Rail Trap":
+                    SendTrapLink();
                     Plugin.RailTrap = true;
                     Plugin.save.RailTrapCount += item.Value;
                     break;
@@ -957,6 +968,26 @@ namespace Freedom_Planet_2_Archipelago
                             break;
                     }
                 }
+            }
+
+            void SendTrapLink()
+            {
+                // If we don't have TrapLink enabled or we're doing the initial connection, then don't send any TrapLink packets.
+                if ((long)Plugin.slotData["trap_link"] == 0 || fromStart)
+                    return;
+
+                // Create a packet for this TrapLink and send it out.
+                BouncePacket packet = new()
+                {
+                    Tags = ["TrapLink"],
+                    Data = new()
+                        {
+                            { "time", (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds },
+                            { "source", Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot) },
+                            { "trap_name", item.Key.ItemName }
+                        }
+                };
+                Plugin.session.Socket.SendPacket(packet);
             }
         }
 

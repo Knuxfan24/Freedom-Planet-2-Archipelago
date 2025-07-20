@@ -267,12 +267,16 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             if ((long)Plugin.slotData["death_link"] != 0)
                 Plugin.DeathLink.EnableDeathLink();
 
-            // Setup and enable RingLink receiving if its enabled in the slot data.
+            // Add the RingLink tag if its enabled in our slot data.
             if ((long)Plugin.slotData["ring_link"] != 0)
-            {
                 Plugin.session.ConnectionInfo.UpdateConnectionOptions([.. Plugin.session.ConnectionInfo.Tags, .. new string[1] { "RingLink" }]);
-                Plugin.session.Socket.PacketReceived += SocketEvents.Socket_RingLinkPacket;
-            }
+
+            // Add the TrapLink tag if its enabled in our slot data.
+            if ((long)Plugin.slotData["trap_link"] != 0)
+                Plugin.session.ConnectionInfo.UpdateConnectionOptions([.. Plugin.session.ConnectionInfo.Tags, .. new string[1] { "TrapLink" }]);
+
+            // Set up the socket events.
+            Plugin.session.Socket.PacketReceived += SocketEvents.Socket_LinkPackets;
 
             #region Archipelago Save Setup/Loading
             // Check if we don't already have a save for this seed.
