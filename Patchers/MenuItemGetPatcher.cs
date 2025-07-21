@@ -11,9 +11,9 @@
         {
             // Send the location based on the shop type.
             if (__instance.powerup != FPPowerup.NONE)
-                Plugin.session.Locations.CompleteLocationChecks(Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"Milla Shop Item {(int)__instance.powerup - 1}"));
+                Plugin.session.Locations.CompleteLocationChecks(Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"Milla Shop Item {(int)__instance.powerup - 1}"));
             else
-                Plugin.session.Locations.CompleteLocationChecks(Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"Vinyl Shop Item {__instance.musicID}"));
+                Plugin.session.Locations.CompleteLocationChecks(Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"Vinyl Shop Item {__instance.musicID}"));
 
             // Set the item name to the one stored in the Menu Shop Patcher.
             ___itemName.GetComponent<TextMesh>().text = MenuShopPatcher.SelectedItemName;

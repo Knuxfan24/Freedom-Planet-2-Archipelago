@@ -77,7 +77,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             {
                 // Loop through and get the location indices for this shop.
                 for (int itemIndex = 1; itemIndex <= itemCount; itemIndex++)
-                    locationIDs.Add(Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{shop} Shop Item {itemIndex}"));
+                    locationIDs.Add(Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{shop} Shop Item {itemIndex}"));
 
                 // Scout the locations for this shop.
                 Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfo, [.. locationIDs]);
@@ -105,7 +105,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                     // Loop through and get the location indices for this shop's hints.
                     for (int hintIndex = 1; hintIndex <= hintableItems; hintIndex++)
-                        locationIDs.Add(Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{shop} Shop Item {hintIndex}"));
+                        locationIDs.Add(Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{shop} Shop Item {hintIndex}"));
 
                     // Scout for the hints for these locations.
                     // TODO: If an item is purchased before being hinted for, then it makes the hint each time despite the annouce setting. MultiClient bug?
@@ -230,7 +230,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Check if this item is for Freedom Planet 2.
                 // If so, then either read the game's own descriptions, or read my own.
-                if (location.ItemGame == "Manual_FreedomPlanet2_Knuxfan24")
+                if (location.ItemGame == "Freedom Planet 2")
                 {
                     switch (location.ItemName)
                     {

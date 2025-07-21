@@ -19,7 +19,7 @@ using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.0.3")]
+    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.1.0")]
     [BepInDependency("000.kuborro.libraries.fp2.fp2lib")]
     public class Plugin : BaseUnityPlugin
     {

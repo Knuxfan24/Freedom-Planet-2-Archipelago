@@ -669,7 +669,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 void EnemyLocations(string locationName)
                 {
                     // Get the index of the location for this enemy.
-                    long locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", locationName);
+                    long locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", locationName);
 
                     // Check if this location exists.
                     if (Helpers.CheckLocationExists(locationIndex))
@@ -693,24 +693,24 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 if (stageName == "The Battlesphere")
                 {
                     // Get and add the locations for each of the Battlesphere challenges.
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Beginner's Gauntlet"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Battlebot Battle Royale"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Hero Battle Royale"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Kalaw's Challenge"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Army of One"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Ring-Out Challenge"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Flip Fire Gauntlet"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Vanishing Maze"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Mondo Condo"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Birds of Prey"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Battlebot Revenge"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Mach Speed Melee"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Galactic Rumble"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Stop and Go"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Mecha Madness"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Rolling Thunder"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Blast from the Past"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", "Bubble Battle"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Beginner's Gauntlet"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Battlebot Battle Royale"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Hero Battle Royale"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Kalaw's Challenge"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Army of One"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Ring-Out Challenge"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Flip Fire Gauntlet"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Vanishing Maze"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Mondo Condo"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Birds of Prey"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Battlebot Revenge"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Mach Speed Melee"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Galactic Rumble"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Stop and Go"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Mecha Madness"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Rolling Thunder"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Blast from the Past"); AddLocation();
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Bubble Battle"); AddLocation();
 
                     // Enable the key counter and update its text.
                     KeyCounter.gameObject.SetActive(true);
@@ -724,18 +724,18 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 KeyCounter.gameObject.SetActive(false);
 
                 // Get the location index for this stage's clear check.
-                locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{stageName} - Clear");
+                locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{stageName} - Clear");
                 AddLocation();
 
                 // Loop through for the chests (we do up to 8 because Tidal Gate has that many).
                 for (int chestIndex = 0; chestIndex <= 8; chestIndex++)
                 {
                     // Get the location index for this chest index.
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{stageName} - Chest {chestIndex}");
+                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{stageName} - Chest {chestIndex}");
 
                     // If this index is 0, then check for Chest without a number (for stages with only a single chest).
                     if (chestIndex == 0)
-                        locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{stageName} - Chest");
+                        locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{stageName} - Chest");
 
                     AddLocation();
                 }

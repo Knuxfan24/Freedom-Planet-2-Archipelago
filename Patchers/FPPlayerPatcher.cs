@@ -146,7 +146,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 foreach (KeyValuePair<string, Vector2> entry in table)
                 {
                     // Get the index of the location for this chest.
-                    long locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", entry.Key);
+                    long locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", entry.Key);
 
                     // If this location exists and hasn't been checked, then increment the chest count and add the position to the list.
                     if (Helpers.CheckLocationExists(locationIndex) && !Plugin.session.Locations.AllLocationsChecked.Contains(locationIndex))

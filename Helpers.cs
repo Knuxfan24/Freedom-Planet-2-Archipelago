@@ -89,7 +89,7 @@ namespace Freedom_Planet_2_Archipelago
             }
 
             // Check if this item is for Freedom Planet 2.
-            if (scoutedLocationInfo.Player.Game == "Manual_FreedomPlanet2_Knuxfan24")
+            if (scoutedLocationInfo.Player.Game == "Freedom Planet 2")
             {
                 switch (scoutedLocationInfo.ItemName)
                 {

@@ -54,7 +54,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
             // Scout the clear location for this stage.
             ScoutedItemInfo _scoutedLocationInfo = null;
-            Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfo, [Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", $"{stageName} - Clear")]);
+            Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfo, [Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{stageName} - Clear")]);
 
             // Pause operation until the location is scouted.
             while (_scoutedLocationInfo == null)

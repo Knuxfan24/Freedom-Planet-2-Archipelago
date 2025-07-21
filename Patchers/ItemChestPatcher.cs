@@ -264,7 +264,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             }
 
             // Return the index of this chest's location.
-            return Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", chestPosition.Key);
+            return Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", chestPosition.Key);
         }
     }
 }

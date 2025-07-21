@@ -220,7 +220,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
 
             // Create the session and try to connect.
             Plugin.session = ArchipelagoSessionFactory.CreateSession(serverAddress);
-            LoginResult connectionResult = Plugin.session.TryConnectAndLogin("Manual_FreedomPlanet2_Knuxfan24", slotName, Archipelago.MultiClient.Net.Enums.ItemsHandlingFlags.AllItems, null, null, null, password, true);
+            LoginResult connectionResult = Plugin.session.TryConnectAndLogin("Freedom Planet 2", slotName, Archipelago.MultiClient.Net.Enums.ItemsHandlingFlags.AllItems, null, null, null, password, true);
 
             // Check if the connection failed.
             if (!connectionResult.Successful)

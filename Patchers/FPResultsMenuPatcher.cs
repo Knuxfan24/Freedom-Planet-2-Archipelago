@@ -98,7 +98,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 return;
 
             // Get the index of the location for this stage clear.
-            long locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", locationName);
+            long locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", locationName);
 
             // If this location exists, then complete the check of it.
             if (Helpers.CheckLocationExists(locationIndex))

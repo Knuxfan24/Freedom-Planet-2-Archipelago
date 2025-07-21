@@ -162,7 +162,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         static void SendEnemyCheck(string enemyName)
         {
             // Get the location for this boss type.
-            long locationIndex = Plugin.session.Locations.GetLocationIdFromName("Manual_FreedomPlanet2_Knuxfan24", enemyName);
+            long locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", enemyName);
 
             // Complete this location check if it exists.
             if (Helpers.CheckLocationExists(locationIndex) && !Plugin.session.Locations.AllLocationsChecked.Contains(locationIndex))
