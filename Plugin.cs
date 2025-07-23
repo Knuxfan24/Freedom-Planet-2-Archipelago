@@ -34,6 +34,9 @@ namespace Freedom_Planet_2_Archipelago
         public static ConfigEntry<string> configSlotName;
         public static ConfigEntry<string> configPassword;
         public static ConfigEntry<int> configCharacter;
+        public static ConfigEntry<long> configDeathLinkOverride;
+        public static ConfigEntry<long> configRingLinkOverride;
+        public static ConfigEntry<long> configTrapLinkOverride;
 
         // The AP session's data.
         public static ArchipelagoSession session;
@@ -150,6 +153,31 @@ namespace Freedom_Planet_2_Archipelago
                                           "Character Index",
                                           0,
                                           "The index of the character that was selected for the last connection.");
+
+            configDeathLinkOverride = Config.Bind("Overrides",
+                                                  "DeathLink",
+                                                  -1L,
+                                                  "Overrides the DeathLink setting in the player YAML.\r\n" +
+                                                  "-1: No Override\r\n" +
+                                                  "0: Disabled\r\n" +
+                                                  "1: Enabled\r\n" +
+                                                  "2: Enable Survive");
+
+            configRingLinkOverride = Config.Bind("Overrides",
+                                                 "RingLink",
+                                                 -1L,
+                                                 "Overrides the RingLink setting in the player YAML.\r\n" +
+                                                 "-1: No Override\r\n" +
+                                                 "0: Disabled\r\n" +
+                                                 "1: Enabled");
+
+            configTrapLinkOverride = Config.Bind("Overrides",
+                                                 "TrapLink",
+                                                 -1L,
+                                                 "Overrides the TrapLink setting in the player YAML.\r\n" +
+                                                 "-1: No Override\r\n" +
+                                                 "0: Disabled\r\n" +
+                                                 "1: Enabled");
 
             // Load our asset bundle.
             apAssetBundle = AssetBundle.LoadFromFile($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets");

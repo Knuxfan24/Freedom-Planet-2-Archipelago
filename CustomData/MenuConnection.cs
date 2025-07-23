@@ -249,6 +249,11 @@ namespace Freedom_Planet_2_Archipelago.CustomData
 
             // Get the slot data.
             Plugin.slotData = connectionSuccess.SlotData;
+
+            // Overwrite the link values in the slot data if we need to.
+            if (Plugin.configDeathLinkOverride.Value != -1) Plugin.slotData["death_link"] = Plugin.configDeathLinkOverride.Value;
+            if (Plugin.configRingLinkOverride.Value != -1) Plugin.slotData["ring_link"] = Plugin.configRingLinkOverride.Value;
+            if (Plugin.configTrapLinkOverride.Value != -1) Plugin.slotData["trap_link"] = Plugin.configTrapLinkOverride.Value;
             
             // If the plugin is compiled in Debug Mode, then print all the slot data to the log.
             #if DEBUG
