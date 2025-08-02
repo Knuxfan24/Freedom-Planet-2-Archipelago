@@ -161,6 +161,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// </summary>
         static void SendEnemyCheck(string enemyName)
         {
+            // Check if we've already handled this enemy's location.
+            if (Plugin.save.EnemySanityIDs.ContainsKey(enemyName))
+                return;
+
             // Get the location for this boss type.
             long locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", enemyName);
 
@@ -180,6 +184,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 // Add a message to the queue if this item is for someone else.
                 if (_scoutedLocationInfo.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
                     Plugin.sentMessageQueue.Add($"Found {_scoutedLocationInfo.Player.Name}'s {_scoutedLocationInfo.ItemName}.");
+
+                // Save this location so we don't check it multiple times.
+                Plugin.save.EnemySanityIDs.Add(enemyName, locationIndex);
 
                 void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _scoutedLocationInfo = scoutedLocationInfo.First().Value;
             }

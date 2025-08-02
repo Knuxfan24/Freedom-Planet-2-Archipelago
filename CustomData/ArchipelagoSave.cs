@@ -129,6 +129,11 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         public bool[] Potions { get; set; } = new bool[9];
 
         /// <summary>
+        /// Dictionary of enemy sanity names and IDs.
+        /// </summary>
+        public Dictionary<string, long> EnemySanityIDs { get; set; } = [];
+
+        /// <summary>
         /// Whether or not the Serpentine lines for Weapon's Core being unlocked have played.
         /// </summary>
         public bool WeaponsCoreAccess { get; set; }
