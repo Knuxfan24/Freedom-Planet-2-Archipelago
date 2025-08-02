@@ -245,6 +245,15 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Hide the key counter.
             KeyCounter.gameObject.SetActive(false);
             #endregion
+
+            // Remove the two tutorial panels.
+            __instance.stages[31].icon.gameObject.SetActive(false);
+            __instance.stages[33].icon.gameObject.SetActive(false);
+
+            // Remove any custom stage panels.
+            if (__instance.stages.Length > 34)
+                for (int extraStageIndex = 34; extraStageIndex < __instance.stages.Length; extraStageIndex++)
+                    __instance.stages[extraStageIndex].icon.gameObject.SetActive(false);
         }
 
         /// <summary>
