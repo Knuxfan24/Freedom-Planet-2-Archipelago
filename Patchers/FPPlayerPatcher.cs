@@ -85,13 +85,22 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// </summary>
         public static void CreateChestTracers()
         {
+            // Flag to check if tracers should be hidden upon creation.
+            bool shouldKeepHidden = false;
+
             // Only do this if we actually have chest tracers enabled.
             if ((long)Plugin.slotData["chest_tracers"] == 0)
                 return;
 
             // Destroy each active tracer then clear the list of them.
+            // Also checks if the hidden flag should be set.
             foreach (GameObject tracer in chestTracers)
+            {
+                if (!tracer.activeSelf)
+                    shouldKeepHidden = true;
+
                 GameObject.Destroy(tracer);
+            }
             chestTracers.Clear();
 
             // Set up a list to hold the chest locations.
@@ -136,6 +145,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 ChestTracer tracerScript = tracerPrefab.AddComponent<ChestTracer>();
                 tracerScript.targetPosition = location;
 
+                // Hide the tracer if we need to.
+                if (shouldKeepHidden)
+                    tracerPrefab.SetActive(false);
+
                 // Add this tracer to the list of tracers.
                 chestTracers.Add(tracerPrefab);
             }
@@ -150,9 +163,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                     // If this location exists and hasn't been checked, then increment the chest count and add the position to the list.
                     if (Helpers.CheckLocationExists(locationIndex) && !Plugin.session.Locations.AllLocationsChecked.Contains(locationIndex))
-                    {
                         locations.Add(entry.Value);
-                    }
                 }
             }
         }
@@ -166,7 +177,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         {
             // Check for the F9 key or Select button (which is frustratingly mapped to pause by default).
             if (Input.GetKeyDown(KeyCode.F9) || Input.GetKeyDown("joystick 1 button 8"))
-                foreach (var tracer in chestTracers)
+                foreach (GameObject tracer in chestTracers)
                     tracer.transform.GetChild(0).gameObject.SetActive(!tracer.transform.GetChild(0).gameObject.activeSelf);
         }
 
