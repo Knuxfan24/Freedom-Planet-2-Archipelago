@@ -234,7 +234,7 @@ namespace Freedom_Planet_2_Archipelago
                         case "Flip Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                         case "Freeze Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Frozen Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                        case "Fuzzy Trap": AddTrap(bouncedPacket, "Zoom Trap"); break; // Doesn't have a source or effect listed on the sheet? Thinking of Yoshi's Island?
+                        case "Fuzzy Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break; // Doesn't have a source or effect listed on the sheet? Thinking of Yoshi's Island?
                         case "Get Out Trap": AddTrap(bouncedPacket, "Time Limit", true); break;
                         case "Ghost": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "Ghost Chat": AddTrap(bouncedPacket, "Aaa Trap"); break;
