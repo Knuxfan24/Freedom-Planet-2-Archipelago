@@ -175,36 +175,36 @@ namespace Freedom_Planet_2_Archipelago
                     {
                         // Brave Stones.
                         case "Double Damage":
-                            AddTrap(bouncedPacket, "Double Damage", true);
+                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Double Damage", true);
                             break;
                         case "Expensive Stocks":
-                            AddTrap(bouncedPacket, "Expensive Stocks", true);
+                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Expensive Stocks", true);
                             break;
                         case "Items To Bombs":
-                            AddTrap(bouncedPacket, "Items To Bombs", true);
+                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Items To Bombs", true);
                             break;
                         case "Life Oscillation":
                         case "Poison Trap": // SA2B
-                            AddTrap(bouncedPacket, "Life Oscillation", true);
+                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Life Oscillation", true);
                             break;
                         case "No Guarding":
-                            AddTrap(bouncedPacket, "No Guarding", true);
+                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Guarding", true);
                             break;
                         case "No Petals":
-                            AddTrap(bouncedPacket, "No Petals", true);
+                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Petals", true);
                             break;
                         case "No Revivals":
-                            AddTrap(bouncedPacket, "No Revivals", true);
+                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Revivals", true);
                             break;
                         case "No Stocks":
-                            AddTrap(bouncedPacket, "No Stocks", true);
+                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Stocks", true);
                             break;
                         case "One Hit KO":
-                            AddTrap(bouncedPacket, "One Hit KO", true);
+                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "One Hit KO", true);
                             break;
                         case "Time Limit":
                         case "Timer Trap": // SMW
-                            AddTrap(bouncedPacket, "Time Limit", true);
+                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Time Limit", true);
                             break;
 
                         // Actual Traps.
@@ -264,6 +264,8 @@ namespace Freedom_Planet_2_Archipelago
                         case "Controller Drift Trap": // SA2B
                             AddTrap(bouncedPacket, "Rail Trap");
                             break;
+
+                        default: Plugin.consoleLog.LogInfo($"No trap matchup found for {bouncedPacket.Data["source"]}'s {bouncedPacket.Data["trap_name"]}!"); break;
                     }
 
                     if (received)
