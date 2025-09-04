@@ -170,100 +170,128 @@ namespace Freedom_Planet_2_Archipelago
                     bool received = false;
 
                     // Handle the traps and what they should link to.
-                    // TODO: SA2B's minigame traps don't have a matchup here.
                     switch (bouncedPacket.Data["trap_name"].ToObject<string>())
                     {
                         // Brave Stones.
-                        case "Double Damage":
-                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Double Damage", true);
-                            break;
-                        case "Expensive Stocks":
-                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Expensive Stocks", true);
-                            break;
-                        case "Items To Bombs":
-                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Items To Bombs", true);
-                            break;
-                        case "Life Oscillation":
-                        case "Poison Trap": // SA2B
-                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Life Oscillation", true);
-                            break;
-                        case "No Guarding":
-                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Guarding", true);
-                            break;
-                        case "No Petals":
-                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Petals", true);
-                            break;
-                        case "No Revivals":
-                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Revivals", true);
-                            break;
-                        case "No Stocks":
-                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Stocks", true);
-                            break;
-                        case "One Hit KO":
-                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "One Hit KO", true);
-                            break;
-                        case "Time Limit":
-                        case "Timer Trap": // SMW
-                            if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Time Limit", true);
-                            break;
+                        case "Double Damage": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Double Damage", true); break;
+                        case "Expensive Stocks": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Expensive Stocks", true); break;
+                        case "Items To Bombs": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Items To Bombs", true); break;
+                        case "Life Oscillation": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Life Oscillation", true); break;
+                        case "No Guarding": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Guarding", true); break;
+                        case "No Petals": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Petals", true); break;
+                        case "No Revivals": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Revivals", true); break;
+                        case "No Stocks": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Stocks", true); break;
+                        case "One Hit KO": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "One Hit KO", true); break;
+                        case "Time Limit": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Time Limit", true); break;
 
-                        // Actual Traps.
-                        case "Swap Trap":
-                            AddTrap(bouncedPacket, "Swap Trap", true);
-                            break;
+                        // FP2 Traps.
+                        case "Swap Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
+                        case "Mirror Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                        case "Pie Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "Spring Trap": AddTrap(bouncedPacket, "Spring Trap", true); break;
+                        case "PowerPoint Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Zoom Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
+                        case "Aaa Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        case "Spike Ball Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                        case "Pixellation Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
+                        case "Rail Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
 
-                        case "Mirror Trap":
-                        case "Confusion Trap": // SA2B
-                        case "Reverse Trap": // SMW, SADX and SA2B
-                            AddTrap(bouncedPacket, "Mirror Trap");
-                            break;
-
-                        case "Pie Trap":
-                        case "Chaos Control Trap": // SA2B
-                        case "Gravity Trap": // SA2B and SADX
-                        case "Stun Trap": // SMW
-                        case "Ice Trap": // SMW (although that one is ice physics rather than freezing in place), SADX and SA2B
-                            AddTrap(bouncedPacket, "Pie Trap", true);
-                            break;
-
-                        case "Spring Trap":
-                            AddTrap(bouncedPacket, "Spring Trap", true);
-                            break;
-
-                        case "PowerPoint Trap":
-                        case "Slow Trap": // SA2B
-                            AddTrap(bouncedPacket, "PowerPoint Trap");
-                            break;
-
-                        case "Zoom Trap":
-                        case "Tiny Trap": // SA2B
-                        case "Bee Trap": // SA2B
-                            AddTrap(bouncedPacket, "Zoom Trap");
-                            break;
-
-                        case "Aaa Trap":
-                        case "OmoTrap": // SA2B
-                        case "Exposition Trap": // SA2B
-                        case "Cutscene Trap": // SA2B
-                        case "Literature Trap": // SMW and SA2B
-                            AddTrap(bouncedPacket, "Aaa Trap");
-                            break;
-
-                        case "Spike Ball Trap":
-                        case "Thwimp Trap": // SMW
-                        case "Police Trap": // SADX
-                        case "Buyon Trap": // SADX
-                            AddTrap(bouncedPacket, "Spike Ball Trap", true);
-                            break;
-
-                        case "Pixellation Trap":
-                            AddTrap(bouncedPacket, "Pixellation Trap");
-                            break;
-
-                        case "Rail Trap":
-                        case "Controller Drift Trap": // SA2B
-                            AddTrap(bouncedPacket, "Rail Trap");
-                            break;
+                        // None FP2 Based Traps, sourced from https://docs.google.com/spreadsheets/d/1yoNilAzT5pSU9c2hYK7f2wHAe9GiWDiHFZz8eMe1oeQ/edit?gid=811965759#gid=811965759.
+                        // Commented out ones are ones that I couldn't think of a good match up for.
+                        //case "Animal Bonus Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Army Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                        //case "Bald Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Banana Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "Bee Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
+                        case "Blue Balls Curse": AddTrap(bouncedPacket, "One Hit KO", true); break;
+                        case "Bomb": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                        case "Bonk Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        //case "Breakout Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Bubble Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "Buyon Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                        case "Chaos Control Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "Confound Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
+                        case "Confuse Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
+                        case "Confusion Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
+                        case "Controller Drift Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
+                        case "Cutscene Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        case "Damage Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
+                        case "Deisometric Trap": AddTrap(bouncedPacket, "Mirror Trap"); break; // Zoom Trap could also work for this? Randomly select?
+                        //case "Depletion Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Disable A Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
+                        case "Disable B Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
+                        case "Disable C Up Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
+                        case "Disable Z Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
+                        case "Dry Trap": AddTrap(bouncedPacket, "No Stocks", true); break;
+                        case "Eject Ability": AddTrap(bouncedPacket, "Swap Trap", true); break;
+                        case "Electrocution Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
+                        case "Exposition Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        case "Fake Transition": AddTrap(bouncedPacket, "Zoom Trap"); break;
+                        case "Fast Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
+                        case "Fear Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
+                        case "Fire Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
+                        //case "Fishing Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Flip Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                        case "Freeze Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "Frozen Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "Fuzzy Trap": AddTrap(bouncedPacket, "Zoom Trap"); break; // Doesn't have a source or effect listed on the sheet? Thinking of Yoshi's Island?
+                        case "Get Out Trap": AddTrap(bouncedPacket, "Time Limit", true); break;
+                        case "Ghost": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                        case "Ghost Chat": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        //case "Gooey Bag": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        //case "Gravity Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break; // Will be a good fit if I readd the Moon Gravity Trap at some point.
+                        case "Hiccup Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        //case "Home Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Honey Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
+                        case "Ice Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "Input Sequence Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "Instant Death Trap": AddTrap(bouncedPacket, "One Hit KO", true); break;
+                        //case "Invisible Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        //case "Iron Boots Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break; // Will be a good fit if I readd the Gravity Trap at some point.
+                        //case "Jump Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        //case "Jumping Jacks Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Laughter Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        //case "Light Up Path Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Literature Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        //case "Math Quiz Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Meteor Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                        case "My Turn! Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                        case "No Vac Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
+                        //case "Number Sequence Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Nut Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                        case "OmoTrap": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        case "Paralyze Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "Phone Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        //case "Pinball Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Poison Mushroom": AddTrap(bouncedPacket, "Zoom Trap"); break;
+                        case "Poison Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
+                        //case "Pokemon Count Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        //case "Pokemon Trivia Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Police Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                        //case "PONG Challenge": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        //case "Pong Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Posession Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
+                        case "Push Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
+                        case "Reversal Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                        case "Reverse Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                        case "Screen Flip Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                        case "Slow Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Slowness Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        //case "Snake Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Spooky Time": AddTrap(bouncedPacket, "Zoom Trap"); break;
+                        case "Squash Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        //case "Sticky Floor Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "Stun Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "SvC Effect": AddTrap(bouncedPacket, "PowerPoint Trap"); break; // A lot of the minor traps would be good for this. Randomise?
+                        case "Thwimp Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                        case "Timer Trap": AddTrap(bouncedPacket, "Time Limit", true); break;
+                        case "Tiny Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
+                        case "TNT Barrel Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                        //case "Trivia Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        //case "Tutorial Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        //case "UNO Challenge": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                        case "W I D E Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
+                        //case "Whoops! Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
 
                         default: Plugin.consoleLog.LogInfo($"No trap matchup found for {bouncedPacket.Data["source"]}'s {bouncedPacket.Data["trap_name"]}!"); break;
                     }
