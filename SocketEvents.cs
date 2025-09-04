@@ -170,54 +170,90 @@ namespace Freedom_Planet_2_Archipelago
                     bool received = false;
 
                     // Handle the traps and what they should link to.
-                    // TODO: Trap Brave Stones as well? A couple of traps could map better to those.
+                    // TODO: SA2B's minigame traps don't have a matchup here.
                     switch (bouncedPacket.Data["trap_name"].ToObject<string>())
                     {
+                        // Brave Stones.
+                        case "Double Damage":
+                            AddTrap(bouncedPacket, "Double Damage", true);
+                            break;
+                        case "Expensive Stocks":
+                            AddTrap(bouncedPacket, "Expensive Stocks", true);
+                            break;
+                        case "Items To Bombs":
+                            AddTrap(bouncedPacket, "Items To Bombs", true);
+                            break;
+                        case "Life Oscillation":
+                        case "Poison Trap": // SA2B
+                            AddTrap(bouncedPacket, "Life Oscillation", true);
+                            break;
+                        case "No Guarding":
+                            AddTrap(bouncedPacket, "No Guarding", true);
+                            break;
+                        case "No Petals":
+                            AddTrap(bouncedPacket, "No Petals", true);
+                            break;
+                        case "No Revivals":
+                            AddTrap(bouncedPacket, "No Revivals", true);
+                            break;
+                        case "No Stocks":
+                            AddTrap(bouncedPacket, "No Stocks", true);
+                            break;
+                        case "One Hit KO":
+                            AddTrap(bouncedPacket, "One Hit KO", true);
+                            break;
+                        case "Time Limit":
+                        case "Timer Trap": // SMW
+                            AddTrap(bouncedPacket, "Time Limit", true);
+                            break;
+
+                        // Actual Traps.
                         case "Swap Trap":
-                            if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
-                                AddTrap(bouncedPacket, "Swap Trap");
+                            AddTrap(bouncedPacket, "Swap Trap", true);
                             break;
 
                         case "Mirror Trap":
-                        case "Confusion Trap": // Sonic Adventure 2
-                        case "Reverse Trap": // Super Mario World, Sonic Adventure DX and Sonic Adventure 2
+                        case "Confusion Trap": // SA2B
+                        case "Reverse Trap": // SMW, SADX and SA2B
                             AddTrap(bouncedPacket, "Mirror Trap");
                             break;
 
                         case "Pie Trap":
-                        case "Chaos Control Trap": // Sonic Adventure 2
-                        case "Stun Trap": // Super Mario World
-                            if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
-                                AddTrap(bouncedPacket, "Pie Trap");
+                        case "Chaos Control Trap": // SA2B
+                        case "Gravity Trap": // SA2B and SADX
+                        case "Stun Trap": // SMW
+                        case "Ice Trap": // SMW (although that one is ice physics rather than freezing in place), SADX and SA2B
+                            AddTrap(bouncedPacket, "Pie Trap", true);
                             break;
 
                         case "Spring Trap":
-                            if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
-                                AddTrap(bouncedPacket, "Spring Trap");
+                            AddTrap(bouncedPacket, "Spring Trap", true);
                             break;
 
                         case "PowerPoint Trap":
+                        case "Slow Trap": // SA2B
                             AddTrap(bouncedPacket, "PowerPoint Trap");
                             break;
 
                         case "Zoom Trap":
+                        case "Tiny Trap": // SA2B
+                        case "Bee Trap": // SA2B
                             AddTrap(bouncedPacket, "Zoom Trap");
                             break;
 
                         case "Aaa Trap":
-                        case "OmoTrap": // Sonic Adventure 2
-                        case "Exposition Trap": // Sonic Adventure 2
-                        case "Cutscene Trap": // Sonic Adventure 2
-                        case "Literature Trap": // Super Mario World and Sonic Adventure 2
+                        case "OmoTrap": // SA2B
+                        case "Exposition Trap": // SA2B
+                        case "Cutscene Trap": // SA2B
+                        case "Literature Trap": // SMW and SA2B
                             AddTrap(bouncedPacket, "Aaa Trap");
                             break;
 
                         case "Spike Ball Trap":
-                        case "Thwimp Trap": // Super Mario World
-                        case "Police Trap": // Sonic Adventure DX
-                        case "Buyon Trap": // Sonic Adventure DX
-                            if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
-                                AddTrap(bouncedPacket, "Spike Ball Trap");
+                        case "Thwimp Trap": // SMW
+                        case "Police Trap": // SADX
+                        case "Buyon Trap": // SADX
+                            AddTrap(bouncedPacket, "Spike Ball Trap", true);
                             break;
 
                         case "Pixellation Trap":
@@ -225,7 +261,7 @@ namespace Freedom_Planet_2_Archipelago
                             break;
 
                         case "Rail Trap":
-                        case "Ice Trap": // Super Mario World, Sonic Adventure DX and Sonic Adventure 2
+                        case "Controller Drift Trap": // SA2B
                             AddTrap(bouncedPacket, "Rail Trap");
                             break;
                     }
@@ -233,11 +269,16 @@ namespace Freedom_Planet_2_Archipelago
                     if (received)
                         Plugin.sentMessageQueue.Add($"{bouncedPacket.Data["source"]} linked a {bouncedPacket.Data["trap_name"]}!");
 
-                    void AddTrap(BouncedPacket bouncedPacket, string trapName)
+                    void AddTrap(BouncedPacket bouncedPacket, string trapName, bool requiresPlayer = false)
                     {
+                        // If this trap requires a player, then check for one and don't add it if they don't exist.
+                        if (requiresPlayer && (FPPlayerPatcher.player == null || !FPStage.objectsRegistered))
+                            return;
+
                         Plugin.TrapLinks.Add(new ArchipelagoItem(trapName, bouncedPacket.Data["source"].ToObject<string>()));
                         received = true;
                     }
+
                     break;
             }  
 

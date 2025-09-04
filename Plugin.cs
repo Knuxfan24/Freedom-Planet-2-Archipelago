@@ -458,7 +458,7 @@ namespace Freedom_Planet_2_Archipelago
 
             if (TrapLinks.Count > 0)
             {
-                Helpers.HandleItem(new(TrapLinks[0], 1));
+                Helpers.HandleItem(new(TrapLinks[0], 1), false, true);
                 TrapLinks.RemoveAt(0);
             }
 

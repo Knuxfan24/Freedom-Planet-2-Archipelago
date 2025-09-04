@@ -259,6 +259,10 @@ namespace Freedom_Planet_2_Archipelago
         /// </summary>
         public static void HandleStartItems()
         {
+            // Reset the item expansions so we don't accidentally get the second ones out of nowhere.
+            FPSaveManager.potionSlotExpansionLevel = 0;
+            FPSaveManager.itemSlotExpansionLevel = 0;
+
             // If we're not using the open mode, then unlock Dragon Valley and Shenlin Park.
             if ((long)Plugin.slotData["chapters"] != 2)
             {
@@ -427,7 +431,8 @@ namespace Freedom_Planet_2_Archipelago
         /// </summary>
         /// <param name="item">The information on this item and the quantity.</param>
         /// <param name="fromStart">Whether we're running this from the initial connection, used to stop TrapLinks.</param>
-        public static void HandleItem(KeyValuePair<ArchipelagoItem, int> item, bool fromStart = false)
+        /// <param name="trapLink">Whether or not this item came from a TrapLink.</param>
+        public static void HandleItem(KeyValuePair<ArchipelagoItem, int> item, bool fromStart = false, bool trapLink = false)
         {
             switch (item.Key.ItemName)
             {
@@ -699,17 +704,57 @@ namespace Freedom_Planet_2_Archipelago
                 case "Water Charm": Plugin.save.BraveStones[14] = true; break;
                 case "Wood Charm": Plugin.save.BraveStones[12] = true; break;
 
-                // Trap Brave Stones, which set their value in the array and auto apply to the player if the option is set in the slot data.
-                case "Double Damage": Plugin.save.BraveStones[20] = true; SetTrapBraveStone(FPPowerup.DOUBLE_DAMAGE); break;
-                case "Expensive Stocks": Plugin.save.BraveStones[19] = true; SetTrapBraveStone(FPPowerup.EXPENSIVE_STOCKS); break;
-                case "Items To Bombs": Plugin.save.BraveStones[26] = true; SetTrapBraveStone(FPPowerup.ITEMS_TO_BOMBS); break;
-                case "Life Oscillation": Plugin.save.BraveStones[27] = true; SetTrapBraveStone(FPPowerup.BIPOLAR_LIFE); break;
-                case "No Guarding": Plugin.save.BraveStones[22] = true; SetTrapBraveStone(FPPowerup.NO_GUARDING); break;
-                case "No Petals": Plugin.save.BraveStones[23] = true; SetTrapBraveStone(FPPowerup.NO_PETALS); break;
-                case "No Revivals": Plugin.save.BraveStones[21] = true; SetTrapBraveStone(FPPowerup.NO_REVIVALS); break;
-                case "No Stocks": Plugin.save.BraveStones[18] = true; SetTrapBraveStone(FPPowerup.STOCK_DRAIN); break;
-                case "One Hit KO": Plugin.save.BraveStones[28] = true; SetTrapBraveStone(FPPowerup.ONE_HIT_KO); break;
-                case "Time Limit": Plugin.save.BraveStones[24] = true; SetTrapBraveStone(FPPowerup.TIME_LIMIT); break;
+                // Trap Brave Stones, which set their value in the array (assuming it isn't from a TrapLink) and auto apply to the player if the option is set in the slot data.
+                case "Double Damage":
+                    if (!trapLink) Plugin.save.BraveStones[20] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone(FPPowerup.DOUBLE_DAMAGE);
+                    break;
+                case "Expensive Stocks":
+                    if (!trapLink) Plugin.save.BraveStones[19] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone(FPPowerup.EXPENSIVE_STOCKS);
+                    break;
+                case "Items To Bombs":
+                    if (!trapLink) Plugin.save.BraveStones[26] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone(FPPowerup.ITEMS_TO_BOMBS);
+                    break;
+                case "Life Oscillation":
+                    if (!trapLink) Plugin.save.BraveStones[27] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone(FPPowerup.BIPOLAR_LIFE);
+                    break;
+                case "No Guarding":
+                    if (!trapLink) Plugin.save.BraveStones[22] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone(FPPowerup.NO_GUARDING);
+                    break;
+                case "No Petals":
+                    if (!trapLink) Plugin.save.BraveStones[23] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone(FPPowerup.NO_PETALS);
+                    break;
+                case "No Revivals":
+                    if (!trapLink) Plugin.save.BraveStones[21] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone(FPPowerup.NO_REVIVALS);
+                    break;
+                case "No Stocks":
+                    if (!trapLink) Plugin.save.BraveStones[18] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone(FPPowerup.STOCK_DRAIN);
+                    break;
+                case "One Hit KO":
+                    if (!trapLink) Plugin.save.BraveStones[28] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone(FPPowerup.ONE_HIT_KO);
+                    break;
+                case "Time Limit":
+                    if (!trapLink) Plugin.save.BraveStones[24] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone(FPPowerup.TIME_LIMIT);
+                    break;
 
                 // Potions, which just change the value of their index in the potion array.
                 case "Potion - Accelerator": Plugin.save.Potions[7] = true; break;
@@ -733,25 +778,25 @@ namespace Freedom_Planet_2_Archipelago
                 case "Mirror Trap":
                     SendTrapLink();
                     Plugin.MirrorTrapTimer += 30f * item.Value;
-                    Plugin.save.MirrorTrapCount += item.Value;
+                    if (!trapLink) Plugin.save.MirrorTrapCount += item.Value;
                     break;
 
                 case "PowerPoint Trap":
                     SendTrapLink();
                     Plugin.PowerPointTrapTimer += 30f * item.Value;
-                    Plugin.save.PowerPointTrapCount += item.Value;
+                    if (!trapLink) Plugin.save.PowerPointTrapCount += item.Value;
                     break;
 
                 case "Zoom Trap":
                     SendTrapLink();
                     Plugin.ZoomTrapTimer += 30f * item.Value;
-                    Plugin.save.ZoomTrapCount += item.Value;
+                    if (!trapLink) Plugin.save.ZoomTrapCount += item.Value;
                     break;
 
                 case "Pie Trap":
                     SendTrapLink();
                     // Increment the trap count in the save.
-                    Plugin.save.PieTrapCount += item.Value;
+                    if (!trapLink) Plugin.save.PieTrapCount += item.Value;
 
                     // Loop through to create as many pies as we received (for the lols).
                     for (int pieIndex = 0; pieIndex < item.Value; pieIndex++)
@@ -771,7 +816,7 @@ namespace Freedom_Planet_2_Archipelago
                 case "Spring Trap":
                     SendTrapLink();
                     // Increment the trap count in the save.
-                    Plugin.save.SpringTrapCount += item.Value;
+                    if (!trapLink) Plugin.save.SpringTrapCount += item.Value;
 
                     // Loop through to create as many springs as we received (for the lols).
                     for (int springIndex = 0; springIndex < item.Value; springIndex++)
@@ -803,7 +848,7 @@ namespace Freedom_Planet_2_Archipelago
                 case "Aaa Trap":
                     SendTrapLink();
                     // Increment the trap count in the save.
-                    Plugin.save.AaaTrapCount += item.Value;
+                    if (!trapLink) Plugin.save.AaaTrapCount += item.Value;
 
                     // Loop through based on the amount of traps.
                     for (int trapIndex = 0; trapIndex < item.Value; trapIndex++)
@@ -828,7 +873,7 @@ namespace Freedom_Planet_2_Archipelago
 
                 case "Spike Ball Trap":
                     SendTrapLink();
-                    Plugin.save.SpikeBallTrapCount += item.Value;
+                    if (!trapLink) Plugin.save.SpikeBallTrapCount += item.Value;
                     // Check that the player exists and that the stage has finished registering its objects.
                     if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
                     {
@@ -851,13 +896,13 @@ namespace Freedom_Planet_2_Archipelago
                 case "Pixellation Trap":
                     SendTrapLink();
                     Plugin.PixellationTrapTimer += 30f * item.Value;
-                    Plugin.save.PixellationTrapCount += item.Value;
+                    if (!trapLink) Plugin.save.PixellationTrapCount += item.Value;
                     break;
 
                 case "Rail Trap":
                     SendTrapLink();
                     Plugin.RailTrap = true;
-                    Plugin.save.RailTrapCount += item.Value;
+                    if (!trapLink) Plugin.save.RailTrapCount += item.Value;
                     break;
 
                 // Unhandled items, throw an error into the console.
@@ -899,8 +944,8 @@ namespace Freedom_Planet_2_Archipelago
 
             void SetTrapBraveStone(FPPowerup item)
             {
-                // Check that we have the trap brave stones option and that the player actually exists.
-                if ((long)Plugin.slotData["trap_stones"] != 0 && FPPlayerPatcher.player != null)
+                // Check that we have the trap brave stones option enabled or this was a TrapLink and that the player actually exists.
+                if (((long)Plugin.slotData["trap_stones"] != 0 || trapLink) && FPPlayerPatcher.player != null)
                 {
                     // If this Brave Stone is already equipped on the player, then don't add a second copy of it.
                     if (FPPlayerPatcher.player.powerups.Contains(item))
