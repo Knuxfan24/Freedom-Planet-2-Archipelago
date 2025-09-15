@@ -93,6 +93,10 @@ namespace Freedom_Planet_2_Archipelago
         private static readonly Queue<BouncePacket> BounceQueue = new Queue<BouncePacket>();
         private static readonly AutoResetEvent BounceSignal = new AutoResetEvent(false);
         private static Thread bounceThread;
+        
+        private static readonly Queue<LocationData> LocationQueue = new Queue<LocationData>();
+        private static readonly AutoResetEvent LocationSignal = new AutoResetEvent(false);
+        private static Thread locationThread;
 
         // Allow starting coroutines from static contexts.
         public static Plugin Instance;
@@ -295,12 +299,103 @@ namespace Freedom_Planet_2_Archipelago
                 bounceThread = new Thread(BounceSenderLoop) { IsBackground = true, Name = "AP Bounce Sender" };
                 bounceThread.Start();
             }
+
+            if (locationThread == null)
+            {
+                locationThread = new Thread(LocationSenderLoop) { IsBackground = true, Name = "AP Location Sender" };
+                locationThread.Start();
+            }
+        }
+        
+        public static void EnqueueBounce(BouncePacket packet)
+        {
+            lock (BounceQueue)
+            {
+                BounceQueue.Enqueue(packet);
+                BounceSignal.Set();
+            }
         }
 
+        public static void EnqueueLocation(long locationIndex, Action callback)
+        {
+            lock (LocationQueue)
+            {
+                LocationQueue.Enqueue(new LocationData
+                {
+                    LocationIndex = locationIndex,
+                    Callback = callback
+                });
+                LocationSignal.Set();
+            }
+        }
+        
+        private static void BounceSenderLoop()
+        {
+            while (Application.isPlaying)
+            {
+                BounceSignal.WaitOne();
+                while (Application.isPlaying)
+                {
+                    BouncePacket packet = null;
+                    lock (BounceQueue)
+                    {
+                        if (BounceQueue.Count > 0)
+                            packet = BounceQueue.Dequeue();
+                        else
+                            break;
+                    }
+
+                    try
+                    {
+                        if (session != null && session.Socket != null && packet != null)
+                            session.Socket.SendPacket(packet);
+                    }
+                    catch (Exception ex)
+                    {
+                        consoleLog?.LogWarning($"Bounce send failed: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        private static void LocationSenderLoop()
+        {
+            while (Application.isPlaying)
+            {
+                LocationSignal.WaitOne();
+                while (Application.isPlaying)
+                {
+                    LocationData location = null;
+                    lock (LocationQueue)
+                    {
+                        if (LocationQueue.Count > 0)
+                            location = LocationQueue.Dequeue();
+                        else
+                            break;
+                    }
+
+                    try
+                    {
+                        if (session != null && session.Socket != null && location != null)
+                        {
+                            session.Locations.CompleteLocationChecks(location.LocationIndex);
+                            location.Callback?.Invoke();
+                        }
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        consoleLog?.LogWarning($"Location send failed: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        
         private IEnumerator SceneGuardLoop()
         {
             var wait = new WaitForSeconds(0.1f);
-            while (true)
+            while(Application.isPlaying)
             {
                 string scene = SceneManager.GetActiveScene().name;
                 if (scene == "Cutscene_BattlesphereCapsule" || scene == "ArenaChallengeMenu")
@@ -308,12 +403,12 @@ namespace Freedom_Planet_2_Archipelago
                 yield return wait;
             }
         }
-
+        
         private IEnumerator ItemQueueLoop()
         {
             var tick = new WaitForSeconds(0.25f);
 
-            while (true)
+            while(Application.isPlaying)
             {
                 if (itemQueueTimer != -1)
                 {
@@ -358,49 +453,10 @@ namespace Freedom_Planet_2_Archipelago
                 yield return tick;
             }
         }
-        
-        public static void EnqueueBounce(BouncePacket packet)
-        {
-            lock (BounceQueue)
-            {
-                BounceQueue.Enqueue(packet);
-                BounceSignal.Set();
-            }
-        }
-
-        private static void BounceSenderLoop()
-        {
-            while (true)
-            {
-                BounceSignal.WaitOne();
-                while (true)
-                {
-                    BouncePacket packet = null;
-                    lock (BounceQueue)
-                    {
-                        if (BounceQueue.Count > 0)
-                            packet = BounceQueue.Dequeue();
-                        else
-                            break;
-                    }
-
-                    try
-                    {
-                        if (session != null && session.Socket != null && packet != null)
-                            session.Socket.SendPacket(packet);
-                    }
-                    catch (Exception ex)
-                    {
-                        consoleLog?.LogWarning($"Bounce send failed: {ex.Message}");
-                    }
-                }
-            }
-        }
-
         private IEnumerator RingLinkLoop()
         {
             var tick = new WaitForSeconds(0.25f);
-            while (true)
+            while(Application.isPlaying)
             {
                 if (RingLinkCrystalCount != 0 && session != null)
                 {
@@ -425,7 +481,7 @@ namespace Freedom_Planet_2_Archipelago
 
         private IEnumerator MirrorTrapLoop()
         {
-            while (true)
+            while(Application.isPlaying)
             {
                 if (MirrorTrapTimer > 0 && FPPlayerPatcher.player != null)
                     MirrorTrapTimer -= Time.deltaTime;
@@ -436,7 +492,7 @@ namespace Freedom_Planet_2_Archipelago
         private bool _powerPointActive;
         private IEnumerator PowerPointTrapWatcher()
         {
-            while (true)
+            while(Application.isPlaying)
             {
                 if (PowerPointTrapTimer > 0 && !_powerPointActive)
                 {
@@ -472,7 +528,7 @@ namespace Freedom_Planet_2_Archipelago
         private bool _zoomActive;
         private IEnumerator ZoomTrapWatcher()
         {
-            while (true)
+            while(Application.isPlaying)
             {
                 if (ZoomTrapTimer > 0 && FPPlayerPatcher.player != null && !_zoomActive)
                 {
@@ -512,7 +568,7 @@ namespace Freedom_Planet_2_Archipelago
         private bool _pixellationActive;
         private IEnumerator PixellationTrapWatcher()
         {
-            while (true)
+            while(Application.isPlaying)
             {
                 if (PixellationTrapTimer > 0 && !_pixellationActive)
                 {
@@ -560,7 +616,7 @@ namespace Freedom_Planet_2_Archipelago
 
         private IEnumerator BufferedTrapLoop()
         {
-            while (true)
+            while(Application.isPlaying)
             {
                 if (BufferedTraps.Count > 0 && BufferTrapTimer == -1)
                 {
@@ -599,7 +655,7 @@ namespace Freedom_Planet_2_Archipelago
 
         private IEnumerator TrapLinksLoop()
         {
-            while (true)
+            while(Application.isPlaying)
             {
                 if (TrapLinks.Count > 0)
                 {
@@ -614,7 +670,7 @@ namespace Freedom_Planet_2_Archipelago
         {
             // Heavy operation guarded by an interval.
             var wait = new WaitForSeconds(1f);
-            while (true)
+            while(Application.isPlaying)
             {
                 if (RailTrap)
                 {

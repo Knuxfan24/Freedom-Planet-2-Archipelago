@@ -183,23 +183,23 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Complete this location check if it exists and isn't already checked.
             if (Helpers.CheckLocationExists(locationIndex) && !Plugin.session.Locations.AllLocationsChecked.Contains(locationIndex))
             {
-                Plugin.session.Locations.CompleteLocationChecks(locationIndex);
+                Plugin.EnqueueLocation(locationIndex, (() =>
+                {
+                    // Scout the location we just completed.
+                    ScoutedItemInfo _scoutedLocationInfo = null;
+                    void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _scoutedLocationInfo = scoutedLocationInfo.First().Value;
+                    Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfo, new long[] { locationIndex });
+                    
+                    while (_scoutedLocationInfo == null)
+                        System.Threading.Thread.Sleep(1);
 
-                // Scout the location we just completed.
-                ScoutedItemInfo _scoutedLocationInfo = null;
-                void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _scoutedLocationInfo = scoutedLocationInfo.First().Value;
-                Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfo, new long[] { locationIndex });
+                    // Add a message to the queue if this item is for someone else.
+                    if (_scoutedLocationInfo.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                        Plugin.sentMessageQueue.Add($"Found {_scoutedLocationInfo.Player.Name}'s {_scoutedLocationInfo.ItemName}.");
 
-                // Yield each frame until the location is scouted, instead of sleeping.
-                while (_scoutedLocationInfo == null)
-                    yield return null;
-
-                // Add a message to the queue if this item is for someone else.
-                if (_scoutedLocationInfo.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
-                    Plugin.sentMessageQueue.Add($"Found {_scoutedLocationInfo.Player.Name}'s {_scoutedLocationInfo.ItemName}.");
-
-                // Save this location so we don't check it multiple times.
-                Plugin.save.EnemySanityIDs.Add(enemyName, locationIndex);
+                    // Save this location so we don't check it multiple times.
+                    Plugin.save.EnemySanityIDs.Add(enemyName, locationIndex);
+                }));
             }
         }
     }
