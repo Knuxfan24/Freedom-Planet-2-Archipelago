@@ -38,9 +38,6 @@
             {
                 // Remove our vinyl shop price from the RingLink value.
                 Plugin.RingLinkCrystalCount -= (int)(long)Plugin.slotData["vinyl_shop_price"];
-
-                // Reset the RingLink timer.
-                Plugin.RingLinkTimer = 0f;
             }
         }
     }

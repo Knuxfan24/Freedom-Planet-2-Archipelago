@@ -172,46 +172,49 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             if (Helpers.CheckLocationExists(locationIndex) && !Plugin.session.Locations.AllLocationsChecked.Contains(locationIndex))
             {
                 // Complete the location check for this index.
-                Plugin.session.Locations.CompleteLocationChecks(locationIndex);
-
-                // Scout the location we just completed.
-                ScoutedItemInfo _scoutedLocationInfo = null;
-                Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfo, [locationIndex]);
-
-                // Pause operation until the location is scouted.
-                while (_scoutedLocationInfo == null)
-                    System.Threading.Thread.Sleep(1);
-
-                // Add a message to the queue if this item is for someone else.
-                if (_scoutedLocationInfo.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
-                    Plugin.sentMessageQueue.Add($"Found {_scoutedLocationInfo.Player.Name}'s {_scoutedLocationInfo.ItemName}.");
-
-                // Swap the chest's contents to music so that we don't accidentally clobber our shop.
-                __instance.contents = FPItemChestContent.MUSIC;
-
-                // Reset the chest tracers to remove this chest from it.
-                FPPlayerPatcher.CreateChestTracers();
-
-                // Reset the player's trap overrides in case of a stale reference caused by something like a Swap Trap.
-                FPPlayerPatcher.overrideAnimator = null;
-                FPPlayerPatcher.storedAnimator = null;
-                FPPlayerPatcher.storedItemVoices = null;
-
-                // Check if this item is a trap.
-                if (_scoutedLocationInfo.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Trap)
+                Plugin.EnqueueLocation(locationIndex, () =>
                 {
-                    // Set the player's override animator to our one containing the character's shocked animation.
-                    // We skip Carol's bike state, as we don't replace her animation, thanks to her lacking a suitable shocked one (might use her look up animation?)
-                    switch (FPPlayerPatcher.player.characterID)
-                    {
-                        case FPCharacterID.LILAC: FPPlayerPatcher.overrideAnimator = new(Plugin.apAssetBundle.LoadAsset<RuntimeAnimatorController>("Lilac Shock")); break;
-                        case FPCharacterID.CAROL: FPPlayerPatcher.overrideAnimator = new(Plugin.apAssetBundle.LoadAsset<RuntimeAnimatorController>("Carol Shock")); break;
-                        case FPCharacterID.MILLA: FPPlayerPatcher.overrideAnimator = new(Plugin.apAssetBundle.LoadAsset<RuntimeAnimatorController>("Milla Shock")); break;
-                        case FPCharacterID.NEERA: FPPlayerPatcher.overrideAnimator = new(Plugin.apAssetBundle.LoadAsset<RuntimeAnimatorController>("Neera Shock")); break;
-                    }
-                }
+                    // Scout the location we just completed.
+                    ScoutedItemInfo _scoutedLocationInfo = null;
+                    Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfo, [locationIndex]);
 
-                void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _scoutedLocationInfo = scoutedLocationInfo.First().Value;
+                    // Pause operation until the location is scouted.
+                    while (_scoutedLocationInfo == null)
+                        System.Threading.Thread.Sleep(1);
+
+                    // Add a message to the queue if this item is for someone else.
+                    if (_scoutedLocationInfo.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                        Plugin.sentMessageQueue.Add($"Found {_scoutedLocationInfo.Player.Name}'s {_scoutedLocationInfo.ItemName}.");
+
+                    // Swap the chest's contents to music so that we don't accidentally clobber our shop.
+                    __instance.contents = FPItemChestContent.MUSIC;
+
+                    // Reset the chest tracers to remove this chest from it.
+                    FPPlayerPatcher.CreateChestTracers();
+
+                    // Reset the player's trap overrides in case of a stale reference caused by something like a Swap Trap.
+                    FPPlayerPatcher.overrideAnimator = null;
+                    FPPlayerPatcher.storedAnimator = null;
+                    FPPlayerPatcher.storedItemVoices = null;
+
+                    // Check if this item is a trap.
+                    if (_scoutedLocationInfo.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Trap)
+                    {
+                        // Set the player's override animator to our one containing the character's shocked animation.
+                        // We skip Carol's bike state, as we don't replace her animation, thanks to her lacking a suitable shocked one (might use her look up animation?)
+                        switch (FPPlayerPatcher.player.characterID)
+                        {
+                            case FPCharacterID.LILAC: FPPlayerPatcher.overrideAnimator = new(Plugin.apAssetBundle.LoadAsset<RuntimeAnimatorController>("Lilac Shock")); break;
+                            case FPCharacterID.CAROL: FPPlayerPatcher.overrideAnimator = new(Plugin.apAssetBundle.LoadAsset<RuntimeAnimatorController>("Carol Shock")); break;
+                            case FPCharacterID.MILLA: FPPlayerPatcher.overrideAnimator = new(Plugin.apAssetBundle.LoadAsset<RuntimeAnimatorController>("Milla Shock")); break;
+                            case FPCharacterID.NEERA: FPPlayerPatcher.overrideAnimator = new(Plugin.apAssetBundle.LoadAsset<RuntimeAnimatorController>("Neera Shock")); break;
+                        }
+                    }
+
+                    return;
+
+                    void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _scoutedLocationInfo = scoutedLocationInfo.First().Value;
+                });
             }
         }
 

@@ -85,17 +85,69 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// </summary>
         public static void CreateChestTracers()
         {
+            Plugin.consoleLog?.LogInfo("[ChestTracers] Enter CreateChestTracers");
+
             // Flag to check if tracers should be hidden upon creation.
             bool shouldKeepHidden = false;
 
-            // Only do this if we actually have chest tracers enabled.
-            if ((long)Plugin.slotData["chest_tracers"] == 0)
+            // Validate slotData and chest_tracers key.
+            if (Plugin.slotData == null)
+            {
+                Plugin.consoleLog?.LogWarning("[ChestTracers] Plugin.slotData is null. Aborting tracer creation.");
                 return;
+            }
+            if (!Plugin.slotData.ContainsKey("chest_tracers"))
+            {
+                Plugin.consoleLog?.LogWarning("[ChestTracers] slotData missing key 'chest_tracers'. Aborting tracer creation.");
+                return;
+            }
+
+            // Only do this if we actually have chest tracers enabled.
+            try
+            {
+                if ((long)Plugin.slotData["chest_tracers"] == 0)
+                {
+                    Plugin.consoleLog?.LogInfo("[ChestTracers] Chest tracers disabled by slotData.");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Plugin.consoleLog?.LogWarning($"[ChestTracers] Failed to read 'chest_tracers' value: {ex.Message}");
+                return;
+            }
+
+            // Validate current stage
+            if (FPStage.currentStage == null)
+            {
+                Plugin.consoleLog?.LogWarning("[ChestTracers] FPStage.currentStage is null. Aborting tracer creation.");
+                return;
+            }
+
+            // Validate save and tracer flags array
+            if (Plugin.save == null)
+            {
+                Plugin.consoleLog?.LogWarning("[ChestTracers] Plugin.save is null. Aborting tracer creation.");
+                return;
+            }
+            if (Plugin.save.ChestTracers == null)
+            {
+                Plugin.consoleLog?.LogWarning("[ChestTracers] Plugin.save.ChestTracers is null. Aborting tracer creation.");
+                return;
+            }
 
             // Destroy each active tracer then clear the list of them.
             // Also checks if the hidden flag should be set.
+            int beforeCount = chestTracers?.Count ?? 0;
+            Plugin.consoleLog?.LogInfo($"[ChestTracers] Cleaning up previous tracers. Count={beforeCount}");
             foreach (GameObject tracer in chestTracers)
             {
+                if (tracer == null)
+                {
+                    Plugin.consoleLog?.LogWarning("[ChestTracers] Found null tracer reference during cleanup.");
+                    continue;
+                }
+
                 if (!tracer.activeSelf)
                     shouldKeepHidden = true;
 
@@ -105,45 +157,76 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
             // Set up a list to hold the chest locations.
             List<Vector3> locations = [];
-
-            // Get the chests for the stage we're currently in, assuming we have the tracer for it.
-            switch (FPStage.currentStage.stageID)
+            
+            try
             {
-                case 1: if (Plugin.save.ChestTracers[0]) GetChests(ChestLists.DragonValley); break;
-                case 2: if (Plugin.save.ChestTracers[1]) GetChests(ChestLists.ShenlinPark); break;
-                case 3: if (Plugin.save.ChestTracers[2]) GetChests(ChestLists.AvianMuseum); break;
-                case 4: if (Plugin.save.ChestTracers[3] && SceneManager.GetActiveScene().name == "AirshipSigwada") GetChests(ChestLists.AirshipSigwada); break;
-                case 5: if (Plugin.save.ChestTracers[4]) GetChests(ChestLists.TigerFalls); break;
-                case 6: if (Plugin.save.ChestTracers[5]) GetChests(ChestLists.RobotGraveyard); break;
-                case 7: if (Plugin.save.ChestTracers[6]) GetChests(ChestLists.ShadeArmory); break;
-                case 9: if (Plugin.save.ChestTracers[7]) GetChests(ChestLists.PhoenixHighway); break;
-                case 10: if (Plugin.save.ChestTracers[8]) GetChests(ChestLists.ZaoLand); break;
-                case 11: if (Plugin.save.ChestTracers[9]) GetChests(ChestLists.GlobeOpera1); break;
-                case 12: if (Plugin.save.ChestTracers[10]) GetChests(ChestLists.GlobeOpera2); break;
-                case 14: if (Plugin.save.ChestTracers[11]) GetChests(ChestLists.PalaceCourtyard); break;
-                case 15: if (Plugin.save.ChestTracers[12]) GetChests(ChestLists.TidalGate); break;
-                case 16: if (Plugin.save.ChestTracers[13]) GetChests(ChestLists.ZulonJungle); break;
-                case 17: if (Plugin.save.ChestTracers[14]) GetChests(ChestLists.NalaoLake); break;
-                case 18: if (Plugin.save.ChestTracers[15]) GetChests(ChestLists.SkyBridge); break;
-                case 19: if (Plugin.save.ChestTracers[16]) GetChests(ChestLists.LightningTower); break;
-                case 20: if (Plugin.save.ChestTracers[17]) GetChests(ChestLists.AncestralForge); break;
-                case 21: if (Plugin.save.ChestTracers[18]) GetChests(ChestLists.MagmaStarscape); break;
-                case 23: if (Plugin.save.ChestTracers[19]) GetChests(ChestLists.GravityBubble); break;
-                case 24: if (Plugin.save.ChestTracers[20]) GetChests(ChestLists.BakunawaRush); break;
-                case 26: if (Plugin.save.ChestTracers[21]) GetChests(ChestLists.ClockworkArboretum); break;
-                case 27: if (Plugin.save.ChestTracers[22]) GetChests(ChestLists.InversionDynamo); break;
-                case 28: if (Plugin.save.ChestTracers[23]) GetChests(ChestLists.LunarCannon); break;
+                bool GetFlag(int idx) => Plugin.save.ChestTracers != null && idx >= 0 && idx < Plugin.save.ChestTracers.Length && Plugin.save.ChestTracers[idx];
+
+                switch (FPStage.currentStage.stageID)
+                {
+                    case 1:  if (GetFlag(0))  GetChests(ChestLists.DragonValley); break;
+                    case 2:  if (GetFlag(1))  GetChests(ChestLists.ShenlinPark); break;
+                    case 3:  if (GetFlag(2))  GetChests(ChestLists.AvianMuseum); break;
+                    case 4:  if (GetFlag(3)  && SceneManager.GetActiveScene().name == "AirshipSigwada") GetChests(ChestLists.AirshipSigwada); break;
+                    case 5:  if (GetFlag(4))  GetChests(ChestLists.TigerFalls); break;
+                    case 6:  if (GetFlag(5))  GetChests(ChestLists.RobotGraveyard); break;
+                    case 7:  if (GetFlag(6))  GetChests(ChestLists.ShadeArmory); break;
+                    case 9:  if (GetFlag(7))  GetChests(ChestLists.PhoenixHighway); break;
+                    case 10: if (GetFlag(8))  GetChests(ChestLists.ZaoLand); break;
+                    case 11: if (GetFlag(9))  GetChests(ChestLists.GlobeOpera1); break;
+                    case 12: if (GetFlag(10)) GetChests(ChestLists.GlobeOpera2); break;
+                    case 14: if (GetFlag(11)) GetChests(ChestLists.PalaceCourtyard); break;
+                    case 15: if (GetFlag(12)) GetChests(ChestLists.TidalGate); break;
+                    case 16: if (GetFlag(13)) GetChests(ChestLists.ZulonJungle); break;
+                    case 17: if (GetFlag(14)) GetChests(ChestLists.NalaoLake); break;
+                    case 18: if (GetFlag(15)) GetChests(ChestLists.SkyBridge); break;
+                    case 19: if (GetFlag(16)) GetChests(ChestLists.LightningTower); break;
+                    case 20: if (GetFlag(17)) GetChests(ChestLists.AncestralForge); break;
+                    case 21: if (GetFlag(18)) GetChests(ChestLists.MagmaStarscape); break;
+                    case 23: if (GetFlag(19)) GetChests(ChestLists.GravityBubble); break;
+                    case 24: if (GetFlag(20)) GetChests(ChestLists.BakunawaRush); break;
+                    case 26: if (GetFlag(21)) GetChests(ChestLists.ClockworkArboretum); break;
+                    case 27: if (GetFlag(22)) GetChests(ChestLists.InversionDynamo); break;
+                    case 28: if (GetFlag(23)) GetChests(ChestLists.LunarCannon); break;
+                    default:
+                        Plugin.consoleLog?.LogInfo($"[ChestTracers] No tracer list for stageID={FPStage.currentStage.stageID}. Locations remain empty.");
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Plugin.consoleLog?.LogWarning($"[ChestTracers] Exception while building location list: {ex.Message}");
+            }
+
+            Plugin.consoleLog?.LogInfo($"[ChestTracers] Locations collected: {locations.Count}");
+
+            // Validate asset bundle before instantiation
+            if (Plugin.apAssetBundle == null)
+            {
+                Plugin.consoleLog?.LogWarning("[ChestTracers] apAssetBundle is null. Cannot instantiate tracer prefabs.");
+                return;
             }
 
             // Loop through each read location.
+            int created = 0;
             foreach (Vector2 location in locations)
             {
                 // Create the tracer's game object.
-                GameObject tracerPrefab = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("Chest Tracer"));
+                var prefab = Plugin.apAssetBundle.LoadAsset<GameObject>("Chest Tracer");
+
+                GameObject tracerPrefab = null;
+                try
+                {
+                    tracerPrefab = GameObject.Instantiate(prefab);
+                }
+                catch (Exception ex)
+                {
+                    Plugin.consoleLog?.LogWarning($"[ChestTracers] Instantiate failed: {ex.Message}");
+                    continue;
+                }
 
                 // Create and attach a tracer script to the game object, setting its targer position to this location.
-                ChestTracer tracerScript = tracerPrefab.AddComponent<ChestTracer>();
-                tracerScript.targetPosition = location;
+                var tracerScript = tracerPrefab.AddComponent<ChestTracer>();
 
                 // Hide the tracer if we need to.
                 if (shouldKeepHidden)
@@ -151,20 +234,73 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Add this tracer to the list of tracers.
                 chestTracers.Add(tracerPrefab);
+                created++;
             }
+
+            Plugin.consoleLog?.LogInfo($"[ChestTracers] Tracers created: {created}, hidden={shouldKeepHidden}");
 
             void GetChests(Dictionary<string, Vector2> table)
             {
+                if (table == null)
+                {
+                    Plugin.consoleLog?.LogWarning("[ChestTracers] Chest table is null for current stage.");
+                    return;
+                }
+
+                // Validate session/locations
+                if (Plugin.session == null || Plugin.session.Locations == null)
+                {
+                    Plugin.consoleLog?.LogWarning("[ChestTracers] Session or Locations is null. Skipping location checks.");
+                    return;
+                }
+
+                var allChecked = Plugin.session.Locations.AllLocationsChecked;
+                if (allChecked == null)
+                {
+                    Plugin.consoleLog?.LogWarning("[ChestTracers] AllLocationsChecked is null. Skipping location checks.");
+                    return;
+                }
+
+                int added = 0;
                 // Loop through each chest in the location table.
                 foreach (KeyValuePair<string, Vector2> entry in table)
                 {
-                    // Get the index of the location for this chest.
-                    long locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", entry.Key);
+                    if (string.IsNullOrEmpty(entry.Key))
+                    {
+                        Plugin.consoleLog?.LogWarning("[ChestTracers] Encountered chest entry with empty key.");
+                        continue;
+                    }
 
-                    // If this location exists and hasn't been checked, then increment the chest count and add the position to the list.
-                    if (Helpers.CheckLocationExists(locationIndex) && !Plugin.session.Locations.AllLocationsChecked.Contains(locationIndex))
+                    long locationIndex = -1;
+                    try
+                    {
+                        locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", entry.Key);
+                    }
+                    catch (Exception ex)
+                    {
+                        Plugin.consoleLog?.LogWarning($"[ChestTracers] GetLocationIdFromName failed for '{entry.Key}': {ex.Message}");
+                        continue;
+                    }
+
+                    bool exists = false;
+                    try
+                    {
+                        exists = Helpers.CheckLocationExists(locationIndex);
+                    }
+                    catch (Exception ex)
+                    {
+                        Plugin.consoleLog?.LogWarning($"[ChestTracers] CheckLocationExists failed for index={locationIndex}: {ex.Message}");
+                        continue;
+                    }
+
+                    if (exists && !allChecked.Contains(locationIndex))
+                    {
                         locations.Add(entry.Value);
+                        added++;
+                    }
                 }
+
+                Plugin.consoleLog?.LogInfo($"[ChestTracers] GetChests added {added} pending chest locations for stageID={FPStage.currentStage.stageID}.");
             }
         }
 
