@@ -16,10 +16,12 @@ using Freedom_Planet_2_Archipelago.Patchers;
 using System.IO;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using System.Threading;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.1.0")]
+    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.1.1")]
     [BepInDependency("000.kuborro.libraries.fp2.fp2lib")]
     public class Plugin : BaseUnityPlugin
     {
@@ -75,7 +77,6 @@ namespace Freedom_Planet_2_Archipelago
 
         // RingLink based values.
         public static int RingLinkCrystalCount = 0;
-        public static float RingLinkTimer = 0;
 
         // Dictionary of custom sounds for item receives.
         public static Dictionary<string, AudioClip> ItemSounds = [];
@@ -87,11 +88,22 @@ namespace Freedom_Planet_2_Archipelago
         public static AudioClip[] NeeraTrapSounds = [];
 
         public static List<DialogQueue> WeaponsCoreUnlockLines = [];
+        
+        // Background bounce-packet sender to keep SendPacket off the main thread.
+        private static readonly Queue<BouncePacket> BounceQueue = new Queue<BouncePacket>();
+        private static readonly AutoResetEvent BounceSignal = new AutoResetEvent(false);
+        private static Thread bounceThread;
+
+        // Allow starting coroutines from static contexts.
+        public static Plugin Instance;
 
         private void Awake()
         {
             // Set up the logger.
             consoleLog = Logger;
+
+            // Set static instance for coroutine helpers.
+            Instance = this;
 
             // Check for the asset bundle.
             if (!File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets"))
@@ -257,87 +269,141 @@ namespace Freedom_Planet_2_Archipelago
             Harmony.CreateAndPatchAll(typeof(PlayerSpawnPointPatcher));
         }
 
-        private void Update()
+        // Helper to start coroutines from static code.
+        public static void RunCoroutine(IEnumerator routine)
         {
-            // Kick the player out to the Arena Menu if they're in the Time Capsule or Tournament Scenes.
-            if (SceneManager.GetActiveScene().name == "Cutscene_BattlesphereCapsule" || SceneManager.GetActiveScene().name == "ArenaChallengeMenu")
-                SceneManager.LoadScene("ArenaMenu");
+            if (Instance != null && routine != null)
+                Instance.StartCoroutine(routine);
+        }
 
-            // Check that the item queue timer isn't currently frozen.
-            if (itemQueueTimer != -1)
+        private void Start()
+        {
+            StartCoroutine(SceneGuardLoop());
+            StartCoroutine(ItemQueueLoop());
+            StartCoroutine(RingLinkLoop());
+            StartCoroutine(MirrorTrapLoop());
+            StartCoroutine(PowerPointTrapWatcher());
+            StartCoroutine(ZoomTrapWatcher());
+            StartCoroutine(PixellationTrapWatcher());
+            StartCoroutine(BufferedTrapLoop());
+            StartCoroutine(TrapLinksLoop());
+            StartCoroutine(RailTrapLoop());
+
+            // Start background sender for bounce packets to avoid blocking the main thread.
+            if (bounceThread == null)
             {
-                // Increment the queue timer by the game's delta timer.
-                itemQueueTimer += Time.deltaTime;
+                bounceThread = new Thread(BounceSenderLoop) { IsBackground = true, Name = "AP Bounce Sender" };
+                bounceThread.Start();
+            }
+        }
 
-                // Check if the timer has reached 0.25.
-                if (itemQueueTimer >= 0.25f)
+        private IEnumerator SceneGuardLoop()
+        {
+            var wait = new WaitForSeconds(0.1f);
+            while (true)
+            {
+                string scene = SceneManager.GetActiveScene().name;
+                if (scene == "Cutscene_BattlesphereCapsule" || scene == "ArenaChallengeMenu")
+                    SceneManager.LoadScene("ArenaMenu");
+                yield return wait;
+            }
+        }
+
+        private IEnumerator ItemQueueLoop()
+        {
+            var tick = new WaitForSeconds(0.25f);
+
+            while (true)
+            {
+                if (itemQueueTimer != -1)
                 {
-                    // Check that the banner is in its idle state.
-                    if (messageBanner.GetComponent<MessageBanner>().state == new FPObjectState(messageBanner.GetComponent<MessageBanner>().State_Idle))
+                    // Only act when the banner is idle.
+                    if (messageBanner != null &&
+                        messageBanner.GetComponent<MessageBanner>().state == new FPObjectState(messageBanner.GetComponent<MessageBanner>().State_Idle))
                     {
-                        // Check if we have any sent messages, as these should take priority.
+                        // Sent messages take priority.
                         if (sentMessageQueue.Count != 0)
                         {
-                            // Set the banner to the expand state and pass our message to it.
                             messageBanner.GetComponent<MessageBanner>().state = messageBanner.GetComponent<MessageBanner>().State_Expand;
                             messageBanner.GetComponent<MessageBanner>().text = sentMessageQueue[0];
-
-                            // Remove this message from the queue.
                             sentMessageQueue.RemoveAt(0);
-
-                            // Play the item get sound.
                             FPAudio.PlaySfx(FPAudio.SFX_ITEMGET);
                         }
-
-                        // If we don't have any sent messages, then check for any items we are waiting to receive.
                         else if (itemQueue.Count != 0)
                         {
-                            // Get the first item in our queue.
                             KeyValuePair<ArchipelagoItem, int> item = itemQueue.ElementAt(0);
-
-                            // Actually receive the item.
                             Helpers.HandleItem(item);
-
-                            // Remove this item from the queue.
                             itemQueue.Remove(item.Key);
 
-                            // Set up a message to display, depending on various factors.
+                            string selfName = session != null ? session.Players.GetPlayerName(session.ConnectionInfo.Slot) : "";
                             string message = $"Recieved {item.Key.ItemName} from {item.Key.Source}.";
-                            if (item.Key.Source == session.Players.GetPlayerName(session.ConnectionInfo.Slot)) message = $"Found your {item.Key.ItemName}.";
+                            if (item.Key.Source == selfName) message = $"Found your {item.Key.ItemName}.";
                             if (item.Value > 1) message = $"Recieved {item.Key.ItemName} ({item.Value}x) from {item.Key.Source}.";
-                            if (item.Key.Source == session.Players.GetPlayerName(session.ConnectionInfo.Slot) && item.Value > 1) message = $"Found your {item.Key.ItemName} ({item.Value}x).";
+                            if (item.Key.Source == selfName && item.Value > 1) message = $"Found your {item.Key.ItemName} ({item.Value}x).";
 
-                            // Set the banner to the expand state and pass our message to it.
                             messageBanner.GetComponent<MessageBanner>().state = messageBanner.GetComponent<MessageBanner>().State_Expand;
                             messageBanner.GetComponent<MessageBanner>().text = message;
 
-                            // Play the item get sound.
                             FPAudio.PlaySfx(FPAudio.SFX_ITEMGET);
 
-                            // If we have a sound for this item, then play it too.
                             if (ItemSounds.ContainsKey(item.Key.ItemName.ToLower()))
                                 FPAudio.PlaySfx(ItemSounds[item.Key.ItemName.ToLower()]);
                         }
                     }
 
-                    // Remove 0.25 from the queue timer.
-                    itemQueueTimer -= 0.25f;
+                    // Maintain similar semantics to original timer.
+                    itemQueueTimer = Math.Max(0f, itemQueueTimer - 0.25f);
+                }
+
+                yield return tick;
+            }
+        }
+        
+        public static void EnqueueBounce(BouncePacket packet)
+        {
+            lock (BounceQueue)
+            {
+                BounceQueue.Enqueue(packet);
+                BounceSignal.Set();
+            }
+        }
+
+        private static void BounceSenderLoop()
+        {
+            while (true)
+            {
+                BounceSignal.WaitOne();
+                while (true)
+                {
+                    BouncePacket packet = null;
+                    lock (BounceQueue)
+                    {
+                        if (BounceQueue.Count > 0)
+                            packet = BounceQueue.Dequeue();
+                        else
+                            break;
+                    }
+
+                    try
+                    {
+                        if (session != null && session.Socket != null && packet != null)
+                            session.Socket.SendPacket(packet);
+                    }
+                    catch (Exception ex)
+                    {
+                        consoleLog?.LogWarning($"Bounce send failed: {ex.Message}");
+                    }
                 }
             }
+        }
 
-            // Increment the RingLink timer.
-            RingLinkTimer += Time.deltaTime;
-
-            // Check if the timer has reached 0.25.
-            if (RingLinkTimer >= 0.25f)
+        private IEnumerator RingLinkLoop()
+        {
+            var tick = new WaitForSeconds(0.25f);
+            while (true)
             {
-                // Remove 0.25 from the RingLink timer.
-                RingLinkTimer -= 0.25f;
-
-                // Check if the Crystal count for the RingLink isn't 0.
-                if (RingLinkCrystalCount != 0)
+                if (RingLinkCrystalCount != 0 && session != null)
                 {
-                    // Create a packet for this RingLink and send it out.
                     BouncePacket packet = new()
                     {
                         Tags = ["RingLink"],
@@ -348,139 +414,222 @@ namespace Freedom_Planet_2_Archipelago
                             { "amount", RingLinkCrystalCount }
                         }
                     };
-                    session.Socket.SendPacket(packet);
 
-                    // Reset the crystal count.
+                    // Enqueue to background sender to avoid main-thread blocking.
+                    EnqueueBounce(packet);
                     RingLinkCrystalCount = 0;
                 }
+                yield return tick;
             }
-        
-            // Decrement the Mirror Trap's timer if it's higher than 0 and a player exists.
-            if (MirrorTrapTimer > 0 && FPPlayerPatcher.player != null)
-                MirrorTrapTimer -= Time.deltaTime;
+        }
 
-            // Check if the PowerPoint Trap Timer is above 0.
-            if (PowerPointTrapTimer > 0)
+        private IEnumerator MirrorTrapLoop()
+        {
+            while (true)
             {
-                // Set the game's framerate to 15 FPS.
-                Application.targetFrameRate = 15;
-
-                // Decrement the PowerPoint Trap Timer.
-                PowerPointTrapTimer -= Time.deltaTime;
+                if (MirrorTrapTimer > 0 && FPPlayerPatcher.player != null)
+                    MirrorTrapTimer -= Time.deltaTime;
+                yield return null;
             }
+        }
 
-            // If not, then check if the timer is between -1 and 0.
-            else if (PowerPointTrapTimer <= 0 && PowerPointTrapTimer > -1)
+        private bool _powerPointActive;
+        private IEnumerator PowerPointTrapWatcher()
+        {
+            while (true)
             {
-                // Set the PowerPoint Trap Timer to -1 so the framerate change doesn't fire every frame.
-                PowerPointTrapTimer = -1;
-
-                // Reset the game's framerate to the default value.
-                FPSaveManager.SetTargetFPS();
+                if (PowerPointTrapTimer > 0 && !_powerPointActive)
+                {
+                    float duration = PowerPointTrapTimer;
+                    PowerPointTrapTimer = -1; // consume timer
+                    yield return StartCoroutine(PowerPointTrapRoutine(duration));
+                }
+                else if (PowerPointTrapTimer <= 0 && PowerPointTrapTimer > -1 && !_powerPointActive)
+                {
+                    // Edge-case: ensure we reset FPS even if a short/ended timer was set.
+                    PowerPointTrapTimer = -1;
+                    FPSaveManager.SetTargetFPS();
+                }
+                yield return null;
             }
+        }
 
-            // Check if the Zoom Trap Timer is above 0.
-            if (ZoomTrapTimer > 0 && FPPlayerPatcher.player != null)
+        private IEnumerator PowerPointTrapRoutine(float duration)
+        {
+            _powerPointActive = true;
+            int originalFps = Application.targetFrameRate;
+            Application.targetFrameRate = 15;
+            float t = duration;
+            while (t > 0f)
             {
-                // Zoom the camera in to 0.5.
+                t -= Time.deltaTime;
+                yield return null;
+            }
+            FPSaveManager.SetTargetFPS();
+            _powerPointActive = false;
+        }
+
+        private bool _zoomActive;
+        private IEnumerator ZoomTrapWatcher()
+        {
+            while (true)
+            {
+                if (ZoomTrapTimer > 0 && FPPlayerPatcher.player != null && !_zoomActive)
+                {
+                    float duration = ZoomTrapTimer;
+                    ZoomTrapTimer = -1; // consume timer; routine handles timing
+                    yield return StartCoroutine(ZoomTrapRoutine(duration));
+                }
+                else if (ZoomTrapTimer <= 0 && ZoomTrapTimer > -1 && !_zoomActive)
+                {
+                    // Ensure restoration if a zero/expired value arrives.
+                    ZoomTrapTimer = -1;
+                    if (FPCamera.stageCamera != null)
+                        FPCamera.stageCamera.RequestZoom(1f, FPCamera.ZoomPriority_VeryHigh);
+                }
+                yield return null;
+            }
+        }
+
+        private IEnumerator ZoomTrapRoutine(float duration)
+        {
+            _zoomActive = true;
+            if (FPCamera.stageCamera != null)
                 FPCamera.stageCamera.RequestZoom(0.5f, FPCamera.ZoomPriority_VeryHigh);
 
-                // Decrement the Zoom Trap Timer.
-                ZoomTrapTimer -= Time.deltaTime;
+            float t = duration;
+            while (t > 0f)
+            {
+                t -= Time.deltaTime;
+                yield return null;
             }
 
-            // If not, then check if the timer is between -1 and 0.
-            else if (ZoomTrapTimer <= 0 && ZoomTrapTimer > -1)
-            {
-                // Set the Zoom Trap Timer to -1 so the zoom level change doesn't fire every frame.
-                ZoomTrapTimer = -1;
-
-                // Zoom the camera back out to 1.
+            if (FPCamera.stageCamera != null)
                 FPCamera.stageCamera.RequestZoom(1f, FPCamera.ZoomPriority_VeryHigh);
-            }
+            _zoomActive = false;
+        }
 
-            // Check if the Pixellation Trap Timer is above 0.
-            if (PixellationTrapTimer > 0)
+        private bool _pixellationActive;
+        private IEnumerator PixellationTrapWatcher()
+        {
+            while (true)
             {
-                // Check if the message label is currently idle.
-                if (messageBanner.GetComponent<MessageBanner>().state == messageBanner.GetComponent<MessageBanner>().State_Idle)
+                if (PixellationTrapTimer > 0 && !_pixellationActive)
                 {
-                    // Force the game to render at 25% scale.
-                    FPCamera.stageCamera.ResizeRenderTextures(0.25f);
-
-                    // Decrement the Pixellation Trap Timer.
-                    PixellationTrapTimer -= Time.deltaTime;
+                    float duration = PixellationTrapTimer;
+                    PixellationTrapTimer = -1; // consume timer
+                    yield return StartCoroutine(PixellationTrapRoutine(duration));
                 }
-
-                // If the label isn't idle, then restore the normal internal scale so it can actually be read.
-                else
-                    FPCamera.stageCamera.ResizeRenderTextures(FPSaveManager.screenInternalScale);
-            }
-
-            // If not, then check if the timer is between -1 and 0.
-            else if (PixellationTrapTimer <= 0 && PixellationTrapTimer > -1)
-            {
-                // Set the PowerPoint Trap Timer to -1 so the framerate change doesn't fire every frame.
-                PixellationTrapTimer = -1;
-
-                // Reset the game's framerate to the default value.
-                FPCamera.stageCamera.ResizeRenderTextures(FPSaveManager.screenInternalScale);
-            }
-
-            // If we have a buffered trap and the timer isn't running, then randomly select a time between 5 and 30.
-            if (BufferedTraps.Count > 0 && BufferTrapTimer == -1)
-                BufferTrapTimer = rng.Next(5, 31);
-
-            // Decrement the Buffered Trap Timer if the player exists.
-            if (BufferTrapTimer > 0 && FPPlayerPatcher.player != null)
-                BufferTrapTimer -= Time.deltaTime;
-
-            // Check if the timer is between -1 and 0.
-            if (BufferTrapTimer <= 0 && BufferTrapTimer > -1)
-            {
-                // Activate the trap we're waiting for.
-                Helpers.HandleItem(new(BufferedTraps[0], 1));
-
-                // Show a message for the activated trap.
-                if (BufferedTraps[0].Source == session.Players.GetPlayerName(session.ConnectionInfo.Slot))
-                    sentMessageQueue.Add($"Activating your {BufferedTraps[0].ItemName}.");
-                else
-                    sentMessageQueue.Add($"Activating {BufferedTraps[0].ItemName} from {BufferedTraps[0].Source}.");
-
-                // If we have a sound for this item, then play it too.
-                if (ItemSounds.ContainsKey(BufferedTraps[0].ItemName.ToLower()))
-                    FPAudio.PlaySfx(ItemSounds[BufferedTraps[0].ItemName.ToLower()]);
-
-                // Remove this trap from the list and reset the timer.
-                BufferedTraps.RemoveAt(0);
-                BufferTrapTimer = -1;
-            }
-
-            if (TrapLinks.Count > 0)
-            {
-                Helpers.HandleItem(new(TrapLinks[0], 1), false, true);
-                TrapLinks.RemoveAt(0);
-            }
-
-            if (RailTrap)
-            {
-                // Get all the objects that have a collider.
-                Collider2D[] colliderObjects = UnityEngine.Object.FindObjectsOfType<Collider2D>();
-
-                // Loop through each object with a collider.
-                foreach (Collider2D colliderObject in colliderObjects)
+                else if (PixellationTrapTimer <= 0 && PixellationTrapTimer > -1 && !_pixellationActive)
                 {
-                    // Check that this collider's object doesn't already have a rail.
-                    if (colliderObject.gameObject.GetComponent<GrindRail>() == null)
-                    {
-                        // Create and attach a rail to the object.
-                        GrindRail rail = colliderObject.gameObject.AddComponent<GrindRail>();
+                    PixellationTrapTimer = -1;
+                    if (FPCamera.stageCamera != null)
+                        FPCamera.stageCamera.ResizeRenderTextures(FPSaveManager.screenInternalScale);
+                }
+                yield return null;
+            }
+        }
 
-                        // Set the rail sounds from the asset bundle.
-                        rail.sfxRailStart = apAssetBundle.LoadAsset<AudioClip>("GrindRail_Start");
-                        rail.sfxRailLoop = apAssetBundle.LoadAsset<AudioClip>("GrindRail_Loop");
+        private IEnumerator PixellationTrapRoutine(float duration)
+        {
+            _pixellationActive = true;
+            float t = duration;
+
+            while (t > 0f)
+            {
+                // Match original behavior: pixelate only when banner is idle; otherwise restore temporarily for readability.
+                if (messageBanner != null &&
+                    messageBanner.GetComponent<MessageBanner>().state == messageBanner.GetComponent<MessageBanner>().State_Idle)
+                {
+                    if (FPCamera.stageCamera != null)
+                        FPCamera.stageCamera.ResizeRenderTextures(0.25f);
+                    t -= Time.deltaTime;
+                }
+                else
+                {
+                    if (FPCamera.stageCamera != null)
+                        FPCamera.stageCamera.ResizeRenderTextures(FPSaveManager.screenInternalScale);
+                }
+                yield return null;
+            }
+
+            if (FPCamera.stageCamera != null)
+                FPCamera.stageCamera.ResizeRenderTextures(FPSaveManager.screenInternalScale);
+            _pixellationActive = false;
+        }
+
+        private IEnumerator BufferedTrapLoop()
+        {
+            while (true)
+            {
+                if (BufferedTraps.Count > 0 && BufferTrapTimer == -1)
+                {
+                    BufferTrapTimer = rng.Next(5, 31);
+                    float delay = BufferTrapTimer;
+
+                    // Wait the randomized delay; abort early if no player yet, but keep waiting next frame until player exists.
+                    while (delay > 0f)
+                    {
+                        if (FPPlayerPatcher.player != null)
+                            delay -= Time.deltaTime;
+                        yield return null;
+                    }
+
+                    if (BufferedTraps.Count > 0)
+                    {
+                        var trap = BufferedTraps[0];
+                        Helpers.HandleItem(new(trap, 1));
+
+                        if (session != null && trap.Source == session.Players.GetPlayerName(session.ConnectionInfo.Slot))
+                            sentMessageQueue.Add($"Activating your {trap.ItemName}.");
+                        else
+                            sentMessageQueue.Add($"Activating {trap.ItemName} from {trap.Source}.");
+
+                        if (ItemSounds.ContainsKey(trap.ItemName.ToLower()))
+                            FPAudio.PlaySfx(ItemSounds[trap.ItemName.ToLower()]);
+
+                        BufferedTraps.RemoveAt(0);
+                    }
+
+                    BufferTrapTimer = -1;
+                }
+                yield return null;
+            }
+        }
+
+        private IEnumerator TrapLinksLoop()
+        {
+            while (true)
+            {
+                if (TrapLinks.Count > 0)
+                {
+                    Helpers.HandleItem(new(TrapLinks[0], 1), false, true);
+                    TrapLinks.RemoveAt(0);
+                }
+                yield return null;
+            }
+        }
+
+        private IEnumerator RailTrapLoop()
+        {
+            // Heavy operation guarded by an interval.
+            var wait = new WaitForSeconds(1f);
+            while (true)
+            {
+                if (RailTrap)
+                {
+                    Collider2D[] colliderObjects = UnityEngine.Object.FindObjectsOfType<Collider2D>();
+                    foreach (Collider2D colliderObject in colliderObjects)
+                    {
+                        if (colliderObject != null && colliderObject.gameObject.GetComponent<GrindRail>() == null)
+                        {
+                            GrindRail rail = colliderObject.gameObject.AddComponent<GrindRail>();
+                            rail.sfxRailStart = apAssetBundle.LoadAsset<AudioClip>("GrindRail_Start");
+                            rail.sfxRailLoop = apAssetBundle.LoadAsset<AudioClip>("GrindRail_Loop");
+                        }
                     }
                 }
+                yield return wait;
             }
         }
     }

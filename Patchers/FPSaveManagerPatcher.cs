@@ -153,7 +153,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Check that we should actually be sending a link and if RingLink is on.
             if (!DisableRingLinkSend && (long)Plugin.slotData["ring_link"] != 0)
             {
-                Plugin.RingLinkTimer = 0f;
                 Plugin.RingLinkCrystalCount++;
             }
         }

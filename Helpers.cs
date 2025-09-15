@@ -1032,7 +1032,7 @@ namespace Freedom_Planet_2_Archipelago
                             { "trap_name", item.Key.ItemName }
                         }
                 };
-                Plugin.session.Socket.SendPacket(packet);
+                Plugin.EnqueueBounce(packet);
             }
         }
 

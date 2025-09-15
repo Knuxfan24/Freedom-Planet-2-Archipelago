@@ -1,5 +1,6 @@
 ﻿using Archipelago.MultiClient.Net.Models;
 using System.Linq;
+using System.Collections;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
@@ -158,6 +159,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Sends the provided location check, if it exists.
+        /// Now dispatched as a coroutine to avoid blocking the main thread.
         /// </summary>
         static void SendEnemyCheck(string enemyName)
         {
@@ -165,21 +167,32 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             if (Plugin.save.EnemySanityIDs.ContainsKey(enemyName))
                 return;
 
+            // Run the send/scout process asynchronously on the main thread via coroutine.
+            Plugin.RunCoroutine(SendEnemyCheckRoutine(enemyName));
+        }
+
+        private static IEnumerator SendEnemyCheckRoutine(string enemyName)
+        {
+            // Guard again in case multiple calls queued this quickly.
+            if (Plugin.save.EnemySanityIDs.ContainsKey(enemyName))
+                yield break;
+
             // Get the location for this boss type.
             long locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", enemyName);
 
-            // Complete this location check if it exists.
+            // Complete this location check if it exists and isn't already checked.
             if (Helpers.CheckLocationExists(locationIndex) && !Plugin.session.Locations.AllLocationsChecked.Contains(locationIndex))
             {
                 Plugin.session.Locations.CompleteLocationChecks(locationIndex);
 
                 // Scout the location we just completed.
                 ScoutedItemInfo _scoutedLocationInfo = null;
-                Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfo, [locationIndex]);
+                void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _scoutedLocationInfo = scoutedLocationInfo.First().Value;
+                Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfo, new long[] { locationIndex });
 
-                // Pause operation until the location is scouted.
+                // Yield each frame until the location is scouted, instead of sleeping.
                 while (_scoutedLocationInfo == null)
-                    System.Threading.Thread.Sleep(1);
+                    yield return null;
 
                 // Add a message to the queue if this item is for someone else.
                 if (_scoutedLocationInfo.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
@@ -187,8 +200,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Save this location so we don't check it multiple times.
                 Plugin.save.EnemySanityIDs.Add(enemyName, locationIndex);
-
-                void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _scoutedLocationInfo = scoutedLocationInfo.First().Value;
             }
         }
     }
