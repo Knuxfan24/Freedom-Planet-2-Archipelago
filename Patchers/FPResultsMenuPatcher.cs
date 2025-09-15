@@ -58,10 +58,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     if (SceneManager.GetActiveScene().name == "AirshipSigwada")
                     {
                         locationName = "Airship Sigwada - Clear";
-                        break;
                     }
-
-                    // If we're not in the Sigwada, then assume we're in the Battlesphere and determine the location name based on the Challenge ID.
+                    break;
+                case 31:
                     switch (___challengeID)
                     {
                         case 1: locationName = "Beginner's Gauntlet"; break;
