@@ -22,7 +22,7 @@ using Archipelago.MultiClient.Net.Models;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.1.1")]
+    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.1.2")]
     [BepInDependency("000.kuborro.libraries.fp2.fp2lib")]
     public class Plugin : BaseUnityPlugin
     {
