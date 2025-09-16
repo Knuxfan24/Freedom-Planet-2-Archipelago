@@ -6,11 +6,13 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Freedom_Planet_2_Archipelago
 {
     public class Helpers
     {
+        
         /// <summary>
         /// Saves our AP data then forces the game itself to save.
         /// </summary>
@@ -1124,5 +1126,6 @@ namespace Freedom_Planet_2_Archipelago
                 uri.Insert(0, "file:///");
             return uri.ToString();
         }
+
     }
 }

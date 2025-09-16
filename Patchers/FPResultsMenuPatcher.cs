@@ -103,23 +103,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             if (Helpers.CheckLocationExists(locationIndex))
             {
                 // Complete the location check for this index.
-                Plugin.EnqueueLocation(locationIndex, () =>
-                {
-                    // Scout the location we just completed.
-                    ScoutedItemInfo _scoutedLocationInfo = null;
-                    Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfo, [locationIndex]);
-
-                    // Pause operation until the location is scouted.
-                    while (_scoutedLocationInfo == null)
-                        System.Threading.Thread.Sleep(1);
-
-                    // Add a message to the queue if this item is for someone else.
-                    if (_scoutedLocationInfo.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
-                        Plugin.sentMessageQueue.Add($"Found {_scoutedLocationInfo.Player.Name}'s {_scoutedLocationInfo.ItemName}.");
-                    return;
-
-                    void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _scoutedLocationInfo = scoutedLocationInfo.First().Value;
-                });
+                Plugin.EnqueueLocation(locationIndex);
+                var item = Plugin.items[locationIndex];
+                if (item.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                    Plugin.sentMessageQueue.Add($"Found {item.Player.Name}'s {item.ItemName}.");
+                return;
             }
 
             // If the location was Weapon's Core's clear, then send a goal packet to the server too.

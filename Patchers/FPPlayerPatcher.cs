@@ -227,6 +227,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Create and attach a tracer script to the game object, setting its targer position to this location.
                 var tracerScript = tracerPrefab.AddComponent<ChestTracer>();
+                tracerScript.targetPosition = location;
 
                 // Hide the tracer if we need to.
                 if (shouldKeepHidden)

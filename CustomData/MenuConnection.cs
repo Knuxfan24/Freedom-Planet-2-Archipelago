@@ -263,6 +263,14 @@ namespace Freedom_Planet_2_Archipelago.CustomData
 
             // Create the socket handler for receiving items.
             Plugin.session.Items.ItemReceived += SocketEvents.Socket_ReceiveItem;
+            
+            // Fetch all the locations.
+            var locations = Plugin.session.Locations.AllLocations;
+            Plugin.session.Locations.ScoutLocationsAsync(items =>
+                {
+                    Plugin.items = items;
+                },
+                false, locations.ToArray());
 
             // Create the DeathLink service and the socket handler for receiving them.
             Plugin.DeathLink = Plugin.session.CreateDeathLinkService();
