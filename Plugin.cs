@@ -18,10 +18,11 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Threading;
+using Archipelago.MultiClient.Net.Models;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.1.1")]
+    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.1.2")]
     [BepInDependency("000.kuborro.libraries.fp2.fp2lib")]
     public class Plugin : BaseUnityPlugin
     {
@@ -43,6 +44,7 @@ namespace Freedom_Planet_2_Archipelago
         // The AP session's data.
         public static ArchipelagoSession session;
         public static Dictionary<string, object> slotData;
+        public static Dictionary<long, ScoutedItemInfo> items;
         public static DeathLinkService DeathLink;
 
         // The AP's save.
@@ -316,14 +318,13 @@ namespace Freedom_Planet_2_Archipelago
             }
         }
 
-        public static void EnqueueLocation(long locationIndex, Action callback)
+        public static void EnqueueLocation(long locationIndex)
         {
             lock (LocationQueue)
             {
                 LocationQueue.Enqueue(new LocationData
                 {
-                    LocationIndex = locationIndex,
-                    Callback = callback
+                    LocationIndex = locationIndex
                 });
                 LocationSignal.Set();
             }
@@ -379,7 +380,7 @@ namespace Freedom_Planet_2_Archipelago
                         if (session != null && session.Socket != null && location != null)
                         {
                             session.Locations.CompleteLocationChecks(location.LocationIndex);
-                            location.Callback?.Invoke();
+                            session.Locations.ScoutLocationsAsync(_ => {}, location.LocationIndex);
                         }
                         
                     }
@@ -550,16 +551,16 @@ namespace Freedom_Planet_2_Archipelago
         private IEnumerator ZoomTrapRoutine(float duration)
         {
             _zoomActive = true;
-            if (FPCamera.stageCamera != null)
-                FPCamera.stageCamera.RequestZoom(0.5f, FPCamera.ZoomPriority_VeryHigh);
 
             float t = duration;
             while (t > 0f)
             {
                 t -= Time.deltaTime;
+                if (FPCamera.stageCamera != null)
+                    FPCamera.stageCamera.RequestZoom(0.5f, FPCamera.ZoomPriority_VeryHigh);
                 yield return null;
             }
-
+            
             if (FPCamera.stageCamera != null)
                 FPCamera.stageCamera.RequestZoom(1f, FPCamera.ZoomPriority_VeryHigh);
             _zoomActive = false;
