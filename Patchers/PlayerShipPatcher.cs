@@ -1,5 +1,6 @@
 ﻿namespace Freedom_Planet_2_Archipelago.Patchers
 {
+    // TODO: This doesn't seem to work right???????
     internal class PlayerShipPatcher
     {
         /// <summary>
@@ -22,7 +23,7 @@
         private static void Revive() => FPPlayerPatcher.canSendDeathLink = true;
 
         /// <summary>
-        /// Sends out a DeathLink
+        /// Sends out a DeathLink.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(PlayerShip), "State_Death")]

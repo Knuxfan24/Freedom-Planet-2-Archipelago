@@ -331,9 +331,19 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 // Turn off our can send flag so we don't send a DeathLink of our own.
                 canSendDeathLink = false;
 
+                // TODO: I don't think the ship ever disables the buffered DeathLink flag?
+                // This also had weird issues?
                 if (PlayerShipPatcher.player != null)
                 {
                     player.health = -1;
+                    return;
+                }
+
+                if (PlayerBFF2000Patcher.player != null)
+                {
+                    player.health = -1;
+                    typeof(PlayerBFF2000).GetField("ded", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(PlayerBFF2000Patcher.player, true);
+                    PlayerBFF2000Patcher.DeathState.Invoke(PlayerBFF2000Patcher.player, []);
                     return;
                 }
 

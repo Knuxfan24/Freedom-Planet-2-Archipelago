@@ -1,5 +1,4 @@
-﻿// TODO: Check if the BFF2000 needs a special DeathLink too.
-// TODO: Release "Found [x]'s [y]" messages.
+﻿// TODO: Release "Found [x]'s [y]" messages.
 global using Archipelago.MultiClient.Net;
 global using BepInEx;
 global using Freedom_Planet_2_Archipelago.CustomData;
@@ -270,6 +269,7 @@ namespace Freedom_Planet_2_Archipelago
             Harmony.CreateAndPatchAll(typeof(MenuSpawnerPatcher));
             Harmony.CreateAndPatchAll(typeof(MenuTitleScreenPatcher));
             Harmony.CreateAndPatchAll(typeof(MenuWorldMapConfirmPatcher));
+            Harmony.CreateAndPatchAll(typeof(PlayerBFF2000Patcher));
             Harmony.CreateAndPatchAll(typeof(PlayerBossMergaPatcher));
             Harmony.CreateAndPatchAll(typeof(PlayerShipPatcher));
             Harmony.CreateAndPatchAll(typeof(PlayerSpawnPointPatcher));
