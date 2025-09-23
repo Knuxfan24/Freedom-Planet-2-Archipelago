@@ -59,7 +59,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Changes the moon sprite in Merga's battle depending on the other games in the multiworld.
-        /// TODO: Test this change.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(FPStage), "Start")]

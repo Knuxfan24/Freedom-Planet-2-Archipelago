@@ -326,26 +326,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         static void ReceiveDeathLink()
         {
             // Check that the stage has finished loading and that we have a DeathLink waiting.
-            if (FPStage.objectsRegistered && hasBufferedDeathLink)
+            // Also check that we don't have a PlayerShip or PlayerBFF2000 object, as we handle the DeathLink seperately in those.
+            if (FPStage.objectsRegistered && hasBufferedDeathLink && PlayerShipPatcher.player == null && PlayerBFF2000Patcher.player == null)
             {
                 // Turn off our can send flag so we don't send a DeathLink of our own.
                 canSendDeathLink = false;
-
-                // TODO: I don't think the ship ever disables the buffered DeathLink flag?
-                // This also had weird issues?
-                if (PlayerShipPatcher.player != null)
-                {
-                    player.health = -1;
-                    return;
-                }
-
-                if (PlayerBFF2000Patcher.player != null)
-                {
-                    player.health = -1;
-                    typeof(PlayerBFF2000).GetField("ded", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(PlayerBFF2000Patcher.player, true);
-                    PlayerBFF2000Patcher.DeathState.Invoke(PlayerBFF2000Patcher.player, []);
-                    return;
-                }
 
                 // If the DeathLink slot value is just enable, then force run the player's crush action to blow them up.
                 if ((long)Plugin.slotData["death_link"] == 1)
