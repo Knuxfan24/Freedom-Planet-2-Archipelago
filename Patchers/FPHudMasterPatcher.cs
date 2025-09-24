@@ -10,7 +10,7 @@
         static void KillOnTimeLimit(FPHudMaster __instance, ref GameObject ___hudTimeLimitBar)
         {
             // Check that the player actually exists and that the Dangerous Time Limit option is enabled.
-            if (FPPlayerPatcher.player == null && (long)Plugin.slotData["dangerous_time_limit"] != 0)
+            if (FPPlayerPatcher.player == null || (long)Plugin.slotData["dangerous_time_limit"] == 0)
                 return;
 
             // Check that the time limit bar exists, the player has the Time Limit Brave Stone and that the bar is actually being shown.
