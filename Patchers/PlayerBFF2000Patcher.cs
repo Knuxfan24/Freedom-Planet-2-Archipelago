@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Freedom_Planet_2_Archipelago.Patchers
+﻿namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class PlayerBFF2000Patcher
     {
@@ -26,7 +24,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(PlayerBFF2000), "HealthUpdate")]
-        private static void ReceiveDeathLink()
+        private static void ReceiveDeathLink(ref float ___flinchHealth, ref float ___healthBuffer)
         {
             // Check for a DeathLink.
             if (FPPlayerPatcher.hasBufferedDeathLink)
@@ -44,19 +42,16 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 player.weakPoint.health = 450;
 
                 // Set the flinch health to -1.
-                typeof(PlayerBFF2000).GetField("flinchHealth", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(player, -1);
+                ___flinchHealth = -1;
 
                 // Enable my stupid hack.
                 StupidHack = true;
             }
 
-            // Repeatedly get and subtract the healthBuffer.
+            // Repeatedly subtract the healthBuffer.
             // I don't know why this works, but this seems to cause the maths to add up in the right way to fire the death state.
             if (StupidHack)
-            {
-                float healthBuffer = (float)typeof(PlayerBFF2000).GetField("healthBuffer", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(player);
-                typeof(PlayerBFF2000).GetField("healthBuffer", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(player, healthBuffer--);
-            }
+                ___healthBuffer--;
         }
 
         /// <summary>
