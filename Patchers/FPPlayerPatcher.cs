@@ -150,7 +150,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     continue;
                 }
 
-                if (!tracer.activeSelf)
+                if (!tracer.transform.GetChild(0).gameObject.activeSelf)
                     shouldKeepHidden = true;
 
                 GameObject.Destroy(tracer);
@@ -233,7 +233,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Hide the tracer if we need to.
                 if (shouldKeepHidden)
-                    tracerPrefab.SetActive(false);
+                    tracerPrefab.transform.GetChild(0).gameObject.SetActive(false);
 
                 // Add this tracer to the list of tracers.
                 chestTracers.Add(tracerPrefab);
