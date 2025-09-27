@@ -29,6 +29,9 @@
             // Check for a DeathLink.
             if (FPPlayerPatcher.hasBufferedDeathLink)
             {
+                // Remove the player's shield.
+                player.targetPlayer.shieldHealth = 0;
+
                 // Turn off our can send flag so we don't send one in return.
                 FPPlayerPatcher.canSendDeathLink = false;
 
