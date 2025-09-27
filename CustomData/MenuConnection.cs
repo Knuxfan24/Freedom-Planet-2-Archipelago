@@ -255,11 +255,9 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             if (Plugin.configRingLinkOverride.Value != -1) Plugin.slotData["ring_link"] = Plugin.configRingLinkOverride.Value;
             if (Plugin.configTrapLinkOverride.Value != -1) Plugin.slotData["trap_link"] = Plugin.configTrapLinkOverride.Value;
             
-            // If the plugin is compiled in Debug Mode, then print all the slot data to the log.
-            #if DEBUG
+            // Print all the slot data to the log, as a debug log.
             foreach (var key in Plugin.slotData)
-                Plugin.consoleLog.LogInfo($"{key.Key}: {key.Value} (Type: {key.Value.GetType()})");
-            #endif
+                Plugin.consoleLog.LogDebug($"{key.Key}: {key.Value} (Type: {key.Value.GetType()})");
 
             // Create the socket handler for receiving items.
             Plugin.session.Items.ItemReceived += SocketEvents.Socket_ReceiveItem;

@@ -85,7 +85,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// </summary>
         public static void CreateChestTracers()
         {
-            Plugin.consoleLog?.LogInfo("[ChestTracers] Enter CreateChestTracers");
+            // Log the creation of the chest tracers, as a debug log.
+            Plugin.consoleLog?.LogDebug("[ChestTracers] Enter CreateChestTracers");
 
             // Flag to check if tracers should be hidden upon creation.
             bool shouldKeepHidden = false;
@@ -107,44 +108,45 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             {
                 if ((long)Plugin.slotData["chest_tracers"] == 0)
                 {
-                    Plugin.consoleLog?.LogInfo("[ChestTracers] Chest tracers disabled by slotData.");
+                    // Log the fact that the tracers are disabled, as a debug log.
+                    Plugin.consoleLog?.LogDebug("[ChestTracers] Chest tracers disabled by slotData.");
                     return;
                 }
             }
             catch (Exception ex)
             {
-                Plugin.consoleLog?.LogWarning($"[ChestTracers] Failed to read 'chest_tracers' value: {ex.Message}");
+                Plugin.consoleLog?.LogError($"[ChestTracers] Failed to read 'chest_tracers' value: {ex.Message}");
                 return;
             }
 
             // Validate current stage
             if (FPStage.currentStage == null)
             {
-                Plugin.consoleLog?.LogWarning("[ChestTracers] FPStage.currentStage is null. Aborting tracer creation.");
+                Plugin.consoleLog?.LogError("[ChestTracers] FPStage.currentStage is null. Aborting tracer creation.");
                 return;
             }
 
             // Validate save and tracer flags array
             if (Plugin.save == null)
             {
-                Plugin.consoleLog?.LogWarning("[ChestTracers] Plugin.save is null. Aborting tracer creation.");
+                Plugin.consoleLog?.LogError("[ChestTracers] Plugin.save is null. Aborting tracer creation.");
                 return;
             }
             if (Plugin.save.ChestTracers == null)
             {
-                Plugin.consoleLog?.LogWarning("[ChestTracers] Plugin.save.ChestTracers is null. Aborting tracer creation.");
+                Plugin.consoleLog?.LogError("[ChestTracers] Plugin.save.ChestTracers is null. Aborting tracer creation.");
                 return;
             }
 
             // Destroy each active tracer then clear the list of them.
             // Also checks if the hidden flag should be set.
             int beforeCount = chestTracers?.Count ?? 0;
-            Plugin.consoleLog?.LogInfo($"[ChestTracers] Cleaning up previous tracers. Count={beforeCount}");
+            Plugin.consoleLog?.LogDebug($"[ChestTracers] Cleaning up previous tracers. Count={beforeCount}");
             foreach (GameObject tracer in chestTracers)
             {
                 if (tracer == null)
                 {
-                    Plugin.consoleLog?.LogWarning("[ChestTracers] Found null tracer reference during cleanup.");
+                    Plugin.consoleLog?.LogDebug("[ChestTracers] Found null tracer reference during cleanup.");
                     continue;
                 }
 
@@ -189,21 +191,21 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     case 27: if (GetFlag(22)) GetChests(ChestLists.InversionDynamo); break;
                     case 28: if (GetFlag(23)) GetChests(ChestLists.LunarCannon); break;
                     default:
-                        Plugin.consoleLog?.LogInfo($"[ChestTracers] No tracer list for stageID={FPStage.currentStage.stageID}. Locations remain empty.");
+                        Plugin.consoleLog?.LogDebug($"[ChestTracers] No tracer list for stageID={FPStage.currentStage.stageID}. Locations remain empty.");
                         break;
                 }
             }
             catch (Exception ex)
             {
-                Plugin.consoleLog?.LogWarning($"[ChestTracers] Exception while building location list: {ex.Message}");
+                Plugin.consoleLog?.LogError($"[ChestTracers] Exception while building location list: {ex.Message}");
             }
 
-            Plugin.consoleLog?.LogInfo($"[ChestTracers] Locations collected: {locations.Count}");
+            Plugin.consoleLog?.LogDebug($"[ChestTracers] Locations collected: {locations.Count}");
 
-            // Validate asset bundle before instantiation
+            // Validate asset bundle before instantiation. This situation shouldn't ever come up, but just in case.
             if (Plugin.apAssetBundle == null)
             {
-                Plugin.consoleLog?.LogWarning("[ChestTracers] apAssetBundle is null. Cannot instantiate tracer prefabs.");
+                Plugin.consoleLog?.LogError("[ChestTracers] apAssetBundle is null. Cannot instantiate tracer prefabs.");
                 return;
             }
 
@@ -212,7 +214,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             foreach (Vector2 location in locations)
             {
                 // Create the tracer's game object.
-                var prefab = Plugin.apAssetBundle.LoadAsset<GameObject>("Chest Tracer");
+                GameObject prefab = Plugin.apAssetBundle.LoadAsset<GameObject>("Chest Tracer");
 
                 GameObject tracerPrefab = null;
                 try
@@ -221,7 +223,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 }
                 catch (Exception ex)
                 {
-                    Plugin.consoleLog?.LogWarning($"[ChestTracers] Instantiate failed: {ex.Message}");
+                    Plugin.consoleLog?.LogError($"[ChestTracers] Instantiate failed: {ex.Message}");
                     continue;
                 }
 
@@ -238,7 +240,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 created++;
             }
 
-            Plugin.consoleLog?.LogInfo($"[ChestTracers] Tracers created: {created}, hidden={shouldKeepHidden}");
+            Plugin.consoleLog?.LogDebug($"[ChestTracers] Tracers created: {created}, hidden={shouldKeepHidden}");
 
             void GetChests(Dictionary<string, Vector2> table)
             {
@@ -301,7 +303,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     }
                 }
 
-                Plugin.consoleLog?.LogInfo($"[ChestTracers] GetChests added {added} pending chest locations for stageID={FPStage.currentStage.stageID}.");
+                Plugin.consoleLog?.LogDebug($"[ChestTracers] GetChests added {added} pending chest locations for stageID={FPStage.currentStage.stageID}.");
             }
         }
 
@@ -615,11 +617,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Send a DeathLink.
                 Plugin.DeathLink.SendDeathLink(new Archipelago.MultiClient.Net.BounceFeatures.DeathLink.DeathLink(Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot), reason));
-                
-                // If the plugin is compiled in Debug Mode, then print the DeathLink send to the console too.
-                #if DEBUG
-                Plugin.consoleLog.LogInfo($"Sending DeathLink with reason:\r\n\t{reason}");
-                #endif
+
+                // Print the DeathLink send to the console too, as a debug log.
+                Plugin.consoleLog.LogDebug($"Sending DeathLink with reason:\r\n\t{reason}");
 
                 // Set the flag to avoid sending extras.
                 canSendDeathLink = false;
@@ -993,6 +993,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Set the player into their guard state and animation.
             player.SetPlayerAnimation("GuardAir", null, null, true);
             player.Action_Guard();
+
+            // TODO: Figure out a way to stop an active attack hitbox from lingering here.
         }
 
         /// <summary>

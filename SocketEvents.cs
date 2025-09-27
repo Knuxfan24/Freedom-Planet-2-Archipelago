@@ -301,7 +301,7 @@ namespace Freedom_Planet_2_Archipelago
                         case "TNT Barrel Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "W I D E Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
 
-                        default: Plugin.consoleLog.LogInfo($"No trap matchup found for {bouncedPacket.Data["source"]}'s {bouncedPacket.Data["trap_name"]}!"); break;
+                        default: Plugin.consoleLog.LogDebug($"No trap matchup found for {bouncedPacket.Data["source"]}'s {bouncedPacket.Data["trap_name"]}!"); break;
                     }
 
                     if (received)

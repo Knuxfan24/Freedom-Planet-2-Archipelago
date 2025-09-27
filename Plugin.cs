@@ -199,11 +199,9 @@ namespace Freedom_Planet_2_Archipelago
             // Load our asset bundle.
             apAssetBundle = AssetBundle.LoadFromFile($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets");
             
-            // If we're in Debug Mode, then print all the asset names from the asset bundle.
-            #if DEBUG
+            // Print all the asset names from the asset bundle, as a debug log.
             foreach (string assetName in apAssetBundle.GetAllAssetNames())
-                consoleLog.LogInfo(assetName);
-            #endif
+                consoleLog.LogDebug(assetName);
             
             // Create the message banner object.
             messageBanner = GameObject.Instantiate(apAssetBundle.LoadAsset<GameObject>("Message Label"));

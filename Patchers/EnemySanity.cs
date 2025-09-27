@@ -148,12 +148,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 case "PlayerBossNeera": SendEnemyCheck("Neera"); return;
                 case "PlayerBossSerpentine": SendEnemyCheck("Serpentine"); return;
 
-                // If the plugin is compiled in Debug Mode, then log the KO'd boss.
-                default:
-                    #if DEBUG
-                    Plugin.consoleLog.LogInfo(__instance.GetType().Name);
-                    #endif
-                    return;
+                // Log the KO'd boss, as a debug log.
+                // This does cause spam.
+                default: Plugin.consoleLog.LogDebug(__instance.GetType().Name); return;
             }
         }
 
