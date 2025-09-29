@@ -107,8 +107,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     for (int hintIndex = 1; hintIndex <= hintableItems; hintIndex++)
                         locationIDs.Add(Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{shop} Shop Item {hintIndex}"));
 
+                    // Remove any location IDs that have already been checked (used to stop the game from repeatadly sending hints for items that are unlocked and brought in the same batch).
+                    for (int locationIndex = locationIDs.Count - 1; locationIndex >= 0; locationIndex--)
+                        if (Plugin.session.Locations.AllLocationsChecked.Contains(locationIDs[locationIndex]))
+                            locationIDs.RemoveAt(locationIndex);
+
                     // Scout for the hints for these locations.
-                    // TODO: If an item is purchased before being hinted for, then it makes the hint each time despite the annouce setting. MultiClient bug?
                     Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfoHint, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [.. locationIDs]);
                 }
             }
