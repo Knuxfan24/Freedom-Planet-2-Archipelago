@@ -148,8 +148,66 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                 state();
         }
 
+        class CacheJSON
+        {
+            public Dictionary<string, long>? item_name_to_id { get; set; }
+        }
+
         private void State_Main()
         {
+            // Check for the F9 key or Select button to trigger the template sprite definition creator.
+            if (Input.GetKeyDown(KeyCode.F9) || Input.GetKeyDown("joystick 1 button 8"))
+            {
+                // Get the Archipelago cache directory.
+                string cacheDirectory = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Archipelago\Cache\datapackage";
+
+                // Check that the cache directory actually exists (unlike the AP text client itself...)
+                if (Directory.Exists(cacheDirectory))
+                {
+                    // Loop through each directory in the cache.
+                    foreach (string? directory in Directory.GetDirectories(cacheDirectory))
+                    {
+                        // Get the name of this game's cache directory.
+                        string gameName = Path.GetFileName(directory);
+
+                        // Skip Freedom Planet 2.
+                        if (gameName == "Freedom Planet 2")
+                            continue;
+
+                        // Log that we're creating the template file.
+                        Plugin.consoleLog.LogInfo($"Creating template items.json file for {gameName}");
+
+                        // Create the directory for this game in the Template Sprite Definitions directory.
+                        Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Template Sprite Definitions\{gameName}");
+
+                        // Get the newest JSON.
+                        FileInfo newestJson = new DirectoryInfo(directory).GetFiles("*.json").OrderByDescending(f => f.LastWriteTime).First();
+
+                        // Deserialise the JSON to grab the item_name_to_id block from it.
+                        CacheJSON json = JsonConvert.DeserializeObject<CacheJSON>(File.ReadAllText(newestJson.FullName));
+
+                        // Set up a list of item descriptors.
+                        List<ItemDescriptor> itemDescriptors = [];
+
+                        // Loop through each item in the JSON and create an item definition with its name filled in in the item names array and sprite name.
+                        if (json.item_name_to_id != null)
+                        {
+                            foreach (KeyValuePair<string, long> item in json.item_name_to_id)
+                            {
+                                itemDescriptors.Add(new()
+                                {
+                                    ItemNames = [item.Key],
+                                    SpriteName = item.Key
+                                });
+                            }
+                        }
+
+                        // Write our generated items.json file to our directory.
+                        File.WriteAllText($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Template Sprite Definitions\{gameName}\items.json", JsonConvert.SerializeObject(itemDescriptors, Formatting.Indented));
+                    }
+                }
+            }
+
             // Move the cursor up or down.
             if (FPStage.menuInput.up)
             {
