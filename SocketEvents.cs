@@ -75,12 +75,40 @@ namespace Freedom_Planet_2_Archipelago
         }
 
         /// <summary>
-        /// Event handler for when we receive a packet from the Multiworld, only used for RingLink handling.
+        /// Event handler for when we receive a packet from the Multiworld.
         /// </summary>
         public static void Socket_LinkPackets(ArchipelagoPacketBase packet)
         {
             switch (packet)
             {
+                case ChatPrintJsonPacket printJSON:
+
+                    // Create a new dialog queue entry based on the packet's data.
+                    DialogQueue dialogMessage = new()
+                    {
+                        active = true,
+                        text = printJSON.Message,
+                        lengthOffset = Math.Max(2f, printJSON.Message.Split([' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length / 2),
+                        name = Plugin.session.Players.GetPlayerName(printJSON.Slot),
+                        portrait = Plugin.apChatIcon
+                    };
+
+                    // If a sprite exists for this player, then replace the generic AP icon with it.
+                    if (Plugin.apChatIcons.ContainsKey(dialogMessage.name))
+                        dialogMessage.portrait = Plugin.apChatIcons[dialogMessage.name];
+
+                    // Loop through each entry in the Aaa Trap's queue.
+                    for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
+                    {
+                        // If this entry isn't populated already, then add a random line to it, mark it as active, then stop looping.
+                        if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name == null)
+                        {
+                            Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = dialogMessage;
+                            break;
+                        }
+                    }
+                    break;
+
                 case BouncedPacket bouncedPacket when bouncedPacket.Tags.Contains("RingLink"):
                     // Ignore the packet if we're the one who sent it or RingLink is disabled.
                     if (bouncedPacket.Data["source"].ToObject<int>() == Plugin.session.ConnectionInfo.Slot || ((long)Plugin.slotData["ring_link"] == 0))

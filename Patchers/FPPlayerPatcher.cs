@@ -554,7 +554,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Calls the SendDeathLink function depending on the player state.
-        /// TODO: See if anything else should send a DeathLink that I overlooked.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "State_KO")]

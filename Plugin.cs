@@ -28,6 +28,10 @@ namespace Freedom_Planet_2_Archipelago
         // The asset bundle exported from the Unity project.
         public static AssetBundle apAssetBundle;
 
+        // The icons used for the chat box.
+        public static Sprite apChatIcon;
+        public static Dictionary<string, Sprite> apChatIcons = [];
+
         // Logger.
         public static ManualLogSource consoleLog;
 
@@ -88,6 +92,7 @@ namespace Freedom_Planet_2_Archipelago
         public static AudioClip[] MillaTrapSounds = [];
         public static AudioClip[] NeeraTrapSounds = [];
 
+        // Serpentine's lines that are played when the Weapon's Core unlock criteria is met.
         public static List<DialogQueue> WeaponsCoreUnlockLines = [];
         
         // Background bounce-packet sender to keep SendPacket off the main thread.
@@ -113,36 +118,35 @@ namespace Freedom_Planet_2_Archipelago
             // Check for the asset bundle.
             if (!File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets"))
             {
-                consoleLog.LogError("Failed to find the archipelago.assets file! Please ensure it is correctly located in your Freedom Planet 2's mod_overrides\\Archipelago folder.");
+                consoleLog.LogError($@"Failed to find the archipelago.assets file! Please ensure it is correctly located in '{Paths.GameRootPath}\mod_overrides\Archipelago'.");
                 return;
             }
 
-            // Create the Archipelago Saves directory if it doesn't exist.
-            if (!Directory.Exists($@"{Paths.GameRootPath}\Archipelago Saves"))
-                Directory.CreateDirectory($@"{Paths.GameRootPath}\Archipelago Saves");
-
-            // Check if the sounds directory exists.
-            if (Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sounds\"))
+            // Create the Archipelago directories if they doesn't exist.
+            if (!Directory.Exists($@"{Paths.GameRootPath}\Archipelago Saves")) Directory.CreateDirectory($@"{Paths.GameRootPath}\Archipelago Saves");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players")) Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sounds")) Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sounds");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites")) Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Template Sprite Definitions")) Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Template Sprite Definitions");
+                 
+            // Loop through each WAV file in the sounds directory.
+            foreach (string wavFile in Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sounds\", "*.wav"))
             {
-                // Loop through each WAV file in the sounds directory.
-                foreach (string wavFile in Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sounds\", "*.wav"))
+                using (WWW audioLoader = new(Helpers.FilePathToFileUrl(wavFile)))
                 {
-                    using (WWW audioLoader = new(Helpers.FilePathToFileUrl(wavFile)))
-                    {
-                        // Freeze the game until the audio loader is done.
-                        while (!audioLoader.isDone)
-                            System.Threading.Thread.Sleep(1);
+                    // Freeze the game until the audio loader is done.
+                    while (!audioLoader.isDone)
+                        System.Threading.Thread.Sleep(1);
 
-                        // Create an audio clip from the loaded file.
-                        AudioClip audio = audioLoader.GetAudioClip(false, true, AudioType.WAV);
+                    // Create an audio clip from the loaded file.
+                    AudioClip audio = audioLoader.GetAudioClip(false, true, AudioType.WAV);
 
-                        // Freeze the application until the audio clip is loaded fully.
-                        while (!(audio.loadState == AudioDataLoadState.Loaded))
-                            System.Threading.Thread.Sleep(1);
+                    // Freeze the application until the audio clip is loaded fully.
+                    while (!(audio.loadState == AudioDataLoadState.Loaded))
+                        System.Threading.Thread.Sleep(1);
 
-                        // Add the loaded audio to our dictionary of audio clips.
-                        ItemSounds.Add(Path.GetFileNameWithoutExtension(wavFile).ToLower(), audio);
-                    }
+                    // Add the loaded audio to our dictionary of audio clips.
+                    ItemSounds.Add(Path.GetFileNameWithoutExtension(wavFile).ToLower(), audio);
                 }
             }
 
@@ -202,7 +206,23 @@ namespace Freedom_Planet_2_Archipelago
             // Print all the asset names from the asset bundle, as a debug log.
             foreach (string assetName in apAssetBundle.GetAllAssetNames())
                 consoleLog.LogDebug(assetName);
-            
+
+            // Load the chat icon.
+            apChatIcon = Plugin.apAssetBundle.LoadAsset<Sprite>("chat_ap");
+
+            // Loop through and get the player icons for the chat.
+            foreach (string file in Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players", "*.png"))
+            {
+                // Set up a new texture using point filtering.
+                Texture2D texture = new(76, 76) { filterMode = FilterMode.Point };
+
+                // Read the sprite for this texture.
+                texture.LoadImage(File.ReadAllBytes(file));
+
+                // Add an entry to the chat icons list for this player.
+                apChatIcons.Add(Path.GetFileNameWithoutExtension(file), Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(-0.1842f, 1.079f), 1));
+            }
+
             // Create the message banner object.
             messageBanner = GameObject.Instantiate(apAssetBundle.LoadAsset<GameObject>("Message Label"));
             messageBanner.AddComponent<MessageBanner>();

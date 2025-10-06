@@ -109,7 +109,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Handles sending out checks for the Code Black afflicted enemies (as they share the same script as their normal versions).
-        /// TODO: If there's one that doesn't have their faction set to Alien then this will fall apart.
         /// </summary>
         static void CorruptedEnemy(string faction, string enemyName)
         {

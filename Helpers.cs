@@ -412,7 +412,7 @@ namespace Freedom_Planet_2_Archipelago
                     for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
                     {
                         // If this entry isn't populated already, then add a random line to it, mark it as active, then stop looping.
-                        if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name != "Aaa")
+                        if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name == null)
                         {
                             Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = Plugin.AaaTrapLines[Plugin.rng.Next(Plugin.AaaTrapLines.Count)];
                             Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].active = true;
@@ -860,7 +860,7 @@ namespace Freedom_Planet_2_Archipelago
                             for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
                             {
                                 // If this entry isn't populated already, then add a random line to it, mark it as active, then stop looping.
-                                if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name != "Aaa")
+                                if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name == null)
                                 {
                                     Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = Plugin.AaaTrapLines[Plugin.rng.Next(Plugin.AaaTrapLines.Count)];
                                     Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].active = true;
