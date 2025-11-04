@@ -234,6 +234,7 @@ namespace Freedom_Planet_2_Archipelago
 
                         // None FP2 Based Traps, sourced from https://docs.google.com/spreadsheets/d/1yoNilAzT5pSU9c2hYK7f2wHAe9GiWDiHFZz8eMe1oeQ/edit?gid=811965759#gid=811965759.
                         case "144p Trap": AddTrap(bouncedPacket, "Pixellation Trap", true); break;
+                        case "Animal Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
                         case "Army Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "Banana Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Banana Peel Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
@@ -261,6 +262,7 @@ namespace Freedom_Planet_2_Archipelago
                         case "Disable A Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
                         case "Disable B Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
                         case "Disable C Up Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
+                        case "Disable Tag Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
                         case "Disable Z Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
                         case "Dry Trap": AddTrap(bouncedPacket, "No Stocks", true); break;
                         case "Eject Ability": AddTrap(bouncedPacket, "Swap Trap", true); break;
@@ -302,6 +304,7 @@ namespace Freedom_Planet_2_Archipelago
                         case "Push Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
                         case "Reversal Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                         case "Reverse Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                        case "Rockfall Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "Screen Flip Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                         case "Slip Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Slow Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
