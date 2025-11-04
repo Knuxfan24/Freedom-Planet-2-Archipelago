@@ -21,7 +21,7 @@ using Archipelago.MultiClient.Net.Models;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.1.2")]
+    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.1.3")]
     [BepInDependency("000.kuborro.libraries.fp2.fp2lib")]
     public class Plugin : BaseUnityPlugin
     {
@@ -43,6 +43,7 @@ namespace Freedom_Planet_2_Archipelago
         public static ConfigEntry<long> configDeathLinkOverride;
         public static ConfigEntry<long> configRingLinkOverride;
         public static ConfigEntry<long> configTrapLinkOverride;
+        public static ConfigEntry<bool> configRemotePlayers;
 
         // The AP session's data.
         public static ArchipelagoSession session;
@@ -199,6 +200,13 @@ namespace Freedom_Planet_2_Archipelago
                                                  "-1: No Override\r\n" +
                                                  "0: Disabled\r\n" +
                                                  "1: Enabled");
+
+            configRemotePlayers = Config.Bind("Misc",
+                                              "Remote Players",
+                                              false,
+                                              "Allows other Freedom Planet 2 players in the multiworld session to visually appear if in the same level.\r\n" +
+                                              "0: Disabled\r\n" +
+                                              "1: Enabled");
 
             // Load our asset bundle.
             apAssetBundle = AssetBundle.LoadFromFile($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets");

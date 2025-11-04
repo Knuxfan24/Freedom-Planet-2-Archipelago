@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using Archipelago.MultiClient.Net.Helpers;
+using Newtonsoft.Json.Linq;
+using System.IO;
 using System.Linq;
 using UnityEngine.SceneManagement;
 
@@ -16,6 +18,66 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Only do this if we're not using a random character.
             if (!Plugin.usingRandomCharacter)
                 FPSaveManager.character = (FPCharacterID)MenuConnection.characters.ElementAt(MenuConnection.characterIndex).Value;
+        }
+
+        /// <summary>
+        /// Handles setting up remote players.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPStage), "Start")]
+        static void RemotePlayers()
+        {
+            // If we aren't connected or have remote players, then don't run this function.
+            if (Plugin.session == null)
+                return;
+            if (Plugin.session.ConnectionInfo.Slot == -1)
+                return;
+            if (Plugin.configRemotePlayers.Value == false)
+                return;
+
+            // Create an entry for the data storage for ourself.
+            JObject playerDataStorage = new()
+            {
+                { "Player", Plugin.session.ConnectionInfo.Slot },
+                { "Scene", SceneManager.GetActiveScene().name },
+                { "Character", Helpers.GetPlayer() },
+                { "PositionX", -240f },
+                { "PositionY", 240f },
+                { "Animation", "Idle" },
+                { "Facing", 1 }
+            };
+
+            // Push our entry to the data storage.
+            Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"] = playerDataStorage;
+
+            // Loop through each player in the multiworld.
+            foreach (PlayerInfo? player in Plugin.session.Players.AllPlayers)
+            {
+                // Ignore this player if they're us.
+                if (player.Slot == Plugin.session.ConnectionInfo.Slot)
+                    continue;
+
+                // Check that this player is a Freedom Planet 2 player like us.
+                if (player.Game == "Freedom Planet 2")
+                {
+                    // Check that this player has a data storage entry before creating their object.
+                    if (Plugin.session.DataStorage[$"FP2_PlayerSlot{player.Slot}"].To<JObject>() == null)
+                    {
+                        Plugin.consoleLog.LogWarning($"No DataStorage entry for player '{player.Name}'. Skipping creation of remote player object.");
+                        continue;
+                    }
+
+                    // Instantiate the RemotePlayer prefab from the AssetBundle and set its name to FP2_PlayerSlot and the player's slot number.
+                    GameObject remotePlayer = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("RemotePlayer"));
+                    remotePlayer.name = $"FP2_PlayerSlot{player.Slot}";
+
+                    // Set the text above the player's head to the player's name.
+                    remotePlayer.transform.GetChild(1).GetComponent<TextMesh>().text = player.Name;
+
+                    // Add the RemotePlayer script and set the associated player slot to this player's.
+                    remotePlayer.AddComponent<RemotePlayer>().associatedPlayerSlot = player.Slot;
+                }
+            }
         }
 
         /// <summary>

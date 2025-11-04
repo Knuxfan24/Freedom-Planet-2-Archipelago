@@ -1,4 +1,5 @@
 ﻿using FP2Lib.Player;
+using Newtonsoft.Json.Linq;
 using Rewired;
 using System.Linq;
 using System.Reflection.Emit;
@@ -78,6 +79,15 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
             // Create the chest tracers.
             CreateChestTracers();
+
+            // Tell the Data Storage where we are if we're using remote players.
+            if (Plugin.configRemotePlayers.Value == true)
+            {
+                JObject playerJObject = Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"].To<JObject>();
+                playerJObject["PositionX"] = player.position.x;
+                playerJObject["PositionY"] = player.position.y;
+                Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"] = playerJObject;
+            }
         }
 
         /// <summary>
@@ -1148,6 +1158,47 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
             // Stop the original function from running.
             return false;
+        }
+
+        /// <summary>
+        /// Updates the player position and facing direction on the data storage.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPPlayer), "Update")]
+        static void RemotePlayerPosition()
+        {
+            // Check if our position has actually changed so we don't update the data storage for no reason.
+            if (player.prevPosition != player.position && Plugin.configRemotePlayers.Value == true)
+            {
+                // Get our entry from the data storage.
+                JObject playerJObject = Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"].To<JObject>();
+
+                // Update our position and facing direction.
+                playerJObject["PositionX"] = player.position.x;
+                playerJObject["PositionY"] = player.position.y;
+                playerJObject["Facing"] = (int)player.direction;
+
+                // Push the updated entry to the data storage.
+                Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"] = playerJObject;
+            }
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPPlayer), "SetPlayerAnimation")]
+        static void RemotePlayerAnimation(ref bool skipNameCheck, ref string aniName)
+        {
+            // Only update the value if the conditions to actually change the animation are valid.
+            if ((!skipNameCheck && !(player.currentAnimation != aniName)) || Plugin.configRemotePlayers.Value == false)
+                return;
+
+            // Get our entry from the data storage.
+            JObject playerJObject = Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"].To<JObject>();
+
+            // Update our animation.
+            playerJObject["Animation"] = aniName;
+
+            // Push the updated entry to the data storage.
+            Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"] = playerJObject;
         }
     }
 }
