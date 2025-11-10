@@ -1162,6 +1162,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Updates the player position and facing direction on the data storage.
+        /// This and RemotePlayerAnimation are the functions that cause the horrendous lag I believe.
+        /// TODO: Try and understand how to potentially use the IEnumerator and Yield stuff to make updating the DataStorage here asynchronous.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "Update")]
@@ -1183,6 +1185,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             }
         }
 
+        /// <summary>
+        /// Updates the player animation on the data storage.
+        /// This and RemotePlayerPosition are the functions that cause the horrendous lag I believe.
+        /// TODO: Try and understand how to potentially use the IEnumerator and Yield stuff to make updating the DataStorage here asynchronous.
+        /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(FPPlayer), "SetPlayerAnimation")]
         static void RemotePlayerAnimation(ref bool skipNameCheck, ref string aniName)
