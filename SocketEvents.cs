@@ -243,6 +243,7 @@ namespace Freedom_Planet_2_Archipelago
                         case "Bomb": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "Bonk Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Bubble Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "Bullet Time Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
                         case "Buyon Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "Camera Rotate Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                         case "Chaos Control Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
@@ -267,6 +268,7 @@ namespace Freedom_Planet_2_Archipelago
                         case "Dry Trap": AddTrap(bouncedPacket, "No Stocks", true); break;
                         case "Eject Ability": AddTrap(bouncedPacket, "Swap Trap", true); break;
                         case "Electrocution Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
+                        case "Empty Item Box Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
                         case "Exposition Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
                         case "Fake Transition": AddTrap(bouncedPacket, "Zoom Trap"); break;
                         case "Fast Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
@@ -297,6 +299,7 @@ namespace Freedom_Planet_2_Archipelago
                         case "OmoTrap": AddTrap(bouncedPacket, "Aaa Trap"); break;
                         case "Paralyze Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Phone Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        case "Pixelate Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                         case "Poison Mushroom": AddTrap(bouncedPacket, "Zoom Trap"); break;
                         case "Poison Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
                         case "Police Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
@@ -310,6 +313,7 @@ namespace Freedom_Planet_2_Archipelago
                         case "Slow Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
                         case "Slowness Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
                         case "Spooky Time": AddTrap(bouncedPacket, "Zoom Trap"); break;
+                        case "Spotlight Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
                         case "Squash Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Stun Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "SvC Effect":
