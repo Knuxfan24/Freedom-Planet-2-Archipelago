@@ -1017,8 +1017,8 @@ namespace Freedom_Planet_2_Archipelago
 
             void SendTrapLink()
             {
-                // If we don't have TrapLink enabled or we're doing the initial connection, then don't send any TrapLink packets.
-                if ((long)Plugin.slotData["trap_link"] == 0 || fromStart)
+                // If we don't have TrapLink enabled, we're doing the initial connection or this item is FROM a TrapLink, then don't send any TrapLink packets.
+                if ((long)Plugin.slotData["trap_link"] == 0 || fromStart || trapLink)
                     return;
 
                 // Create a packet for this TrapLink and send it out.
