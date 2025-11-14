@@ -1003,6 +1003,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             player.SetPlayerAnimation("GuardAir", null, null, true);
             player.Action_Guard();
 
+            // Update our remote player's character value.
+            Plugin.ourRemotePlayer["Character"] = Helpers.GetPlayer();
+            Plugin.updatedRemotePlayer = true;
+
             // TODO: Figure out a way to stop an active attack hitbox from lingering here.
         }
 
@@ -1162,50 +1166,39 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Updates the player position and facing direction on the data storage.
-        /// This and RemotePlayerAnimation are the functions that cause the horrendous lag I believe.
-        /// TODO: Try and understand how to potentially use the IEnumerator and Yield stuff to make updating the DataStorage here asynchronous.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "Update")]
         static void RemotePlayerPosition()
         {
             // Check if our position has actually changed so we don't update the data storage for no reason.
-            if (player.prevPosition != player.position && Plugin.configRemotePlayers.Value == true)
+            if (player.prevPosition != player.position)
             {
-                // Get our entry from the data storage.
-                JObject playerJObject = Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"].To<JObject>();
-
                 // Update our position and facing direction.
-                playerJObject["PositionX"] = player.position.x;
-                playerJObject["PositionY"] = player.position.y;
-                playerJObject["Facing"] = (int)player.direction;
+                Plugin.ourRemotePlayer["PositionX"] = player.position.x;
+                Plugin.ourRemotePlayer["PositionY"] = player.position.y;
+                Plugin.ourRemotePlayer["Facing"] = (int)player.direction;
 
-                // Push the updated entry to the data storage.
-                Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"] = playerJObject;
+                Plugin.updatedRemotePlayer = true;
             }
         }
 
         /// <summary>
         /// Updates the player animation on the data storage.
-        /// This and RemotePlayerPosition are the functions that cause the horrendous lag I believe.
-        /// TODO: Try and understand how to potentially use the IEnumerator and Yield stuff to make updating the DataStorage here asynchronous.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(FPPlayer), "SetPlayerAnimation")]
         static void RemotePlayerAnimation(ref bool skipNameCheck, ref string aniName)
         {
             // Only update the value if the conditions to actually change the animation are valid.
-            if ((!skipNameCheck && !(player.currentAnimation != aniName)) || Plugin.configRemotePlayers.Value == false)
+            if (!skipNameCheck && !(player.currentAnimation != aniName))
                 return;
 
-            // Get our entry from the data storage.
-            JObject playerJObject = Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"].To<JObject>();
-
             // Update our animation.
-            playerJObject["Animation"] = aniName;
+            Plugin.ourRemotePlayer["Animation"] = aniName;
 
             // Push the updated entry to the data storage.
-            Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"] = playerJObject;
+            Plugin.updatedRemotePlayer = true;
         }
     }
 }

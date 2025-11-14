@@ -1,4 +1,5 @@
 ﻿// TODO: Release "Found [x]'s [y]" messages.
+// TODO: Test Remote Players with more than just one other client.
 global using Archipelago.MultiClient.Net;
 global using BepInEx;
 global using Freedom_Planet_2_Archipelago.CustomData;
@@ -6,18 +7,18 @@ global using HarmonyLib;
 global using System;
 global using System.Collections.Generic;
 global using UnityEngine;
-
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
+using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using Freedom_Planet_2_Archipelago.Patchers;
+using Newtonsoft.Json.Linq;
+using System.Collections;
 using System.IO;
 using System.Linq;
-using UnityEngine.SceneManagement;
-using System.Collections;
 using System.Threading;
-using Archipelago.MultiClient.Net.Models;
+using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago
 {
@@ -104,6 +105,11 @@ namespace Freedom_Planet_2_Archipelago
         private static readonly Queue<LocationData> LocationQueue = new Queue<LocationData>();
         private static readonly AutoResetEvent LocationSignal = new AutoResetEvent(false);
         private static Thread locationThread;
+
+        // Stuff to handle remote players on a different thread.
+        public static bool updatedRemotePlayer;
+        public static JObject ourRemotePlayer;
+        private static Thread remotePlayerThread;
 
         // Allow starting coroutines from static contexts.
         public static Plugin Instance;
@@ -333,6 +339,12 @@ namespace Freedom_Planet_2_Archipelago
                 locationThread = new Thread(LocationSenderLoop) { IsBackground = true, Name = "AP Location Sender" };
                 locationThread.Start();
             }
+
+            if (remotePlayerThread == null)
+            {
+                remotePlayerThread = new Thread(RemotePlayerHandler) { IsBackground = true, Name = "AP Remote Player Handler" };
+                remotePlayerThread.Start();
+            }
         }
         
         public static void EnqueueBounce(BouncePacket packet)
@@ -355,7 +367,105 @@ namespace Freedom_Planet_2_Archipelago
                 LocationSignal.Set();
             }
         }
-        
+
+        /// <summary>
+        /// Handles updating our own remote player data.
+        /// TODO: This thread seems to make the game freeze on close, requiring the BepInEx console to be closed to make it properly terminate?
+        /// </summary>
+        private static void RemotePlayerHandler()
+        {
+            while (Application.isPlaying)
+            {
+                try
+                {
+                    // If we aren't connected, then don't do anything here.
+                    if (Plugin.session == null)
+                        continue;
+                    if (Plugin.session.ConnectionInfo.Slot == -1)
+                        continue;
+
+                    // If we don't have remote players enabled, then return out of this thread.
+                    if (Plugin.configRemotePlayers.Value == false)
+                        return;
+    
+                    // Check if our remote player value is updated.
+                    if (updatedRemotePlayer)
+                    {
+                        // Update the data storage with our new information.
+                        Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"] = Plugin.ourRemotePlayer;
+
+                        // Clear the updated flag.
+                        updatedRemotePlayer = false;
+                    }
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles updates to a remote player's data.
+        /// </summary>
+        public static void RemotePlayerChanged(JToken originalValue, JToken newValue, Dictionary<string, JToken> additionalArguments)
+        {
+            // Find the remote player for this data storage entry.
+            GameObject remotePlayerObject = GameObject.Find($"FP2_PlayerSlot{originalValue["Player"]}");
+
+            // Check that we actually found an object.
+            if (remotePlayerObject != null)
+            {
+                // Find the RemotePlayer script for this object.
+                RemotePlayer script = remotePlayerObject.GetComponent<RemotePlayer>();
+
+                // Check that we actually found a script.
+                if (script != null)
+                {
+                    // Update the remote player's position, animation and direction values.
+                    script.position.x = (float)newValue["PositionX"];
+                    script.position.y = (float)newValue["PositionY"];
+                    script.currentAni = (string)newValue["Animation"];
+                    script.direction = (FPDirection)(int)newValue["Facing"];
+
+                    // Determine if we need to hide the object for this player or not (due to them not being in this stage).
+                    if ((string)newValue["Scene"] != SceneManager.GetActiveScene().name) remotePlayerObject.SetActive(false);
+                    else remotePlayerObject.SetActive(true);
+
+                    // Check if we've found a character for this player, or if they've changed due to a Swap Trap.
+                    if (!script.hasVisualCharacter || originalValue["Character"].Value<string>() != newValue["Character"].Value<string>())
+                    {
+                        // Try to find the right prefab index for this player's character.
+                        int prefabIndex = -1;
+                        switch ((string)newValue["Character"])
+                        {
+                            case "Lilac": prefabIndex = 0; break;
+                            case "Carol": prefabIndex = 3; break;
+                            case "Milla": prefabIndex = 2; break;
+                            case "Neera": prefabIndex = 1; break;
+                        }
+
+                        // Check if we found a prefab index.
+                        if (prefabIndex != -1)
+                        {
+                            // Set the hasCharacter flag to true.
+                            script.hasVisualCharacter = true;
+
+                            // Get the sprite and animator from the player prefab.
+                            remotePlayerObject.GetComponent<SpriteRenderer>().sprite = Plugin.playerPrefabs[prefabIndex].GetComponent<SpriteRenderer>().sprite;
+
+                            // Either get or create an animator for this player and set the controller to the one from the player prefab.
+                            Animator animator = remotePlayerObject.GetComponent<Animator>() ?? remotePlayerObject.AddComponent<Animator>();
+                            animator.runtimeAnimatorController = Plugin.playerPrefabs[prefabIndex].GetComponent<Animator>().runtimeAnimatorController;
+
+                            // Shift the arrow and name up so they still appear above the player, even if they're Neera.
+                            remotePlayerObject.transform.FindChild("arrow").transform.localPosition = new(0, 56, 0);
+                            remotePlayerObject.transform.FindChild("Name").transform.localPosition = new(0, 72, -4);
+                        }
+                    }
+                }
+            }
+        }
+
         private static void BounceSenderLoop()
         {
             while (Application.isPlaying)

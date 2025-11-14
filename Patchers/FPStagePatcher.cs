@@ -1,5 +1,4 @@
 ﻿using Archipelago.MultiClient.Net.Helpers;
-using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Linq;
 using UnityEngine.SceneManagement;
@@ -35,8 +34,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             if (Plugin.configRemotePlayers.Value == false)
                 return;
 
-            // Create an entry for the data storage for ourself.
-            JObject playerDataStorage = new()
+            // Set up our entry in the remote players data storage..
+            Plugin.ourRemotePlayer = new()
             {
                 { "Player", Plugin.session.ConnectionInfo.Slot },
                 { "Scene", SceneManager.GetActiveScene().name },
@@ -47,10 +46,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 { "Facing", 1 }
             };
 
-            // Push our entry to the data storage.
-            Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"] = playerDataStorage;
+            // Set the flag to update our data on the server.
+            Plugin.updatedRemotePlayer = true;
 
-            // Loop through each player in the multiworld.
+            // Loop through each player in this multiworld.
             foreach (PlayerInfo? player in Plugin.session.Players.AllPlayers)
             {
                 // Ignore this player if they're us.
@@ -60,13 +59,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 // Check that this player is a Freedom Planet 2 player like us.
                 if (player.Game == "Freedom Planet 2")
                 {
-                    // Check that this player has a data storage entry before creating their object.
-                    if (Plugin.session.DataStorage[$"FP2_PlayerSlot{player.Slot}"].To<JObject>() == null)
-                    {
-                        Plugin.consoleLog.LogWarning($"No DataStorage entry for player '{player.Name}'. Skipping creation of remote player object.");
-                        continue;
-                    }
-
                     // Instantiate the RemotePlayer prefab from the AssetBundle and set its name to FP2_PlayerSlot and the player's slot number.
                     GameObject remotePlayer = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("RemotePlayer"));
                     remotePlayer.name = $"FP2_PlayerSlot{player.Slot}";
@@ -74,8 +66,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     // Set the text above the player's head to the player's name.
                     remotePlayer.transform.GetChild(1).GetComponent<TextMesh>().text = player.Name;
 
-                    // Add the RemotePlayer script and set the associated player slot to this player's.
-                    remotePlayer.AddComponent<RemotePlayer>().associatedPlayerSlot = player.Slot;
+                    // Add the RemotePlayer script.
+                    remotePlayer.AddComponent<RemotePlayer>();
                 }
             }
         }

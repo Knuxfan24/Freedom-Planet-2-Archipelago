@@ -1,5 +1,6 @@
 ﻿using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
+using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
 using FP2Lib.Player;
 using Freedom_Planet_2_Archipelago.Patchers;
@@ -456,6 +457,22 @@ namespace Freedom_Planet_2_Archipelago.CustomData
 
             // Set the current character in FP2Lib, as we bypass where it would normally be set, which breaks everything.
             PlayerHandler.currentCharacter = PlayerHandler.GetPlayableCharaByFPCharacterId(FPSaveManager.character);
+
+            // Check if we're using remote players.
+            if (Plugin.configRemotePlayers.Value == true)
+            {
+                // Loop through each player in this multiworld.
+                foreach (PlayerInfo? player in Plugin.session.Players.AllPlayers)
+                {
+                    // Ignore this player if they're us.
+                    if (player.Slot == Plugin.session.ConnectionInfo.Slot)
+                        continue;
+
+                    // Check that this player is a Freedom Planet 2 player like us and set up an EventHandler to listen to their slot in the DataStorage.
+                    if (player.Game == "Freedom Planet 2")
+                        Plugin.session.DataStorage[$"FP2_PlayerSlot{player.Slot}"].OnValueChanged += Plugin.RemotePlayerChanged;
+                }
+            }
 
             // Swap to the nothing state.
             state = State_Nothing;
