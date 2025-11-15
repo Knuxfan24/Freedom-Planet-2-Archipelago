@@ -19,7 +19,16 @@
             "A MYURRDERRRR?!",
             null,
             "CONGRATULATIONS",
-            "Thief Alert!"
+            "Thief Alert!",
+            //null
+            "Did You Know?",
+            null,
+            "Message from Ghandi",
+            "Did You Know?",
+            "Shrine of Chance",
+            "The Ocean",
+            null,
+            "Need Reception?"
         ];
         private static readonly string[] messages =
         [
@@ -32,12 +41,21 @@
             "Explore the Keep\r\ntoday.\r\n\r\nThis message\r\nsponsored by\r\nThe Keymaster.", // Reference to Keymaster's Keep.
             "For humans!\r\n\r\nIsn't posionous to\r\nanybody!\r\n(that we know of...)", // Reference to The Simpsons: Hit and Run.
             "75% off your next\r\npurchase at JojaMart.", // Reference to Stardew Valley.
-            "Receiving this\r\nSpam Trap.\r\n\r\nIt fills you with\r\ndetermination.", // Reference to Undertale
+            "Receiving this\r\nSpam Trap...\r\n\r\nIt fills you with\r\ndetermination.", // Reference to Undertale
             "You feel an evil\r\npresence watching\r\nyou...", // Reference to Terraria.
             "ON MY OWL EXPRESS?!", // Reference to A Hat in Time.
             "eastmost peninsula\r\nis the secret", // Reference to The Legend of Zelda.
             "You've won your\r\nvery own mansion.\r\n\r\nClick here for\r\ndetails!", // Reference to Luigi's Mansion.
             "The word\r\n[PLAYER NAME],\r\nthey stole it too!", // Reference to Kingdom Hearts 2 apparently, think the original word is Photo?
+            //"You want fun? [PLAYER NAME] will show you fun..." // Needs spacing and the functionality to select a random name from the multiworld.
+            "There's a Mew\r\nunder the truck.", // Reference to Pokémon Red.
+            "i showed you my\r\ncacodemon plz\r\nrespond", // Reference to Doom.
+            "Our words are backed\r\nby nuclear weapons!", // Reference to Civilization.
+            "Metal Harbor is\r\nactually beatable\r\nwithout the\r\nLight Shoes!", // Reference to Sonic Adventure 2: Battle.
+            "You offer to the\r\nshrine, but gain\r\nnothing.", // Reference to Risk of Rain 2.
+            "Now with 75%\r\nmore Leviathan!", // Reference to Subnautica
+            "This advert\r\ndedicated to those\r\nwho perished on\r\nthe climb...", // Reference to Celeste
+            "Climb to the top\r\nof Hawk Peak!" // Reference to A Short Hike.
         ];
 
         // The valid colours to tint the background.
