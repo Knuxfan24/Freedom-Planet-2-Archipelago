@@ -31,8 +31,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 return;
             if (Plugin.session.ConnectionInfo.Slot == -1)
                 return;
-            if (Plugin.configRemotePlayers.Value == false)
-                return;
 
             // Set up our entry in the remote players data storage..
             Plugin.ourRemotePlayer = new()
@@ -45,6 +43,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 { "Animation", "Idle" },
                 { "Facing", 1 }
             };
+
+            if (Plugin.configRemotePlayers.Value == false)
+                return;
 
             // Set the flag to update our data on the server.
             Plugin.updatedRemotePlayer = true;
@@ -67,7 +68,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     remotePlayer.transform.GetChild(1).GetComponent<TextMesh>().text = player.Name;
 
                     // Add the RemotePlayer script.
-                    remotePlayer.AddComponent<RemotePlayer>();
+                    remotePlayer.AddComponent<RemotePlayer>().position = new(-240, 240);
                 }
             }
         }

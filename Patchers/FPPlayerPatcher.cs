@@ -80,14 +80,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Create the chest tracers.
             CreateChestTracers();
 
-            // Tell the Data Storage where we are if we're using remote players.
-            if (Plugin.configRemotePlayers.Value == true)
-            {
-                JObject playerJObject = Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"].To<JObject>();
-                playerJObject["PositionX"] = player.position.x;
-                playerJObject["PositionY"] = player.position.y;
-                Plugin.session.DataStorage[$"FP2_PlayerSlot{Plugin.session.ConnectionInfo.Slot}"] = playerJObject;
-            }
+            // Update our remote player's position.
+            Plugin.ourRemotePlayer["PositionX"] = player.position.x;
+            Plugin.ourRemotePlayer["PositionY"] = player.position.y;
+            Plugin.updatedRemotePlayer = true;
         }
 
         /// <summary>

@@ -421,22 +421,26 @@ namespace Freedom_Planet_2_Archipelago
                 // Check that we actually found a script.
                 if (script != null)
                 {
-                    // Update the remote player's position, animation and direction values.
-                    script.position.x = (float)newValue["PositionX"];
-                    script.position.y = (float)newValue["PositionY"];
-                    script.currentAni = (string)newValue["Animation"];
-                    script.direction = (FPDirection)(int)newValue["Facing"];
-
-                    // Determine if we need to hide the object for this player or not (due to them not being in this stage).
-                    if ((string)newValue["Scene"] != SceneManager.GetActiveScene().name) remotePlayerObject.SetActive(false);
-                    else remotePlayerObject.SetActive(true);
+                    if (newValue["Scene"].Value<string>() == SceneManager.GetActiveScene().name)
+                    {
+                        // Update the remote player's position, animation and direction values.
+                        script.position.x = newValue["PositionX"].Value<float>();
+                        script.position.y = newValue["PositionY"].Value<float>();
+                        script.currentAni = newValue["Animation"].Value<string>();
+                        script.direction = (FPDirection)newValue["Facing"].Value<int>();
+                    }
+                    else
+                    {
+                        script.position.x = -240f;
+                        script.position.y = 240f;
+                    }
 
                     // Check if we've found a character for this player, or if they've changed due to a Swap Trap.
                     if (!script.hasVisualCharacter || originalValue["Character"].Value<string>() != newValue["Character"].Value<string>())
                     {
                         // Try to find the right prefab index for this player's character.
                         int prefabIndex = -1;
-                        switch ((string)newValue["Character"])
+                        switch (newValue["Character"].Value<string>())
                         {
                             case "Lilac": prefabIndex = 0; break;
                             case "Carol": prefabIndex = 3; break;
