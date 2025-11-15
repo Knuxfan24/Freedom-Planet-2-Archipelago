@@ -231,6 +231,7 @@ namespace Freedom_Planet_2_Archipelago
                         case "Spike Ball Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "Pixellation Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                         case "Rail Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
+                        case "Spam Trap": AddTrap(bouncedPacket, "Spam Trap"); break;
 
                         // None FP2 Based Traps, sourced from https://docs.google.com/spreadsheets/d/1yoNilAzT5pSU9c2hYK7f2wHAe9GiWDiHFZz8eMe1oeQ/edit?gid=811965759#gid=811965759.
                         case "144p Trap": AddTrap(bouncedPacket, "Pixellation Trap", true); break;

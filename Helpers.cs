@@ -280,6 +280,7 @@ namespace Freedom_Planet_2_Archipelago
             int spikeballTrapCount = 0;
             int pixellationTrapCount = 0;
             int railTrapCount = 0;
+            int spamTrapCount = 0;
             int goldGemCount = 0;
             int crystalCount = 0;
             int extraLifeCount = 0;
@@ -297,6 +298,7 @@ namespace Freedom_Planet_2_Archipelago
             int savePixellationTrapCount = Plugin.save.PixellationTrapCount;
             int saveSpikeballTrapCount = Plugin.save.SpikeBallTrapCount;
             int saveRailTrapCount = Plugin.save.RailTrapCount;
+            int saveSpamTrapCount = Plugin.save.SpamTrapCount;
             int saveGoldGemCount = Plugin.save.GoldGemCount;
             int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveCrystalCount = Plugin.save.CrystalCount;
@@ -320,6 +322,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Spike Ball Trap": spikeballTrapCount += item.Value; break;
                     case "Pixellation Trap": pixellationTrapCount += item.Value; break;
                     case "Rail Trap": railTrapCount += item.Value; break;
+                    case "Spam Trap": spamTrapCount += item.Value; break;
 
                     case "Gold Gem": goldGemCount += item.Value; break;
                     case "Crystals": crystalCount += item.Value * 100; break;
@@ -355,6 +358,7 @@ namespace Freedom_Planet_2_Archipelago
             int trueSpikeballTrapCount = spikeballTrapCount - saveSpikeballTrapCount;
             int truePixellationTrapCount = pixellationTrapCount - savePixellationTrapCount;
             int trueRailTrapCount = railTrapCount - saveRailTrapCount;
+            int trueSpamTrapCount = spamTrapCount - saveSpamTrapCount;
             int trueCrystalCount = crystalCount - saveCrystalCount;
             int trueExtraLifeCount = extraLifeCount - saveExtraLifeCount;
             int trueInvincibilityCount = invincibilityCount - saveInvincibilityCount;
@@ -372,6 +376,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.save.SpikeBallTrapCount = saveSpikeballTrapCount + trueSpikeballTrapCount;
             Plugin.save.PixellationTrapCount = savePixellationTrapCount + truePixellationTrapCount;
             Plugin.save.RailTrapCount = saveRailTrapCount + trueRailTrapCount;
+            Plugin.save.SpamTrapCount = saveSpamTrapCount + trueSpamTrapCount;
             Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
             Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
             Plugin.save.InvincibilityCount = saveInvincibilityCount + trueInvincibilityCount;
@@ -903,6 +908,18 @@ namespace Freedom_Planet_2_Archipelago
                     SendTrapLink();
                     Plugin.RailTrap = true;
                     if (!trapLink) Plugin.save.RailTrapCount += item.Value;
+                    break;
+
+                case "Spam Trap":
+                    SendTrapLink();
+                    for (int spamTrapIndex = 0; spamTrapIndex < 5; spamTrapIndex++)
+                    {
+                        GameObject spamTrap = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("SpamTrap"));
+                        spamTrap.transform.position = new(Plugin.rng.Next(377), -Plugin.rng.Next(200), 0);
+                        spamTrap.AddComponent<SpamTrap>();
+                        UnityEngine.Object.DontDestroyOnLoad(spamTrap);
+                    }
+                    if (!trapLink) Plugin.save.SpamTrapCount += item.Value;
                     break;
 
                 // Unhandled items, throw an error into the console.
