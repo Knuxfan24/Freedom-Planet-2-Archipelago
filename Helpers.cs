@@ -377,6 +377,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.save.PixellationTrapCount = savePixellationTrapCount + truePixellationTrapCount;
             Plugin.save.RailTrapCount = saveRailTrapCount + trueRailTrapCount;
             Plugin.save.SpamTrapCount = saveSpamTrapCount + trueSpamTrapCount;
+            Plugin.SpamTrapCount = trueSpamTrapCount + 1;
             Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
             Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
             Plugin.save.InvincibilityCount = saveInvincibilityCount + trueInvincibilityCount;
@@ -912,13 +913,8 @@ namespace Freedom_Planet_2_Archipelago
 
                 case "Spam Trap":
                     SendTrapLink();
-                    for (int spamTrapIndex = 0; spamTrapIndex < 5; spamTrapIndex++)
-                    {
-                        GameObject spamTrap = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("SpamTrap"));
-                        spamTrap.transform.position = new(Plugin.rng.Next(377), -Plugin.rng.Next(200), 0);
-                        spamTrap.AddComponent<SpamTrap>();
-                        UnityEngine.Object.DontDestroyOnLoad(spamTrap);
-                    }
+                    Plugin.SpamTrapCount += item.Value * 7;
+                    if (!fromStart) SpawnSpamTrap();
                     if (!trapLink) Plugin.save.SpamTrapCount += item.Value;
                     break;
 
@@ -1142,5 +1138,22 @@ namespace Freedom_Planet_2_Archipelago
             return uri.ToString();
         }
 
+        /// <summary>
+        /// Creates the Spam Trap object.
+        /// </summary>
+        public static void SpawnSpamTrap()
+        {
+            // Instantiate the prefab from the asset bundle.
+            GameObject spamTrap = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("SpamTrap"));
+
+            // Pick a random position for the trap to appear on screen.
+            spamTrap.transform.position = new(Plugin.rng.Next(377), -Plugin.rng.Next(200), 0);
+
+            // Add the actual script to the object.
+            spamTrap.AddComponent<SpamTrap>();
+
+            // Make sure the spam trap persists through scene changes.
+            UnityEngine.Object.DontDestroyOnLoad(spamTrap);
+        }
     }
 }

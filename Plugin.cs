@@ -111,6 +111,9 @@ namespace Freedom_Planet_2_Archipelago
         public static JObject ourRemotePlayer;
         private static Thread remotePlayerThread;
 
+        // How many spam traps are left.
+        public static int SpamTrapCount;
+
         // Allow starting coroutines from static contexts.
         public static Plugin Instance;
 

@@ -1,4 +1,6 @@
-﻿namespace Freedom_Planet_2_Archipelago.CustomData
+﻿using Archipelago.MultiClient.Net.Helpers;
+
+namespace Freedom_Planet_2_Archipelago.CustomData
 {
     internal class SpamTrap : FPBaseObject
     {
@@ -20,7 +22,7 @@
             null,
             "CONGRATULATIONS",
             "Thief Alert!",
-            //null
+            null,
             "Did You Know?",
             null,
             "Message from Ghandi",
@@ -28,7 +30,10 @@
             "Shrine of Chance",
             "The Ocean",
             null,
-            "Need Reception?"
+            "Need Reception?",
+            "AURORA BOREALIS",
+            "Dear [PLAYER NAME]",
+            "ALERT"
         ];
         private static readonly string[] messages =
         [
@@ -47,7 +52,7 @@
             "eastmost peninsula\r\nis the secret", // Reference to The Legend of Zelda.
             "You've won your\r\nvery own mansion.\r\n\r\nClick here for\r\ndetails!", // Reference to Luigi's Mansion.
             "The word\r\n[PLAYER NAME],\r\nthey stole it too!", // Reference to Kingdom Hearts 2 apparently, think the original word is Photo?
-            //"You want fun? [PLAYER NAME] will show you fun..." // Needs spacing and the functionality to select a random name from the multiworld.
+            "You want fun?\r\n[PLAYER NAME]\r\nwill show you fun...",
             "There's a Mew\r\nunder the truck.", // Reference to Pokémon Red.
             "i showed you my\r\ncacodemon plz\r\nrespond", // Reference to Doom.
             "Our words are backed\r\nby nuclear weapons!", // Reference to Civilization.
@@ -55,7 +60,10 @@
             "You offer to the\r\nshrine, but gain\r\nnothing.", // Reference to Risk of Rain 2.
             "Now with 75%\r\nmore Leviathan!", // Reference to Subnautica
             "This advert\r\ndedicated to those\r\nwho perished on\r\nthe climb...", // Reference to Celeste
-            "Climb to the top\r\nof Hawk Peak!" // Reference to A Short Hike.
+            "Climb to the top\r\nof Hawk Peak!", // Reference to A Short Hike.
+            "At this time of year?\r\nAt this time of day?\r\nIn this part of the\r\nmutliworld?\r\n\r\nLocalised entirely\r\nwithin your slot data?!", // You know what this is a reference to...
+            "Please come to the\r\ncastle. I've baked\r\na cake for you.\r\nYours truly--\r\nPrincess Toadstool", // Reference to Super Mario 64.
+            "[PLAYER NAME]\r\nhas died in an\r\naccident on\r\nSteeplechase 1!", // Also a reference to OpenRCT2.
         ];
 
         // The valid colours to tint the background.
@@ -90,8 +98,8 @@
             // Force this script to always be active.
             activationMode = FPActivationMode.ALWAYS_ACTIVE;
 
-            // Randomly set the timer to a value between 2 and 10.
-            genericTimer = Plugin.rng.Next(2, 11);
+            // Randomly set the timer to a value between 3 and 5.
+            genericTimer = Plugin.rng.Next(3, 6);
 
             // Select the message to display.
             var messageIndex = Plugin.rng.Next(messages.Length);
@@ -112,9 +120,14 @@
             // Update the body element's text.
             gameObject.transform.GetChild(2).GetComponent<TextMesh>().text = messages[messageIndex];
 
-            // Swap out [PLAYER NAME] with our name.
-            // TODO: Maybe pick a player's name at random?
-            gameObject.transform.GetChild(2).GetComponent<TextMesh>().text = gameObject.transform.GetChild(2).GetComponent<TextMesh>().text.Replace("[PLAYER NAME]", Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot));
+            // Swap out [PLAYER NAME] in the header with our name.
+            gameObject.transform.GetChild(1).GetComponent<TextMesh>().text = gameObject.transform.GetChild(1).GetComponent<TextMesh>().text.Replace("[PLAYER NAME]", Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot));
+
+            // Swap out [PLAYER NAME] in the body with a random name from the multiworld.
+            List<string> playerNames = [];
+            foreach (PlayerInfo? player in Plugin.session.Players.AllPlayers)
+                playerNames.Add(player.Name);
+            gameObject.transform.GetChild(2).GetComponent<TextMesh>().text = gameObject.transform.GetChild(2).GetComponent<TextMesh>().text.Replace("[PLAYER NAME]", playerNames[Plugin.rng.Next(playerNames.Count)]);
         }
 
         private void Update()
@@ -132,9 +145,19 @@
             // Decrement our timer by the game's delta time.
             genericTimer -= Time.deltaTime;
 
-            // If we've reached 0 on the timer, then kill this spam trap's object.
+            // Check if we've reached 0 on our timer.
             if (genericTimer <= 0)
+            {
+                // Kill this spam trap's object.
                 Destroy(this.gameObject);
+
+                // Decrement the spam trap count.
+                Plugin.SpamTrapCount--;
+
+                // If the spam trap count is still above 0, then spawn a new one.
+                if (Plugin.SpamTrapCount > 0)
+                    Helpers.SpawnSpamTrap();
+            }
         }
     }
 }
