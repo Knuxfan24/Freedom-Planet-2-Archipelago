@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Reflection.Emit;
-
-namespace Freedom_Planet_2_Archipelago.Patchers
+﻿namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class MenuJukeboxPatcher
     {

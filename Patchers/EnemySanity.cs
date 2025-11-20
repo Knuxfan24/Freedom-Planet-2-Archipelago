@@ -1,8 +1,4 @@
-﻿using Archipelago.MultiClient.Net.Models;
-using System.Linq;
-using System.Collections;
-
-namespace Freedom_Planet_2_Archipelago.Patchers
+﻿namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class EnemySanity
     {

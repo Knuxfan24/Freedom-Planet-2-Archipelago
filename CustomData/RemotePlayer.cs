@@ -2,9 +2,6 @@
 {
     internal class RemotePlayer : FPBaseObject
     {
-        // FPBaseObject stuff.
-        private FPObjectState state;
-
         /// <summary>
         /// The animation this remote player should be using.
         /// </summary>

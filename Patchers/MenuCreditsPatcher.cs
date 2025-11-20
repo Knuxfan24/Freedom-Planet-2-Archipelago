@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Freedom_Planet_2_Archipelago.Patchers
+﻿namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class MenuCreditsPatcher
     {
@@ -12,7 +10,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         static void MoveThings()
         {
             // Grab all the objects in the credits scene before the game disables some.
-            GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>().Where(x => x.activeInHierarchy).ToArray();
+            GameObject[] allObjects = [.. UnityEngine.Object.FindObjectsOfType<GameObject>().Where(x => x.activeInHierarchy)];
 
             // Disable all the Time Capsules, as they don't mean anything for the credits in AP.
             foreach (var obj in allObjects.Where(x => x.name.StartsWith("CapsuleSlot")))

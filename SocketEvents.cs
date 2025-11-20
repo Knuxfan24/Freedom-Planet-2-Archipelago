@@ -1,10 +1,4 @@
-﻿using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
-using Archipelago.MultiClient.Net.Models;
-using Archipelago.MultiClient.Net.Packets;
-using Freedom_Planet_2_Archipelago.Patchers;
-using System.Linq;
-
-namespace Freedom_Planet_2_Archipelago
+﻿namespace Freedom_Planet_2_Archipelago
 {
     internal class SocketEvents
     {

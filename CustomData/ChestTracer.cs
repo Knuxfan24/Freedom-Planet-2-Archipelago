@@ -1,6 +1,4 @@
-﻿using Freedom_Planet_2_Archipelago.Patchers;
-
-namespace Freedom_Planet_2_Archipelago.CustomData
+﻿namespace Freedom_Planet_2_Archipelago.CustomData
 {
     internal class ChestTracer : FPBaseObject
     {

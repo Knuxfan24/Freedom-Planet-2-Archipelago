@@ -26,7 +26,7 @@
                     FPPlayerPatcher.player.Action_Crush();
 
                     // Send a DeathLink with the message "Character ran out of time."
-                    Plugin.DeathLink.SendDeathLink(new Archipelago.MultiClient.Net.BounceFeatures.DeathLink.DeathLink(Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot), $"{Helpers.GetPlayer()} ran out of time."));
+                    Plugin.DeathLink.SendDeathLink(new DeathLink(Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot), $"{Helpers.GetPlayer()} ran out of time."));
                 }
             }
         }

@@ -1,10 +1,4 @@
-﻿using Archipelago.MultiClient.Net.Models;
-using Archipelago.MultiClient.Net.Packets;
-using FP2Lib.Player;
-using Freedom_Planet_2_Archipelago.Patchers;
-using Newtonsoft.Json;
-using System.IO;
-using System.Linq;
+﻿using FP2Lib.Player;
 using System.Text;
 
 namespace Freedom_Planet_2_Archipelago
@@ -965,7 +959,7 @@ namespace Freedom_Planet_2_Archipelago
                         return;
 
                     // Add this item to the player.
-                    FPPlayerPatcher.player.powerups = FPPlayerPatcher.player.powerups.AddItem(item).ToArray();
+                    FPPlayerPatcher.player.powerups = [.. FPPlayerPatcher.player.powerups.AddItem(item)];
 
                     // Apply extra edits for items that need them.
                     switch (item)
@@ -1061,12 +1055,11 @@ namespace Freedom_Planet_2_Archipelago
         public static string GetPlayer()
         {
             // Determine our character ID.
-            int character = -1;
+            int character = (int)FPSaveManager.character;
 
+            // Replace our character ID with the active player if they exist.
             if (FPPlayerPatcher.player != null)
                 character = (int)FPPlayerPatcher.player.characterID;
-            else
-                character = (int)FPSaveManager.character;
 
             switch ((FPCharacterID)character)
             {

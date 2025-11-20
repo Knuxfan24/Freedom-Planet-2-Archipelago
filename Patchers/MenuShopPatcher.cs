@@ -1,10 +1,4 @@
-﻿using Archipelago.MultiClient.Net.Models;
-using FP2Lib.Player;
-using Newtonsoft.Json;
-using System.IO;
-using System.Linq;
-
-namespace Freedom_Planet_2_Archipelago.Patchers
+﻿namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class MenuShopPatcher
     {
@@ -84,7 +78,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Wait for the scout to finish before continuing.
                 while (_ScoutedLocationInfo.Count < itemCount)
-                    System.Threading.Thread.Sleep(1);
+                    Thread.Sleep(1);
 
                 // Get the sprites for the items in this shop.
                 List<Sprite> sprites = [];

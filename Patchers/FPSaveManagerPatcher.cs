@@ -1,6 +1,6 @@
-﻿using Archipelago.MultiClient.Net.Packets;
-using System.Reflection.Emit;
-
+﻿#pragma warning disable IDE0028 // Simplify collection initialization, too lazy to test if applying this here will cause any issues.
+#pragma warning disable IDE0306 // ^
+#pragma warning disable IDE0060 // Remove unused parameter, as it tries to remove ones that I believe are needed actually.
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class FPSaveManagerPatcher
@@ -158,3 +158,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         }
     }
 }
+#pragma warning restore IDE0028 // Simplify collection initialization
+#pragma warning restore IDE0306 // ^
+#pragma warning restore IDE0060 // Remove unused parameter

@@ -1,6 +1,4 @@
 ﻿using FP2Lib.Player;
-using System.Linq;
-using System.Reflection.Emit;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
@@ -58,7 +56,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 __instance.itemsForSale[itemIndex] = (FPPowerup)(itemIndex + 2);
 
             // Create the array for the Gold Gem cost for Milla's shop, setting all 30 values to 1. 
-            __instance.itemCosts = Enumerable.Repeat(1, 30).ToArray();
+            __instance.itemCosts = [.. Enumerable.Repeat(1, 30)];
 
             // Create the array for the Star Card requirements for Milla's shop, setting its length to 30 then setting the value of each item linerally from 1.
             __instance.starCardRequirements = new int[30];
@@ -261,7 +259,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuClassic), "UpdateIcons")]
-        static bool ManageLockPanels(MenuClassic __instance, ref int ___currentTile)
+        static bool ManageLockPanels(MenuClassic __instance)
         {
             // Loop through the stage list.
             for (int stageIndex = 0; stageIndex < __instance.stages.Length; stageIndex++)
@@ -425,7 +423,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             }
 
             // Set up a value to determine if we have this stage's tracer.
-            bool hasTracer = false;
+            bool hasTracer;
 
             // Set hasTracer depending on the selected tile's index. If its not one that has a tracer at all, then null the sprite out.
             switch (___currentTile)
@@ -696,7 +694,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             void GetLocations(string stageName)
             {
                 // Set up a value to hold our location indices.
+                #pragma warning disable IDE0059 // Unnecessary assignment of a value, this actually DOES need to start as -1.
                 long locationIndex = -1;
+                #pragma warning restore IDE0059
 
                 // Check if the highlighted stage is the Battlesphere, as we handle that differently.
                 if (stageName == "The Battlesphere")

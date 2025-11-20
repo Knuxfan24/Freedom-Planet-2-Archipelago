@@ -1,8 +1,4 @@
-﻿using Archipelago.MultiClient.Net.Models;
-using System.Linq;
-using UnityEngine.SceneManagement;
-
-namespace Freedom_Planet_2_Archipelago.Patchers
+﻿namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class ItemStarCardPatcher
     {
@@ -58,7 +54,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
             // Pause operation until the location is scouted.
             while (_scoutedLocationInfo == null)
-                System.Threading.Thread.Sleep(1);
+                Thread.Sleep(1);
 
             // If this location has a Star Card, then abort.
             if (_scoutedLocationInfo.ItemName == "Star Card")

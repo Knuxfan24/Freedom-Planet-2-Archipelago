@@ -1,7 +1,4 @@
 ﻿using Archipelago.MultiClient.Net.Helpers;
-using System.IO;
-using System.Linq;
-using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {

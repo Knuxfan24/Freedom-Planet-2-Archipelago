@@ -1,24 +1,26 @@
 ﻿// TODO: Release "Found [x]'s [y]" messages.
-// TODO: Test Remote Players with more than just one other client.
 global using Archipelago.MultiClient.Net;
+global using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
+global using Archipelago.MultiClient.Net.Models;
+global using Archipelago.MultiClient.Net.Packets;
 global using BepInEx;
 global using Freedom_Planet_2_Archipelago.CustomData;
+global using Freedom_Planet_2_Archipelago.Patchers;
 global using HarmonyLib;
+global using Newtonsoft.Json;
 global using System;
 global using System.Collections.Generic;
+global using System.IO;
+global using System.Linq;
+global using System.Reflection.Emit;
+global using System.Threading;
 global using UnityEngine;
-using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
-using Archipelago.MultiClient.Net.Models;
-using Archipelago.MultiClient.Net.Packets;
+global using UnityEngine.SceneManagement;
+
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using Freedom_Planet_2_Archipelago.Patchers;
 using Newtonsoft.Json.Linq;
 using System.Collections;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago
 {
@@ -67,11 +69,11 @@ namespace Freedom_Planet_2_Archipelago
         public static List<string> sentMessageQueue = [];
 
         // Random character selector.
-        public static System.Random rng = new(); // Also used by the Swap Trap.
+        public static System.Random rng = new();
         public static bool usingRandomCharacter = false;
+        public static List<GameObject> playerPrefabs = [];
 
         // Trap based values.
-        public static List<GameObject> playerPrefabs = []; // Only used by the Swap Trap, so we'll place it under this set.
         public static float MirrorTrapTimer = -1;
         public static float PowerPointTrapTimer = -1;
         public static float ZoomTrapTimer = -1;
@@ -99,12 +101,12 @@ namespace Freedom_Planet_2_Archipelago
         public static List<DialogQueue> WeaponsCoreUnlockLines = [];
         
         // Background bounce-packet sender to keep SendPacket off the main thread.
-        private static readonly Queue<BouncePacket> BounceQueue = new Queue<BouncePacket>();
-        private static readonly AutoResetEvent BounceSignal = new AutoResetEvent(false);
+        private static readonly Queue<BouncePacket> BounceQueue = new();
+        private static readonly AutoResetEvent BounceSignal = new(false);
         private static Thread bounceThread;
         
-        private static readonly Queue<LocationData> LocationQueue = new Queue<LocationData>();
-        private static readonly AutoResetEvent LocationSignal = new AutoResetEvent(false);
+        private static readonly Queue<LocationData> LocationQueue = new();
+        private static readonly AutoResetEvent LocationSignal = new(false);
         private static Thread locationThread;
 
         // Stuff to handle remote players on a different thread.
@@ -143,22 +145,24 @@ namespace Freedom_Planet_2_Archipelago
             // Loop through each WAV file in the sounds directory.
             foreach (string wavFile in Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sounds\", "*.wav"))
             {
+                #pragma warning disable IDE0063 // Use simple 'using' statement. Removing the braces feels MORE complicated.
                 using (WWW audioLoader = new(Helpers.FilePathToFileUrl(wavFile)))
                 {
                     // Freeze the game until the audio loader is done.
                     while (!audioLoader.isDone)
-                        System.Threading.Thread.Sleep(1);
+                        Thread.Sleep(1);
 
                     // Create an audio clip from the loaded file.
                     AudioClip audio = audioLoader.GetAudioClip(false, true, AudioType.WAV);
 
                     // Freeze the application until the audio clip is loaded fully.
                     while (!(audio.loadState == AudioDataLoadState.Loaded))
-                        System.Threading.Thread.Sleep(1);
+                        Thread.Sleep(1);
 
                     // Add the loaded audio to our dictionary of audio clips.
                     ItemSounds.Add(Path.GetFileNameWithoutExtension(wavFile).ToLower(), audio);
                 }
+                #pragma warning restore IDE0063
             }
 
             // Get the player prefabs from the game itself.
@@ -419,7 +423,9 @@ namespace Freedom_Planet_2_Archipelago
         /// <summary>
         /// Handles updates to a remote player's data.
         /// </summary>
+        #pragma warning disable IDE0060 // Remove unused parameter, as the additionalArguments value this complains about IS needed.
         public static void RemotePlayerChanged(JToken originalValue, JToken newValue, Dictionary<string, JToken> additionalArguments)
+        #pragma warning restore IDE0060
         {
             // Find the remote player for this data storage entry.
             GameObject remotePlayerObject = GameObject.Find($"FP2_PlayerSlot{originalValue["Player"]}");
@@ -666,7 +672,6 @@ namespace Freedom_Planet_2_Archipelago
         private IEnumerator PowerPointTrapRoutine(float duration)
         {
             _powerPointActive = true;
-            int originalFps = Application.targetFrameRate;
             Application.targetFrameRate = 15;
             float t = duration;
             while (t > 0f)
@@ -693,8 +698,7 @@ namespace Freedom_Planet_2_Archipelago
                 {
                     // Ensure restoration if a zero/expired value arrives.
                     ZoomTrapTimer = -1;
-                    if (FPCamera.stageCamera != null)
-                        FPCamera.stageCamera.RequestZoom(1f, FPCamera.ZoomPriority_VeryHigh);
+                    FPCamera.stageCamera?.RequestZoom(1f, FPCamera.ZoomPriority_VeryHigh);
                 }
                 yield return null;
             }
@@ -708,13 +712,11 @@ namespace Freedom_Planet_2_Archipelago
             while (t > 0f)
             {
                 t -= Time.deltaTime;
-                if (FPCamera.stageCamera != null)
-                    FPCamera.stageCamera.RequestZoom(0.5f, FPCamera.ZoomPriority_VeryHigh);
+                FPCamera.stageCamera?.RequestZoom(0.5f, FPCamera.ZoomPriority_VeryHigh);
                 yield return null;
             }
             
-            if (FPCamera.stageCamera != null)
-                FPCamera.stageCamera.RequestZoom(1f, FPCamera.ZoomPriority_VeryHigh);
+            FPCamera.stageCamera?.RequestZoom(1f, FPCamera.ZoomPriority_VeryHigh);
             _zoomActive = false;
         }
 
@@ -732,8 +734,7 @@ namespace Freedom_Planet_2_Archipelago
                 else if (PixellationTrapTimer <= 0 && PixellationTrapTimer > -1 && !_pixellationActive)
                 {
                     PixellationTrapTimer = -1;
-                    if (FPCamera.stageCamera != null)
-                        FPCamera.stageCamera.ResizeRenderTextures(FPSaveManager.screenInternalScale);
+                    FPCamera.stageCamera?.ResizeRenderTextures(FPSaveManager.screenInternalScale);
                 }
                 yield return null;
             }
@@ -750,20 +751,17 @@ namespace Freedom_Planet_2_Archipelago
                 if (messageBanner != null &&
                     messageBanner.GetComponent<MessageBanner>().state == messageBanner.GetComponent<MessageBanner>().State_Idle)
                 {
-                    if (FPCamera.stageCamera != null)
-                        FPCamera.stageCamera.ResizeRenderTextures(0.25f);
+                    FPCamera.stageCamera?.ResizeRenderTextures(0.25f);
                     t -= Time.deltaTime;
                 }
                 else
                 {
-                    if (FPCamera.stageCamera != null)
-                        FPCamera.stageCamera.ResizeRenderTextures(FPSaveManager.screenInternalScale);
+                    FPCamera.stageCamera?.ResizeRenderTextures(FPSaveManager.screenInternalScale);
                 }
                 yield return null;
             }
 
-            if (FPCamera.stageCamera != null)
-                FPCamera.stageCamera.ResizeRenderTextures(FPSaveManager.screenInternalScale);
+            FPCamera.stageCamera?.ResizeRenderTextures(FPSaveManager.screenInternalScale);
             _pixellationActive = false;
         }
 

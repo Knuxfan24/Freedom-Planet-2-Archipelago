@@ -1,8 +1,4 @@
-﻿using Archipelago.MultiClient.Net.Models;
-using System.Linq;
-using System.Reflection.Emit;
-
-namespace Freedom_Planet_2_Archipelago.Patchers
+﻿namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class MenuArenaChallengeSelectPatcher
     {
@@ -48,7 +44,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
             // Wait for the scout to finish before continuing.
             while (_ScoutedLocationInfo.Count < 18)
-                System.Threading.Thread.Sleep(1);
+                Thread.Sleep(1);
 
             // Get the sprites for the items in the Battlesphere.
             List<Sprite> sprites = [];
@@ -122,9 +118,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 if (challengeSuperTextMesh != null)
                     challengeSuperTextMesh.text = FPSaveManager.GetChallengeName(keyIndex + ___challengeIDOffset - 1);
 
-                // Set this challenge banner's sprite.
-                if (challengeBanner != null)
-                    challengeBanner.SetDigitValue(keyIndex);
+                // Set this challenge banner's sprite, assuming it exists
+                challengeBanner?.SetDigitValue(keyIndex);
             }
         }
 

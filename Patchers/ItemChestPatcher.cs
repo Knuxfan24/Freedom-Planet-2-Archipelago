@@ -1,8 +1,4 @@
-﻿using Archipelago.MultiClient.Net.Models;
-using System.Linq;
-using UnityEngine.SceneManagement;
-
-namespace Freedom_Planet_2_Archipelago.Patchers
+﻿namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class ItemChestPatcher
     {
@@ -31,7 +27,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Pause operation until the location is scouted.
                 while (_scoutedLocationInfo == null)
-                    System.Threading.Thread.Sleep(1);
+                    Thread.Sleep(1);
 
                 // Check that this chest hasn't been checked.
                 if (!Plugin.session.Locations.AllLocationsChecked.Contains(locationIndex))
@@ -163,7 +159,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(ItemChest), "BoxHit")]
-        static void SendLocationCheck(ItemChest __instance, FPPlayer playerClassRef)
+        static void SendLocationCheck(ItemChest __instance)
         {
             // Get the index of this chest's location.
             long locationIndex = GetLocationIndex(__instance);

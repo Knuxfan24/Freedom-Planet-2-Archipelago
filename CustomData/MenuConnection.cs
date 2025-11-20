@@ -1,12 +1,6 @@
-﻿using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
-using Archipelago.MultiClient.Net.Enums;
+﻿using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
-using Archipelago.MultiClient.Net.Models;
 using FP2Lib.Player;
-using Freedom_Planet_2_Archipelago.Patchers;
-using Newtonsoft.Json;
-using System.IO;
-using System.Linq;
 
 namespace Freedom_Planet_2_Archipelago.CustomData
 {
@@ -327,7 +321,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                 {
                     Plugin.items = items;
                 },
-                false, locations.ToArray());
+                false, [.. locations]);
 
             // Create the DeathLink service and the socket handler for receiving them.
             Plugin.DeathLink = Plugin.session.CreateDeathLinkService();
@@ -371,7 +365,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                 Plugin.save = JsonConvert.DeserializeObject<ArchipelagoSave>(File.ReadAllText($@"{Paths.GameRootPath}\Archipelago Saves\{Plugin.session.RoomState.Seed}_Save.json"));
 
             if ((long)Plugin.slotData["chest_tracer_items"] == 0)
-                Plugin.save.ChestTracers = Enumerable.Repeat(true, 24).ToArray();
+                Plugin.save.ChestTracers = [.. Enumerable.Repeat(true, 24)];
 
             // Unlock the "Empty" item for both the Brave Stones and Potions so the menu doesn't freak out and break.
             Plugin.save.BraveStones[0] = true;

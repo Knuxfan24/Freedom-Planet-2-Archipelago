@@ -1,9 +1,5 @@
 ﻿using FP2Lib.Player;
-using Newtonsoft.Json.Linq;
 using Rewired;
-using System.Linq;
-using System.Reflection.Emit;
-using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
@@ -621,7 +617,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 Plugin.sentMessageQueue.Add("Sending death to your friends!");
 
                 // Send a DeathLink.
-                Plugin.DeathLink.SendDeathLink(new Archipelago.MultiClient.Net.BounceFeatures.DeathLink.DeathLink(Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot), reason));
+                Plugin.DeathLink.SendDeathLink(new DeathLink(Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot), reason));
 
                 // Print the DeathLink send to the console too, as a debug log.
                 Plugin.consoleLog.LogDebug($"Sending DeathLink with reason:\r\n\t{reason}");

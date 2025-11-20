@@ -67,15 +67,15 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         ];
 
         // The valid colours to tint the background.
-        private static readonly Color[] colours =
+        private static readonly UnityEngine.Color[] colours =
         [
-            Color.black,
-            Color.white, // Acts as blue due to the background already being blue.
-            Color.cyan,
-            Color.green,
-            Color.magenta,
-            Color.red,
-            Color.yellow
+            UnityEngine.Color.black,
+            UnityEngine.Color.white, // Acts as blue due to the background already being blue.
+            UnityEngine.Color.cyan,
+            UnityEngine.Color.green,
+            UnityEngine.Color.magenta,
+            UnityEngine.Color.red,
+            UnityEngine.Color.yellow
         ];
 
         // FPBaseObject stuff.

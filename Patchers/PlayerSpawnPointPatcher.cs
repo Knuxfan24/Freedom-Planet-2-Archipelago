@@ -1,6 +1,4 @@
-﻿using UnityEngine.SceneManagement;
-
-namespace Freedom_Planet_2_Archipelago.Patchers
+﻿namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class PlayerSpawnPointPatcher
     {

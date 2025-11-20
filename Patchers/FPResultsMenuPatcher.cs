@@ -1,8 +1,4 @@
 ﻿using Archipelago.MultiClient.Net.Enums;
-using Archipelago.MultiClient.Net.Models;
-using Archipelago.MultiClient.Net.Packets;
-using System.Linq;
-using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {

@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Freedom_Planet_2_Archipelago.CustomData
+﻿namespace Freedom_Planet_2_Archipelago.CustomData
 {
     public class ArchipelagoSave
     {
