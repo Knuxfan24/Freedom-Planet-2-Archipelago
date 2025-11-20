@@ -81,15 +81,46 @@ namespace Freedom_Planet_2_Archipelago
         {
             switch (packet)
             {
-                case ChatPrintJsonPacket printJSON:
+                // Unused placeholder to print the packet's type.
+                //default:
+                //    Plugin.consoleLog.LogDebug(packet.PacketType);
+                //    break;
 
-                    // Create a new dialog queue entry based on the packet's data.
+                // Used by chat messages and server messages.
+                case PrintJsonPacket printJSON:
+                    // Don't do any of this if we aren't piping any of the chat through.
+                    if (Plugin.configChat.Value == 0)
+                        break;
+
+                    // Set up values for the actual message and (if needed) the player name of its origin.
+                    string message = "";
+                    string player = "";
+
+                    // Try and parse this Print JSON packet as a chat message.
+                    try
+                    {
+                        message = ((ChatPrintJsonPacket?)printJSON).Message;
+                        player = Plugin.session.Players.GetPlayerName(((ChatPrintJsonPacket?)printJSON).Slot);
+                    }
+
+                    // If we failed to parse this packet as a chat message, then handle its raw text data.
+                    catch
+                    {
+                        // Don't do this if we're not piping all the messages through.
+                        if (Plugin.configChat.Value != 2)
+                            break;
+
+                        foreach (JsonMessagePart? jsonData in printJSON.Data)
+                            message += jsonData.Text;
+                    }
+
+                    // Create a new dialog queue entry based on the data read from the packet.
                     DialogQueue dialogMessage = new()
                     {
                         active = true,
-                        text = printJSON.Message,
-                        lengthOffset = Math.Max(2f, printJSON.Message.Split([' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length / 2),
-                        name = Plugin.session.Players.GetPlayerName(printJSON.Slot),
+                        text = message,
+                        lengthOffset = Math.Max(2f, message.Split([' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length / 2),
+                        name = player,
                         portrait = Plugin.apChatIcon
                     };
 

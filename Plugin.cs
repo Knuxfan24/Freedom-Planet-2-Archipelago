@@ -45,6 +45,7 @@ namespace Freedom_Planet_2_Archipelago
         public static ConfigEntry<long> configRingLinkOverride;
         public static ConfigEntry<long> configTrapLinkOverride;
         public static ConfigEntry<bool> configRemotePlayers;
+        public static ConfigEntry<int> configChat;
 
         // The AP session's data.
         public static ArchipelagoSession session;
@@ -214,8 +215,16 @@ namespace Freedom_Planet_2_Archipelago
                                               "Remote Players",
                                               false,
                                               "Allows other Freedom Planet 2 players in the multiworld session to visually appear if in the same level.\r\n" +
-                                              "0: Disabled\r\n" +
-                                              "1: Enabled");
+                                              "false: Disabled\r\n" +
+                                              "true: Enabled");
+
+            configChat = Config.Bind("Misc",
+                                     "Chat Piping",
+                                     1,
+                                     "Pipes the Archipelago chat through to the game using cutscene text boxes.\r\n" +
+                                     "0: Disabled\r\n" +
+                                     "1: Chat Messages Only\r\n" +
+                                     "2: Full");
 
             // Load our asset bundle.
             apAssetBundle = AssetBundle.LoadFromFile($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets");
