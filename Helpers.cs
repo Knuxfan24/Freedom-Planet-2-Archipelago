@@ -331,9 +331,9 @@ namespace Freedom_Planet_2_Archipelago
             foreach (KeyValuePair<ArchipelagoItem, int> item in Plugin.itemQueue)
                 HandleItem(item, true);
 
-            // Clear out the Aaa Trap queue.
-            for (int aaaIndex = 0; aaaIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; aaaIndex++)
-                Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex] = new();
+            // Clear out the text display queue.
+            for (int textIndex = 0; textIndex < Plugin.TextDisplay.GetComponent<PlayerDialog>().queue.Length; textIndex++)
+                Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[textIndex] = new();
 
             // Clear out the buffered trap queue.
             Plugin.BufferedTraps.Clear();
@@ -409,13 +409,13 @@ namespace Freedom_Planet_2_Archipelago
                 for (int voiceLineIndex = 0; voiceLineIndex < Plugin.rng.Next(3, 11); voiceLineIndex++)
                 {
                     // Loop through each entry in the queue.
-                    for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
+                    for (int queueIndex = 0; queueIndex < Plugin.TextDisplay.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
                     {
                         // If this entry isn't populated already, then add a random line to it, mark it as active, then stop looping.
-                        if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name == null)
+                        if (Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].name == null || (Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].name == string.Empty && Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].text == string.Empty))
                         {
-                            Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = Plugin.AaaTrapLines[Plugin.rng.Next(Plugin.AaaTrapLines.Count)];
-                            Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].active = true;
+                            Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex] = Plugin.AaaTrapLines[Plugin.rng.Next(Plugin.AaaTrapLines.Count)];
+                            Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].active = true;
                             break;
                         }
                     }
@@ -857,13 +857,13 @@ namespace Freedom_Planet_2_Archipelago
                         for (int voiceLineIndex = 0; voiceLineIndex < Plugin.rng.Next(3, 11); voiceLineIndex++)
                         {
                             // Loop through each entry in the queue.
-                            for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
+                            for (int queueIndex = 0; queueIndex < Plugin.TextDisplay.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
                             {
                                 // If this entry isn't populated already, then add a random line to it, mark it as active, then stop looping.
-                                if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name == null)
+                                if (Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].name == null || (Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].name == string.Empty && Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].text == string.Empty))
                                 {
-                                    Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = Plugin.AaaTrapLines[Plugin.rng.Next(Plugin.AaaTrapLines.Count)];
-                                    Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].active = true;
+                                    Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex] = Plugin.AaaTrapLines[Plugin.rng.Next(Plugin.AaaTrapLines.Count)];
+                                    Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].active = true;
                                     break;
                                 }
                             }
@@ -931,15 +931,19 @@ namespace Freedom_Planet_2_Archipelago
                 // Check if we should play the Weapon's Core lines.
                 if (shouldPlay)
                 {
-                    // Clear out the Aaa trap (as we reuse it).
-                    for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
-                        Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = new();
-
-                    // Set the lines in the queue and mark them as active.
-                    Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[0] = Plugin.WeaponsCoreUnlockLines[0];
-                    Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[1] = Plugin.WeaponsCoreUnlockLines[1];
-                    Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[0].active = true;
-                    Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[1].active = true;
+                    // Loop through each entry in the text display's queue (minus one, as we need to add two entries at once).
+                    for (int queueIndex = 0; queueIndex < Plugin.TextDisplay.GetComponent<PlayerDialog>().queue.Length - 1; queueIndex++)
+                    {
+                        // If this entry isn't populated already, then set it and the next one to the Weapon's Core unlock lines, mark them as active and stop looping.
+                        if (Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].name == null || (Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].name == string.Empty && Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].text == string.Empty))
+                        {
+                            Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex] = Plugin.WeaponsCoreUnlockLines[0];
+                            Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex + 1] = Plugin.WeaponsCoreUnlockLines[1];
+                            Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].active = true;
+                            Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex + 1].active = true;
+                            break;
+                        }
+                    }
                 }
 
                 // Set the flag so this only happens once.

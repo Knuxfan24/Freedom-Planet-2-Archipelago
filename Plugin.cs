@@ -78,7 +78,7 @@ namespace Freedom_Planet_2_Archipelago
         public static float PowerPointTrapTimer = -1;
         public static float ZoomTrapTimer = -1;
         public static float PixellationTrapTimer = -1;
-        public static GameObject AaaTrap;
+        public static GameObject TextDisplay;
         public static List<DialogQueue> AaaTrapLines = [];
         public static List<ArchipelagoItem> BufferedTraps = [];
         public static List<ArchipelagoItem> TrapLinks = [];
@@ -258,24 +258,24 @@ namespace Freedom_Planet_2_Archipelago
             messageBanner.AddComponent<MessageBanner>();
             DontDestroyOnLoad(messageBanner);
 
-            // Create the Aaa Trap object.
-            AaaTrap = GameObject.Instantiate(apAssetBundle.LoadAsset<GameObject>("AaaTrap"));
-            DontDestroyOnLoad(AaaTrap);
+            // Create the Text Display object from the Aaa Trap prefab.
+            TextDisplay = GameObject.Instantiate(apAssetBundle.LoadAsset<GameObject>("AaaTrap"));
+            DontDestroyOnLoad(TextDisplay);
 
-            // Loop through the dialog in the Aaa trap.
-            for (int aaaIndex = 0; aaaIndex < AaaTrap.GetComponent<PlayerDialog>().queue.Length; aaaIndex++)
+            // Loop through the dialog in the text display.
+            for (int textIndex = 0; textIndex < TextDisplay.GetComponent<PlayerDialog>().queue.Length; textIndex++)
             {
                 // If the character is set to Aaa, then add it to the trap list.
-                if (AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex].name == "Aaa")
-                    AaaTrapLines.Add(AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex]);
+                if (TextDisplay.GetComponent<PlayerDialog>().queue[textIndex].name == "Aaa")
+                    AaaTrapLines.Add(TextDisplay.GetComponent<PlayerDialog>().queue[textIndex]);
 
                 // If the character is set to Serpentine, then add it to the Weapon's Core Unlock Lines list.
-                if (AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex].name == "Serpentine")
-                    WeaponsCoreUnlockLines.Add(AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex]);
-
-                // Clear out this entry in the Aaa trap.
-                AaaTrap.GetComponent<PlayerDialog>().queue[aaaIndex] = new();
+                if (TextDisplay.GetComponent<PlayerDialog>().queue[textIndex].name == "Serpentine")
+                    WeaponsCoreUnlockLines.Add(TextDisplay.GetComponent<PlayerDialog>().queue[textIndex]);
             }
+
+            // Create a new (probably oversized) array for the text display.
+            TextDisplay.GetComponent<PlayerDialog>().queue = new DialogQueue[4096];
 
             // Loop through each asset.
             foreach (string asset in apAssetBundle.GetAllAssetNames())

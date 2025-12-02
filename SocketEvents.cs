@@ -104,8 +104,64 @@
                         if (Plugin.configChat.Value != 2)
                             break;
 
+                        // Loop through each part of the message.
                         foreach (JsonMessagePart? jsonData in printJSON.Data)
-                            message += jsonData.Text;
+                        {
+                            // Set up a string to hold the text to add to the text box.
+                            string textPart = "";
+
+                            // Determine how to handle this message part based on type.
+                            switch (jsonData.Type)
+                            {
+                                case Archipelago.MultiClient.Net.Enums.JsonMessagePartType.PlayerId:
+                                {
+                                    // Read the info of the specified player and set our text value to their name.
+                                    var playerInfo = Plugin.session.Players.GetPlayerInfo(int.Parse(jsonData.Text));
+                                    textPart = playerInfo.Name;
+
+                                    // If this player is us, then make the text purple, if not, make it yellow.
+                                    if (playerInfo.Name == Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                                        textPart = $"<c=purple>{textPart}</c>";
+                                    else
+                                        textPart = $"<c=yellow>{textPart}</c>";
+
+                                    break;
+                                }
+
+                                case Archipelago.MultiClient.Net.Enums.JsonMessagePartType.ItemId:
+                                {
+                                    // Read the info of the specified player and get the name of the item index the message references.
+                                    var playerInfo = Plugin.session.Players.GetPlayerInfo(jsonData.Player.Value);
+                                    textPart = Plugin.session.Items.GetItemName(int.Parse(jsonData.Text), playerInfo.Game);
+
+                                    // Set the colour of the text based on the item's flag.
+                                    switch (jsonData.Flags)
+                                    {
+                                        case Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement: textPart = $"<c=purple>{textPart}</c>"; break;
+                                        case Archipelago.MultiClient.Net.Enums.ItemFlags.NeverExclude: textPart = $"<c=blue>{textPart}</c>"; break;
+                                        case Archipelago.MultiClient.Net.Enums.ItemFlags.None: textPart = $"<c=cyan>{textPart}</c>"; break;
+                                        case Archipelago.MultiClient.Net.Enums.ItemFlags.Trap: textPart = $"<c=orange>{textPart}</c>"; break;
+                                    }
+
+                                    break;
+                                }
+
+                                case Archipelago.MultiClient.Net.Enums.JsonMessagePartType.LocationId:
+                                {
+                                    // Read the info of the specified player and get the name of the location index the message references while also making it green.
+                                    var playerInfo = Plugin.session.Players.GetPlayerInfo(jsonData.Player.Value);
+                                    textPart = $"<c=green>{Plugin.session.Locations.GetLocationNameFromId(int.Parse(jsonData.Text), playerInfo.Game)}</c>";
+                                    break;
+                                }
+
+                                // For anything else, just add the text value to the message as is.
+                                default:
+                                    textPart = jsonData.Text; break;
+                            }
+
+                            // Add our text to the message.
+                            message += textPart;
+                        }
                     }
 
                     // Create a new dialog queue entry based on the data read from the packet.
@@ -122,13 +178,13 @@
                     if (Plugin.apChatIcons.ContainsKey(dialogMessage.name))
                         dialogMessage.portrait = Plugin.apChatIcons[dialogMessage.name];
 
-                    // Loop through each entry in the Aaa Trap's queue.
-                    for (int queueIndex = 0; queueIndex < Plugin.AaaTrap.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
+                    // Loop through each entry in the text display's queue.
+                    for (int queueIndex = 0; queueIndex < Plugin.TextDisplay.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
                     {
-                        // If this entry isn't populated already, then add a random line to it, mark it as active, then stop looping.
-                        if (Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex].name == null)
+                        // If this entry isn't populated already, then add our message to it, mark it as active, then stop looping.
+                        if (Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].name == null || (Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].name == string.Empty && Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex].text == string.Empty))
                         {
-                            Plugin.AaaTrap.GetComponent<PlayerDialog>().queue[queueIndex] = dialogMessage;
+                            Plugin.TextDisplay.GetComponent<PlayerDialog>().queue[queueIndex] = dialogMessage;
                             break;
                         }
                     }
