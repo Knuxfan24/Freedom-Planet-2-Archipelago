@@ -24,7 +24,7 @@ using System.Collections;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.1.3")]
+    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.2.0")]
     [BepInDependency("000.kuborro.libraries.fp2.fp2lib")]
     public class Plugin : BaseUnityPlugin
     {
