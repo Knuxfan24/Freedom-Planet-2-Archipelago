@@ -319,6 +319,7 @@ namespace Freedom_Planet_2_Archipelago
             Harmony.CreateAndPatchAll(typeof(MenuWorldMapConfirmPatcher));
             Harmony.CreateAndPatchAll(typeof(PlayerBFF2000Patcher));
             Harmony.CreateAndPatchAll(typeof(PlayerBossMergaPatcher));
+            Harmony.CreateAndPatchAll(typeof(PlayerDialogPatcher));
             Harmony.CreateAndPatchAll(typeof(PlayerShipPatcher));
             Harmony.CreateAndPatchAll(typeof(PlayerSpawnPointPatcher));
         }
