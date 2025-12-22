@@ -86,8 +86,8 @@
                     sprites.Add(Helpers.GetItemSprite(_ScoutedLocationInfo.ElementAt(spriteIndex).Value, true));
                 Sprites = [.. sprites];
 
-                // If our shop information setting is set to full, then also send hints for the items in this shop.
-                if ((long)Plugin.slotData["shop_information"] == 0)
+                // If our shop information setting is set to full and the shop hints are enabled, then also send them.
+                if ((long)Plugin.slotData["shop_information"] == 0 && Plugin.configShopHints.Value > 0)
                 {
                     // Reset the location ID lost.
                     locationIDs = [];
@@ -105,6 +105,12 @@
                     for (int locationIndex = locationIDs.Count - 1; locationIndex >= 0; locationIndex--)
                         if (Plugin.session.Locations.AllLocationsChecked.Contains(locationIDs[locationIndex]))
                             locationIDs.RemoveAt(locationIndex);
+
+                    // If we're only sending progression item hints, then loop through the previous scout and remove ones without the Advancement flag.
+                    if (Plugin.configShopHints.Value == 1)
+                        foreach (KeyValuePair<long, ScoutedItemInfo> location in _ScoutedLocationInfo)
+                            if (location.Value.Flags != Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement)
+                                locationIDs.Remove(location.Key);
 
                     // Scout for the hints for these locations.
                     Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfoHint, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [.. locationIDs]);

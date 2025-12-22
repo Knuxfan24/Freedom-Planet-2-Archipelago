@@ -48,6 +48,7 @@ namespace Freedom_Planet_2_Archipelago
         public static ConfigEntry<long> configTrapLinkOverride;
         public static ConfigEntry<bool> configRemotePlayers;
         public static ConfigEntry<int> configChat;
+        public static ConfigEntry<int> configShopHints;
 
         // The AP session's data.
         public static ArchipelagoSession session;
@@ -229,6 +230,14 @@ namespace Freedom_Planet_2_Archipelago
                                      "0: Disabled\r\n" +
                                      "1: Chat Messages Only\r\n" +
                                      "2: Full");
+
+            configShopHints = Config.Bind("Misc",
+                                          "Shop Hints",
+                                          1,
+                                          "Sends out hints for items that can be purchased in the shops.\r\n" +
+                                          "0: Disabled\r\n" +
+                                          "1: Progressive Items Only\r\n" +
+                                          "2: All");
 
             // Load our asset bundle.
             apAssetBundle = AssetBundle.LoadFromFile($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets");
