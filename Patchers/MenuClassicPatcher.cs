@@ -415,8 +415,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(MenuClassic), "UpdateHeader")]
         static void ChestTracers(MenuClassic __instance, ref int ___currentTile)
         {
-            // If this stage is locked, then null out the sprite and return.
-            if (__instance.stages[___currentTile].starCardRequirement > 0)
+            // If this stage is locked or we just don't have chests enabled, then null out the sprite and return.
+            if (__instance.stages[___currentTile].starCardRequirement > 0 || (long)Plugin.slotData["chests"] == 0)
             {
                 __instance.hudCollectibles[2].sprite = null;
                 return;
