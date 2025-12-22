@@ -89,12 +89,14 @@
                     // Set up values for the actual message and (if needed) the player name of its origin.
                     string message = "";
                     string player = "";
+                    float lengthOffset = 2;
 
                     // Try and parse this Print JSON packet as a chat message.
                     try
                     {
                         message = ((ChatPrintJsonPacket?)printJSON).Message;
                         player = Plugin.session.Players.GetPlayerName(((ChatPrintJsonPacket?)printJSON).Slot);
+                        lengthOffset = Math.Max(2f, message.Split([' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length / 2);
                     }
 
                     // If we failed to parse this packet as a chat message, then handle its raw text data.
@@ -161,6 +163,9 @@
 
                             // Add our text to the message.
                             message += textPart;
+
+                            // Set a lower length offset so these messages don't stay up for as long.
+                            lengthOffset = Math.Max(2f, message.Split([' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length / 4);
                         }
                     }
 
@@ -169,7 +174,7 @@
                     {
                         active = true,
                         text = message,
-                        lengthOffset = Math.Max(2f, message.Split([' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length / 2),
+                        lengthOffset = lengthOffset,
                         name = player,
                         portrait = Plugin.apChatIcon
                     };
