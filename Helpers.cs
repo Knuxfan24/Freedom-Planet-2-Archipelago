@@ -237,8 +237,8 @@ namespace Freedom_Planet_2_Archipelago
                     case "Spring Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("spring_trap");
                     case "Zoom Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("zoom_trap");
                     case "Spike Ball Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("spike_ball_trap");
-                    case "Pixellation Trap": return apLogo[3];
-                    case "Mirror Trap": return apLogo[4];
+                    case "Pixellation Trap": return apLogo[4];
+                    case "Mirror Trap": return apLogo[3];
                 }
 
             }
