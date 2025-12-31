@@ -102,7 +102,23 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 var item = Plugin.items[locationIndex];
                 if (item.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
                     Plugin.sentMessageQueue.Add($"Found {item.Player.Name}'s {item.ItemName}.");
-                return;
+            }
+
+            // If the location was either Palace Courtyard's clear or the Hero Battle Royale Battlesphere challenge then we also want to send the location for the active character's boss version.
+            if ((locationName == "Palace Courtyard - Clear" || locationName == "Hero Battle Royale") && (long)Plugin.slotData["bosses"] == 1)
+            {
+                // Get the location index for our active character.
+                locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", Helpers.GetPlayer());
+
+                // If this location exists, then complete the check of it.
+                if (Helpers.CheckLocationExists(locationIndex))
+                {
+                    // Complete the location check for this index.
+                    Plugin.EnqueueLocation(locationIndex);
+                    var item = Plugin.items[locationIndex];
+                    if (item.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                        Plugin.sentMessageQueue.Add($"Found {item.Player.Name}'s {item.ItemName}.");
+                }
             }
 
             // If the location was Weapon's Core's clear, then send a goal packet to the server too.
