@@ -50,14 +50,13 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 case 32: locationName = "Bakunawa Chase - Clear"; break;
 
                 // The Battlesphere and the Sigwada share the same ID (as the Battlesphere is TECHNICALLY a HUB).
+                // Sometimes we've needed an ID of 4, other times we've needed 31, so screw it just check for both.
                 case 4:
-                    if (SceneManager.GetActiveScene().name == "AirshipSigwada")
-                    {
-                        locationName = "Airship Sigwada - Clear";
-                    }
-                    break;
                 case 31:
-                    switch (___challengeID)
+                    if (SceneManager.GetActiveScene().name == "AirshipSigwada")
+                        locationName = "Airship Sigwada - Clear";
+
+                    else switch (___challengeID)
                     {
                         case 1: locationName = "Beginner's Gauntlet"; break;
                         case 2: locationName = "Battlebot Battle Royale"; break;
