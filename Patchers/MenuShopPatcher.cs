@@ -30,27 +30,33 @@
         static bool StopShopSorting() => false;
 
         /// <summary>
-        /// Sets the shop prices to the value chosen in the player YAML.
+        /// Sets the shop prices to the value chosen in the player YAML and sets up both item arrays.
+        /// TODO: High location amounts seem to have the last item break. Figure out
+            /// A: Why that happens.
+            /// B: What the limit is.
+        /// and fix them.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuShop), "Start")]
-        static void SetShopPrices(ref bool ___payWithCrystals, ref int[] ___itemCosts)
+        static void SetShopPrices(ref bool ___payWithCrystals, ref int[] ___itemCosts, ref FPPowerup[] ___itemsForSale, ref FPMusicTrack[] ___musicID)
         {
-            // If this is the Vinyl shop, then set the values in the item costs array to that of vinyl_shop_price.
             if (___payWithCrystals)
             {
                 ___itemCosts = new int[(int)(long)Plugin.slotData["vinyl_shop_amount"]];
                 for (int costIndex = 0; costIndex < ___itemCosts.Length; costIndex++)
                     ___itemCosts[costIndex] = (int)(long)Plugin.slotData["vinyl_shop_price"];
+
+                ___itemsForSale = new FPPowerup[(int)(long)Plugin.slotData["vinyl_shop_amount"]];
             }
 
-            // If this is Milla's shop, then set the values in the item costs array to that of milla_shop_price.
             else
             {
                 ___itemCosts = new int[(int)(long)Plugin.slotData["milla_shop_amount"]];
 
                 for (int costIndex = 0; costIndex < ___itemCosts.Length; costIndex++)
                     ___itemCosts[costIndex] = (int)(long)Plugin.slotData["milla_shop_price"];
+
+                ___musicID = new FPMusicTrack[(int)(long)Plugin.slotData["milla_shop_amount"]];
             }
         }
 
