@@ -239,6 +239,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Spike Ball Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("spike_ball_trap");
                     case "Pixellation Trap": return apLogo[4];
                     case "Mirror Trap": return apLogo[3];
+                    case "Syntax Jumpscare Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("syntax_jumpscare_trap");
                 }
 
             }
@@ -276,6 +277,7 @@ namespace Freedom_Planet_2_Archipelago
             int pixellationTrapCount = 0;
             int railTrapCount = 0;
             int spamTrapCount = 0;
+            int syntaxJumpscareTrapCount = 0;
             int goldGemCount = 0;
             int crystalCount = 0;
             int extraLifeCount = 0;
@@ -294,6 +296,7 @@ namespace Freedom_Planet_2_Archipelago
             int saveSpikeballTrapCount = Plugin.save.SpikeBallTrapCount;
             int saveRailTrapCount = Plugin.save.RailTrapCount;
             int saveSpamTrapCount = Plugin.save.SpamTrapCount;
+            int saveSyntaxJumpscareTrapCount = Plugin.save.SyntaxJumpscareTrapCount;
             int saveGoldGemCount = Plugin.save.GoldGemCount;
             int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveCrystalCount = Plugin.save.CrystalCount;
@@ -318,6 +321,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Pixellation Trap": pixellationTrapCount += item.Value; break;
                     case "Rail Trap": railTrapCount += item.Value; break;
                     case "Spam Trap": spamTrapCount += item.Value; break;
+                    case "Syntax Jumpscare Trap": syntaxJumpscareTrapCount += item.Value; break;
 
                     case "Gold Gem": goldGemCount += item.Value; break;
                     case "Crystals": crystalCount += item.Value * 100; break;
@@ -354,6 +358,7 @@ namespace Freedom_Planet_2_Archipelago
             int truePixellationTrapCount = pixellationTrapCount - savePixellationTrapCount;
             int trueRailTrapCount = railTrapCount - saveRailTrapCount;
             int trueSpamTrapCount = spamTrapCount - saveSpamTrapCount;
+            int trueSyntaxJumpscareTrapCount = syntaxJumpscareTrapCount - saveSyntaxJumpscareTrapCount;
             int trueCrystalCount = crystalCount - saveCrystalCount;
             int trueExtraLifeCount = extraLifeCount - saveExtraLifeCount;
             int trueInvincibilityCount = invincibilityCount - saveInvincibilityCount;
@@ -372,6 +377,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.save.PixellationTrapCount = savePixellationTrapCount + truePixellationTrapCount;
             Plugin.save.RailTrapCount = saveRailTrapCount + trueRailTrapCount;
             Plugin.save.SpamTrapCount = saveSpamTrapCount + trueSpamTrapCount;
+            Plugin.save.SyntaxJumpscareTrapCount = saveSyntaxJumpscareTrapCount + trueSyntaxJumpscareTrapCount;
             Plugin.SpamTrapCount = trueSpamTrapCount + 1;
             Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
             Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
@@ -913,6 +919,11 @@ namespace Freedom_Planet_2_Archipelago
                     if (!trapLink) Plugin.save.SpamTrapCount += item.Value;
                     break;
 
+                case "Syntax Jumpscare Trap":
+                    if (!fromStart) SpawnSyntaxJumpscare();
+                    if (!trapLink) Plugin.save.SyntaxJumpscareTrapCount += item.Value;
+                    break;
+
                 // Unhandled items, throw an error into the console.
                 default: Plugin.consoleLog.LogError($"Item Type '{item.Key.ItemName}' (sent by '{item.Key.Source}' {item.Value} time(s)) not yet handled!"); return;
             }
@@ -1152,6 +1163,21 @@ namespace Freedom_Planet_2_Archipelago
 
             // Make sure the spam trap persists through scene changes.
             UnityEngine.Object.DontDestroyOnLoad(spamTrap);
+        }
+
+        /// <summary>
+        /// Creates the Spam Trap object.
+        /// </summary>
+        public static void SpawnSyntaxJumpscare()
+        {
+            // Instantiate the prefab from the asset bundle.
+            GameObject syntaxJumpscare = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("SyntaxJumpscare"));
+
+            // Add the actual script to the object.
+            syntaxJumpscare.AddComponent<SyntaxJumpscare>();
+
+            // Make sure the spam trap persists through scene changes.
+            UnityEngine.Object.DontDestroyOnLoad(syntaxJumpscare);
         }
     }
 }

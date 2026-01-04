@@ -318,6 +318,7 @@
                         case "Pixellation Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                         case "Rail Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
                         case "Spam Trap": AddTrap(bouncedPacket, "Spam Trap"); break;
+                        case "Syntax Jumpscare Trap": AddTrap(bouncedPacket, "Syntax Jumpscare Trap"); break;
 
                         // None FP2 Based Traps, sourced from https://docs.google.com/spreadsheets/d/1yoNilAzT5pSU9c2hYK7f2wHAe9GiWDiHFZz8eMe1oeQ/edit?gid=811965759#gid=811965759.
                         case "144p Trap": AddTrap(bouncedPacket, "Pixellation Trap", true); break;
@@ -359,7 +360,7 @@
                         case "Exposition Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
                         case "Fake Transition": AddTrap(bouncedPacket, "Zoom Trap"); break;
                         case "Fast Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
-                        case "Fear Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
+                        case "Fear Trap": AddTrap(bouncedPacket, "Syntax Jumpscare Trap"); break;
                         case "Fire Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
                         case "Fish Eye Trap":
                             RandomTrap(new()
@@ -425,6 +426,7 @@
                                 { "Aaa Trap", true},
                             });
                             break;
+                        case "Tarr Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Thwimp Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "Timer Trap": AddTrap(bouncedPacket, "Time Limit", true); break;
                         case "Time Warp Trap": AddTrap(bouncedPacket, "Time Limit", true); break;

@@ -50,28 +50,31 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 Plugin.RailTrap = false;
 
             #region Shop Setup
-            // Create the array for Milla's shop, setting its length to 30 then setting the index of each item linerally from 2.
-            __instance.itemsForSale = new FPPowerup[30];
+            // Create the array for Milla's shop, setting its length to the amount specified in the slot data then setting the index of each item linerally from 2.
+            __instance.itemsForSale = new FPPowerup[(int)(long)Plugin.slotData["milla_shop_amount"]];
             for (int itemIndex = 0; itemIndex < __instance.itemsForSale.Length; itemIndex++)
                 __instance.itemsForSale[itemIndex] = (FPPowerup)(itemIndex + 2);
 
-            // Create the array for the Gold Gem cost for Milla's shop, setting all 30 values to 1. 
-            __instance.itemCosts = [.. Enumerable.Repeat(1, 30)];
+            // Determine how much we need to multiply the location index for Milla's shop by.
+            float multiplicationRange = 30 / (float)(long)Plugin.slotData["milla_shop_amount"];
 
-            // Create the array for the Star Card requirements for Milla's shop, setting its length to 30 then setting the value of each item linerally from 1.
-            __instance.starCardRequirements = new int[30];
+            // Create the array for the Star Card requirements for Milla's shop, setting its length to the amount specified in the slot then setting the value of each item linerally by multiplying its index with multiplaction range and rounding the result up.
+            __instance.starCardRequirements = new int[(int)(long)Plugin.slotData["milla_shop_amount"]];
             for (int requirementIndex = 0; requirementIndex < __instance.starCardRequirements.Length; requirementIndex++)
-                __instance.starCardRequirements[requirementIndex] = requirementIndex + 1;
+                __instance.starCardRequirements[requirementIndex] = (int)Math.Ceiling(multiplicationRange * (requirementIndex + 1));
 
             // Create the array for the Vinyl shop, setting its length to 60 then setting the index of each item linerally from 1.
-            __instance.musicForSale = new FPMusicTrack[60];
+            __instance.musicForSale = new FPMusicTrack[(int)(long)Plugin.slotData["vinyl_shop_amount"]];
             for (int itemIndex = 0; itemIndex < __instance.musicForSale.Length; itemIndex++)
                 __instance.musicForSale[itemIndex] = ((FPMusicTrack)(itemIndex + 1));
 
-            // Create the array for the Star Card requirements for the Vinyl shop, setting its length to 60 then setting the value of each item linerally from 1, divided by 2 then rounded up.
-            __instance.musicStarCardRequirements = new int[60];
+            // Determine how much we need to multiply the location index for the Vinyl shop by.
+            multiplicationRange = 30 / (float)(long)Plugin.slotData["vinyl_shop_amount"];
+
+            // Create the array for the Star Card requirements for the Vinyl shop, setting its length to the amount specified in the slot then setting the value of each item linerally by multiplying its index with multiplaction range and rounding the result up.
+            __instance.musicStarCardRequirements = new int[(int)(long)Plugin.slotData["vinyl_shop_amount"]];
             for (int requirementIndex = 0; requirementIndex < __instance.musicStarCardRequirements.Length; requirementIndex++)
-                __instance.musicStarCardRequirements[requirementIndex] = (int)Math.Ceiling((double)(requirementIndex + 1) / 2);
+                __instance.musicStarCardRequirements[requirementIndex] = (int)Math.Ceiling(multiplicationRange * (requirementIndex + 1));
             #endregion
 
             #region Stage Locks

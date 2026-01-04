@@ -38,13 +38,20 @@
         {
             // If this is the Vinyl shop, then set the values in the item costs array to that of vinyl_shop_price.
             if (___payWithCrystals)
+            {
+                ___itemCosts = new int[(int)(long)Plugin.slotData["vinyl_shop_amount"]];
                 for (int costIndex = 0; costIndex < ___itemCosts.Length; costIndex++)
                     ___itemCosts[costIndex] = (int)(long)Plugin.slotData["vinyl_shop_price"];
+            }
 
-            // If this is the Vinyl shop, then set the values in the item costs array to that of milla_shop_price.
+            // If this is Milla's shop, then set the values in the item costs array to that of milla_shop_price.
             else
+            {
+                ___itemCosts = new int[(int)(long)Plugin.slotData["milla_shop_amount"]];
+
                 for (int costIndex = 0; costIndex < ___itemCosts.Length; costIndex++)
                     ___itemCosts[costIndex] = (int)(long)Plugin.slotData["milla_shop_price"];
+            }
         }
 
         /// <summary>
@@ -63,9 +70,9 @@
 
             // Get the data depending on the shop type.
             if (!___payWithCrystals)
-                GatherSpritesAndLocations(30, "Milla");
+                GatherSpritesAndLocations((int)(long)Plugin.slotData["milla_shop_amount"], "Milla");
             else
-                GatherSpritesAndLocations(60, "Vinyl");
+                GatherSpritesAndLocations((int)(long)Plugin.slotData["vinyl_shop_amount"], "Vinyl");
 
             void GatherSpritesAndLocations(int itemCount, string shop)
             {
@@ -136,13 +143,13 @@
             if (!___payWithCrystals)
             {
                 for (int powerupIndex = 0; powerupIndex < ___powerups.Length; powerupIndex++)
-                    if (___powerups[powerupIndex].digitValue > 1 && (powerupIndex + ___detailListOffset) < 30)
+                    if (___powerups[powerupIndex].digitValue > 1 && (powerupIndex + ___detailListOffset) < (int)(long)Plugin.slotData["milla_shop_amount"])
                         ___powerups[powerupIndex].GetComponent<SpriteRenderer>().sprite = Sprites[powerupIndex + ___detailListOffset];
             }
             else
             {
                 for (int vinylIndex = 0; vinylIndex < ___vinyls.Length; vinylIndex++)
-                    if (___vinyls[vinylIndex].digitValue != 0 && (vinylIndex + ___detailListOffset) < 60)
+                    if (___vinyls[vinylIndex].digitValue != 0 && (vinylIndex + ___detailListOffset) < (int)(long)Plugin.slotData["vinyl_shop_amount"])
                         ___vinyls[vinylIndex].GetComponent<SpriteRenderer>().sprite = Sprites[vinylIndex + ___detailListOffset];
             }
 
@@ -150,7 +157,7 @@
             if (___detailName[0].GetComponent<TextMesh>().text != "? ? ? ? ?")
             {
                 // Don't try and replace the item name and description if it would end up out of bounds (likely because of FP2Lib adding Vinyls from other mods).
-                if ((___payWithCrystals || selectedItem >= 30) && (!___payWithCrystals || selectedItem >= 60))
+                if ((___payWithCrystals && selectedItem >= (int)(long)Plugin.slotData["vinyl_shop_amount"]) || (!___payWithCrystals && selectedItem >= (int)(long)Plugin.slotData["milla_shop_amount"]))
                     return;
 
                 // Get the location for this item.
@@ -387,6 +394,7 @@
                         case "Pixellation Trap": return "Heavily pixellates the viewport for 30 seconds.";
                         case "Rail Trap": return "Makes every solid surface in the stage into a grind rail.";
                         case "Spam Trap": return "Places a message box on the screen that moves around and changes to distract the player.";
+                        case "Syntax Jumpscare Trap": return "Suddenly spawns a giant Syntax on the screen.";
                     }
                 }
 
