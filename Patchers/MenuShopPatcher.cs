@@ -106,6 +106,7 @@
                     locationIDs = [];
 
                     // Calculate how many items are valid hints.
+                    // TODO: Redo this setup, as its hardcoded to 30 and 60.
                     int hintableItems = FPSaveManager.TotalStarCards();
                     if (shop == "Vinyl")
                         hintableItems *= 2;
