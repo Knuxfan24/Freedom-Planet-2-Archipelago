@@ -106,10 +106,10 @@
                     locationIDs = [];
 
                     // Calculate how many items are valid hints.
-                    // TODO: Redo this setup, as its hardcoded to 30 and 60.
-                    int hintableItems = FPSaveManager.TotalStarCards();
+                    int locationCount = (int)(long)Plugin.slotData["milla_shop_amount"];
                     if (shop == "Vinyl")
-                        hintableItems *= 2;
+                        locationCount = (int)(long)Plugin.slotData["vinyl_shop_amount"];
+                    int hintableItems = (int)Math.Ceiling((locationCount / 30f) * FPSaveManager.TotalStarCards());
 
                     // Loop through and get the location indices for this shop's hints.
                     for (int hintIndex = 1; hintIndex <= hintableItems; hintIndex++)
