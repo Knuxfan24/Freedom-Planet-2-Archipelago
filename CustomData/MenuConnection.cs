@@ -384,6 +384,17 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             if (File.Exists($@"{Paths.GameRootPath}\Archipelago Saves\{Plugin.save.SaveSlot}.json"))
                 FPSaveManager.LoadFromFile(Plugin.save.SaveSlot);
 
+            // Stupid hacks to massively expand the inventory and music track arrays for the shop locations.
+            List<byte> inventoryHack = [.. FPSaveManager.inventory];
+            FPSaveManager.inventory = new byte[1000];
+            for (int inventoryIndex = 0; inventoryIndex < inventoryHack.Count; inventoryIndex++)
+                FPSaveManager.inventory[inventoryIndex] = inventoryHack[inventoryIndex];
+
+            List<bool> musicHack = [.. FPSaveManager.musicTracks];
+            FPSaveManager.musicTracks = new bool[1000];
+            for (int musicIndex = 0; musicIndex < musicHack.Count; musicIndex++)
+                FPSaveManager.musicTracks[musicIndex] = musicHack[musicIndex];
+
             // Set the character based on our selected value.
             FPSaveManager.character = (FPCharacterID)characters.ElementAt(characterIndex).Value;
 

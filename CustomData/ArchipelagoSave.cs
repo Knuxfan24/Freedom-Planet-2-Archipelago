@@ -77,6 +77,11 @@
         public int SpamTrapCount { get; set; }
 
         /// <summary>
+        /// The amount of Syntax Jumpscare Traps we've gotten from the server.
+        /// </summary>
+        public int SyntaxJumpscareTrapCount { get; set; }
+
+        /// <summary>
         /// The amount of Gold Gems we've gotten from the server.
         /// </summary>
         public int GoldGemCount { get; set; }

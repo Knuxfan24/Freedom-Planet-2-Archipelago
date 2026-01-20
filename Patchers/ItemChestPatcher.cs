@@ -116,8 +116,8 @@
             // Check if we have strict chest tracers enabled.
             if ((long)Plugin.slotData["chest_tracer_strict"] == 1)
             {
-                // Check that the chest tracer items exist in some form in the first place.
-                if ((long)Plugin.slotData["chest_tracer_items"] != 0)
+                // Check that the chest tracer items exist in some form in the first place and that the chest option is even on.
+                if ((long)Plugin.slotData["chest_tracer_items"] != 0 && (long)Plugin.slotData["chests"] != 0)
                 {
                     // Return whether or not this stage's chest tracer is acquired.
                     switch (FPStage.currentStage.stageID)

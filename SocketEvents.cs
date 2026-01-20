@@ -89,12 +89,14 @@
                     // Set up values for the actual message and (if needed) the player name of its origin.
                     string message = "";
                     string player = "";
+                    float lengthOffset = 2;
 
                     // Try and parse this Print JSON packet as a chat message.
                     try
                     {
                         message = ((ChatPrintJsonPacket?)printJSON).Message;
                         player = Plugin.session.Players.GetPlayerName(((ChatPrintJsonPacket?)printJSON).Slot);
+                        lengthOffset = Math.Max(2f, message.Split([' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length / 2);
                     }
 
                     // If we failed to parse this packet as a chat message, then handle its raw text data.
@@ -161,6 +163,9 @@
 
                             // Add our text to the message.
                             message += textPart;
+
+                            // Set a lower length offset so these messages don't stay up for as long.
+                            lengthOffset = Math.Max(2f, message.Split([' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length / 4);
                         }
                     }
 
@@ -169,7 +174,7 @@
                     {
                         active = true,
                         text = message,
-                        lengthOffset = Math.Max(2f, message.Split([' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length / 2),
+                        lengthOffset = lengthOffset,
                         name = player,
                         portrait = Plugin.apChatIcon
                     };
@@ -313,6 +318,7 @@
                         case "Pixellation Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                         case "Rail Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
                         case "Spam Trap": AddTrap(bouncedPacket, "Spam Trap"); break;
+                        case "Syntax Jumpscare Trap": AddTrap(bouncedPacket, "Syntax Jumpscare Trap"); break;
 
                         // None FP2 Based Traps, sourced from https://docs.google.com/spreadsheets/d/1yoNilAzT5pSU9c2hYK7f2wHAe9GiWDiHFZz8eMe1oeQ/edit?gid=811965759#gid=811965759.
                         case "144p Trap": AddTrap(bouncedPacket, "Pixellation Trap", true); break;
@@ -354,8 +360,16 @@
                         case "Exposition Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
                         case "Fake Transition": AddTrap(bouncedPacket, "Zoom Trap"); break;
                         case "Fast Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
-                        case "Fear Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
+                        case "Fear Trap": AddTrap(bouncedPacket, "Syntax Jumpscare Trap"); break;
                         case "Fire Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
+                        case "Fish Eye Trap":
+                            RandomTrap(new()
+                            {
+                                { "Zoom Trap", false },
+                                { "Mirror Trap", false },
+                                { "Pixellation Trap", false }
+                            });
+                            break;
                         case "Flip Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                         case "Freeze Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Frog Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
@@ -380,6 +394,7 @@
                         case "Nut Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "OmoTrap": AddTrap(bouncedPacket, "Aaa Trap"); break;
                         case "Paralyze Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "Paralysis Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Phone Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
                         case "Pixelate Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                         case "Poison Mushroom": AddTrap(bouncedPacket, "Zoom Trap"); break;
@@ -391,6 +406,7 @@
                         case "Reverse Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                         case "Rockfall Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "Screen Flip Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                        case "Sleep Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Slip Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Slow Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
                         case "Slowness Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
@@ -410,6 +426,7 @@
                                 { "Aaa Trap", true},
                             });
                             break;
+                        case "Tarr Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Thwimp Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "Timer Trap": AddTrap(bouncedPacket, "Time Limit", true); break;
                         case "Time Warp Trap": AddTrap(bouncedPacket, "Time Limit", true); break;

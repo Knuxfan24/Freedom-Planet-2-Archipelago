@@ -24,7 +24,7 @@ using System.Collections;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.1.3")]
+    [BepInPlugin("K24_FP2_Archipelago", "Archipelago", "0.2.0")]
     [BepInDependency("000.kuborro.libraries.fp2.fp2lib")]
     public class Plugin : BaseUnityPlugin
     {
@@ -48,6 +48,7 @@ namespace Freedom_Planet_2_Archipelago
         public static ConfigEntry<long> configTrapLinkOverride;
         public static ConfigEntry<bool> configRemotePlayers;
         public static ConfigEntry<int> configChat;
+        public static ConfigEntry<int> configShopHints;
 
         // The AP session's data.
         public static ArchipelagoSession session;
@@ -230,6 +231,14 @@ namespace Freedom_Planet_2_Archipelago
                                      "1: Chat Messages Only\r\n" +
                                      "2: Full");
 
+            configShopHints = Config.Bind("Misc",
+                                          "Shop Hints",
+                                          1,
+                                          "Sends out hints for items that can be purchased in the shops.\r\n" +
+                                          "0: Disabled\r\n" +
+                                          "1: Progressive Items Only\r\n" +
+                                          "2: All");
+
             // Load our asset bundle.
             apAssetBundle = AssetBundle.LoadFromFile($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets");
             
@@ -319,6 +328,7 @@ namespace Freedom_Planet_2_Archipelago
             Harmony.CreateAndPatchAll(typeof(MenuWorldMapConfirmPatcher));
             Harmony.CreateAndPatchAll(typeof(PlayerBFF2000Patcher));
             Harmony.CreateAndPatchAll(typeof(PlayerBossMergaPatcher));
+            Harmony.CreateAndPatchAll(typeof(PlayerDialogPatcher));
             Harmony.CreateAndPatchAll(typeof(PlayerShipPatcher));
             Harmony.CreateAndPatchAll(typeof(PlayerSpawnPointPatcher));
         }

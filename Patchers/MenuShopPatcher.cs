@@ -30,21 +30,34 @@
         static bool StopShopSorting() => false;
 
         /// <summary>
-        /// Sets the shop prices to the value chosen in the player YAML.
+        /// Sets the shop prices to the value chosen in the player YAML and sets up both item arrays.
+        /// TODO: High location amounts seem to have the last item break. Figure out
+            /// A: Why that happens.
+            /// B: What the limit is.
+        /// and fix them.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuShop), "Start")]
-        static void SetShopPrices(ref bool ___payWithCrystals, ref int[] ___itemCosts)
+        static void SetShopPrices(ref bool ___payWithCrystals, ref int[] ___itemCosts, ref FPPowerup[] ___itemsForSale, ref FPMusicTrack[] ___musicID)
         {
-            // If this is the Vinyl shop, then set the values in the item costs array to that of vinyl_shop_price.
             if (___payWithCrystals)
+            {
+                ___itemCosts = new int[(int)(long)Plugin.slotData["vinyl_shop_amount"]];
                 for (int costIndex = 0; costIndex < ___itemCosts.Length; costIndex++)
                     ___itemCosts[costIndex] = (int)(long)Plugin.slotData["vinyl_shop_price"];
 
-            // If this is the Vinyl shop, then set the values in the item costs array to that of milla_shop_price.
+                ___itemsForSale = new FPPowerup[(int)(long)Plugin.slotData["vinyl_shop_amount"]];
+            }
+
             else
+            {
+                ___itemCosts = new int[(int)(long)Plugin.slotData["milla_shop_amount"]];
+
                 for (int costIndex = 0; costIndex < ___itemCosts.Length; costIndex++)
                     ___itemCosts[costIndex] = (int)(long)Plugin.slotData["milla_shop_price"];
+
+                ___musicID = new FPMusicTrack[(int)(long)Plugin.slotData["milla_shop_amount"]];
+            }
         }
 
         /// <summary>
@@ -63,9 +76,9 @@
 
             // Get the data depending on the shop type.
             if (!___payWithCrystals)
-                GatherSpritesAndLocations(30, "Milla");
+                GatherSpritesAndLocations((int)(long)Plugin.slotData["milla_shop_amount"], "Milla");
             else
-                GatherSpritesAndLocations(60, "Vinyl");
+                GatherSpritesAndLocations((int)(long)Plugin.slotData["vinyl_shop_amount"], "Vinyl");
 
             void GatherSpritesAndLocations(int itemCount, string shop)
             {
@@ -86,16 +99,17 @@
                     sprites.Add(Helpers.GetItemSprite(_ScoutedLocationInfo.ElementAt(spriteIndex).Value, true));
                 Sprites = [.. sprites];
 
-                // If our shop information setting is set to full, then also send hints for the items in this shop.
-                if ((long)Plugin.slotData["shop_information"] == 0)
+                // If our shop information setting is set to full and the shop hints are enabled, then also send them.
+                if ((long)Plugin.slotData["shop_information"] == 0 && Plugin.configShopHints.Value > 0)
                 {
                     // Reset the location ID lost.
                     locationIDs = [];
 
                     // Calculate how many items are valid hints.
-                    int hintableItems = FPSaveManager.TotalStarCards();
+                    int locationCount = (int)(long)Plugin.slotData["milla_shop_amount"];
                     if (shop == "Vinyl")
-                        hintableItems *= 2;
+                        locationCount = (int)(long)Plugin.slotData["vinyl_shop_amount"];
+                    int hintableItems = (int)Math.Ceiling((locationCount / 30f) * FPSaveManager.TotalStarCards());
 
                     // Loop through and get the location indices for this shop's hints.
                     for (int hintIndex = 1; hintIndex <= hintableItems; hintIndex++)
@@ -105,6 +119,12 @@
                     for (int locationIndex = locationIDs.Count - 1; locationIndex >= 0; locationIndex--)
                         if (Plugin.session.Locations.AllLocationsChecked.Contains(locationIDs[locationIndex]))
                             locationIDs.RemoveAt(locationIndex);
+
+                    // If we're only sending progression item hints, then loop through the previous scout and remove ones without the Advancement flag.
+                    if (Plugin.configShopHints.Value == 1)
+                        foreach (KeyValuePair<long, ScoutedItemInfo> location in _ScoutedLocationInfo)
+                            if (location.Value.Flags != Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement)
+                                locationIDs.Remove(location.Key);
 
                     // Scout for the hints for these locations.
                     Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfoHint, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [.. locationIDs]);
@@ -130,13 +150,13 @@
             if (!___payWithCrystals)
             {
                 for (int powerupIndex = 0; powerupIndex < ___powerups.Length; powerupIndex++)
-                    if (___powerups[powerupIndex].digitValue > 1 && (powerupIndex + ___detailListOffset) < 30)
+                    if (___powerups[powerupIndex].digitValue > 1 && (powerupIndex + ___detailListOffset) < (int)(long)Plugin.slotData["milla_shop_amount"])
                         ___powerups[powerupIndex].GetComponent<SpriteRenderer>().sprite = Sprites[powerupIndex + ___detailListOffset];
             }
             else
             {
                 for (int vinylIndex = 0; vinylIndex < ___vinyls.Length; vinylIndex++)
-                    if (___vinyls[vinylIndex].digitValue != 0 && (vinylIndex + ___detailListOffset) < 60)
+                    if (___vinyls[vinylIndex].digitValue != 0 && (vinylIndex + ___detailListOffset) < (int)(long)Plugin.slotData["vinyl_shop_amount"])
                         ___vinyls[vinylIndex].GetComponent<SpriteRenderer>().sprite = Sprites[vinylIndex + ___detailListOffset];
             }
 
@@ -144,7 +164,7 @@
             if (___detailName[0].GetComponent<TextMesh>().text != "? ? ? ? ?")
             {
                 // Don't try and replace the item name and description if it would end up out of bounds (likely because of FP2Lib adding Vinyls from other mods).
-                if ((___payWithCrystals || selectedItem >= 30) && (!___payWithCrystals || selectedItem >= 60))
+                if ((___payWithCrystals && selectedItem >= (int)(long)Plugin.slotData["vinyl_shop_amount"]) || (!___payWithCrystals && selectedItem >= (int)(long)Plugin.slotData["milla_shop_amount"]))
                     return;
 
                 // Get the location for this item.
@@ -380,6 +400,8 @@
                         case "Spike Ball Trap": return "Throws eight Macer spike balls at the player.";
                         case "Pixellation Trap": return "Heavily pixellates the viewport for 30 seconds.";
                         case "Rail Trap": return "Makes every solid surface in the stage into a grind rail.";
+                        case "Spam Trap": return "Places a message box on the screen that moves around and changes to distract the player.";
+                        case "Syntax Jumpscare Trap": return "Suddenly spawns a giant Syntax on the screen.";
                     }
                 }
 
