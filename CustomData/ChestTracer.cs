@@ -10,6 +10,14 @@
         // The position this chest tracer should point to.
         public Vector2 targetPosition;
 
+        // Index of this tracer's target type.
+            // -1 = Chest
+            // 0 = Crystal Item Box
+            // 1 = Petal Item Box
+            // 2 = Shield Item Box
+            // 3 = Gold Gem Item Box.
+        public int itemTypeIndex = -1;
+
         private new void Start()
         {
             state = State_Default;
@@ -21,6 +29,15 @@
 
             // Force this script to always be active.
             activationMode = FPActivationMode.ALWAYS_ACTIVE;
+
+            // If this tracer isn't targeting a chest, then disable the chest icon and enable the approriate one.
+            switch (itemTypeIndex)
+            {
+                case 0: transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false); transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true); break;
+                case 1: transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false); transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(true); break;
+                case 2: transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false); transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(true); break;
+                case 3: transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false); transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(true); break;
+            }
         }
 
         private void Update()
@@ -48,6 +65,13 @@
                 // Rotate this tracer so the arrow points down.
                 transform.rotation = Quaternion.Euler(0, 0, -90);
 
+                // Zero out the rotation for the child sprites.
+                transform.GetChild(0).transform.GetChild(0).transform.rotation = Quaternion.Euler(Vector3.zero);
+                transform.GetChild(0).transform.GetChild(1).transform.rotation = Quaternion.Euler(Vector3.zero);
+                transform.GetChild(0).transform.GetChild(2).transform.rotation = Quaternion.Euler(Vector3.zero);
+                transform.GetChild(0).transform.GetChild(3).transform.rotation = Quaternion.Euler(Vector3.zero);
+                transform.GetChild(0).transform.GetChild(4).transform.rotation = Quaternion.Euler(Vector3.zero);
+
                 // Stop here.
                 return;
             }
@@ -58,6 +82,13 @@
             // Caculate and set the rotation of this tracer.
             transform.right = targetPosition - position;
             transform.rotation = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z);
+
+            // Zero out the rotation for the child sprites.
+            transform.GetChild(0).transform.GetChild(0).transform.rotation = Quaternion.Euler(Vector3.zero);
+            transform.GetChild(0).transform.GetChild(1).transform.rotation = Quaternion.Euler(Vector3.zero);
+            transform.GetChild(0).transform.GetChild(2).transform.rotation = Quaternion.Euler(Vector3.zero);
+            transform.GetChild(0).transform.GetChild(3).transform.rotation = Quaternion.Euler(Vector3.zero);
+            transform.GetChild(0).transform.GetChild(4).transform.rotation = Quaternion.Euler(Vector3.zero);
         }
     }
 }

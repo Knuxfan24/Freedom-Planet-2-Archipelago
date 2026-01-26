@@ -311,6 +311,7 @@ namespace Freedom_Planet_2_Archipelago
             Harmony.CreateAndPatchAll(typeof(FPResultsMenuPatcher));
             Harmony.CreateAndPatchAll(typeof(FPSaveManagerPatcher));
             Harmony.CreateAndPatchAll(typeof(FPStagePatcher));
+            Harmony.CreateAndPatchAll(typeof(ItemBoxPatcher));
             Harmony.CreateAndPatchAll(typeof(ItemChestPatcher));
             Harmony.CreateAndPatchAll(typeof(ItemStarCardPatcher));
             Harmony.CreateAndPatchAll(typeof(MenuArenaChallengeSelectPatcher));

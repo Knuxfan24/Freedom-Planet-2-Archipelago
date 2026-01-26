@@ -724,6 +724,30 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Blast from the Past"); AddLocation();
                     locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Bubble Battle"); AddLocation();
 
+                    // If the Item Box sanity option is on, then handle adding those locations to the counter too.
+                    if ((long)Plugin.slotData["item_boxes"] != 0)
+                    {
+                        BattlesphereItemBoxes(ItemBoxLists.Battlesphere1);
+                        BattlesphereItemBoxes(ItemBoxLists.Battlesphere2);
+                        BattlesphereItemBoxes(ItemBoxLists.Battlesphere3);
+                        BattlesphereItemBoxes(ItemBoxLists.Battlesphere4);
+                        BattlesphereItemBoxes(ItemBoxLists.Battlesphere5);
+                        BattlesphereItemBoxes(ItemBoxLists.Battlesphere6);
+                        BattlesphereItemBoxes(ItemBoxLists.Battlesphere7);
+                        BattlesphereItemBoxes(ItemBoxLists.Battlesphere8);
+                        BattlesphereItemBoxes(ItemBoxLists.BattlesphereArena);
+                    }
+
+                    void BattlesphereItemBoxes(Dictionary<string, Vector2> bsItemBoxes)
+                    {
+                        // Loop through each entry in this Battlesphere Item Box dictionary and get the location index for them.
+                        foreach (KeyValuePair<string, Vector2> itemBox in bsItemBoxes)
+                        {
+                            locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", itemBox.Key);
+                            AddLocation();
+                        }
+                    }
+
                     // Enable the key counter and update its text.
                     KeyCounter.gameObject.SetActive(true);
                     KeyCounter.transform.GetChild(0).GetComponent<TextMesh>().text = $"{Plugin.save.BattlesphereKeyCount} / 18";
@@ -750,6 +774,53 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{stageName} - Chest");
 
                     AddLocation();
+                }
+
+
+                // If the Item Box sanity option is on, then handle adding those locations to the counter too.
+                if ((long)Plugin.slotData["item_boxes"] != 0)
+                {
+                    Dictionary<string, Vector2>? ItemBoxes = null;
+
+                    switch (stageName)
+                    {
+                        case "Dragon Valley": ItemBoxes = ItemBoxLists.DragonValley; break;
+                        case "Shenlin Park": ItemBoxes = ItemBoxLists.ShenlinPark; break;
+                        case "Avian Museum": ItemBoxes = ItemBoxLists.AvianMuseum; break;
+                        case "Airship Sigwada": ItemBoxes = ItemBoxLists.AirshipSigwada; break;
+                        case "Tiger Falls": ItemBoxes = ItemBoxLists.TigerFalls; break;
+                        case "Robot Graveyard": ItemBoxes = ItemBoxLists.RobotGraveyard; break;
+                        case "Shade Armory": ItemBoxes = ItemBoxLists.ShadeArmory; break;
+                        case "Snowfields": ItemBoxes = ItemBoxLists.Snowfields; break;
+                        case "Phoenix Highway": ItemBoxes = ItemBoxLists.PhoenixHighway; break;
+                        case "Zao Land": ItemBoxes = ItemBoxLists.ZaoLand; break;
+                        case "Globe Opera 1": ItemBoxes = ItemBoxLists.GlobeOpera1; break;
+                        case "Globe Opera 2": ItemBoxes = ItemBoxLists.GlobeOpera2; break;
+                        case "Palace Courtyard": ItemBoxes = ItemBoxLists.PalaceCourtyard; break;
+                        case "Tidal Gate": ItemBoxes = ItemBoxLists.TidalGate; break;
+                        case "Zulon Jungle": ItemBoxes = ItemBoxLists.ZulonJungle; break;
+                        case "Nalao Lake": ItemBoxes = ItemBoxLists.NalaoLake; break;
+                        case "Sky Bridge": ItemBoxes = ItemBoxLists.SkyBridge; break;
+                        case "Lightning Tower": ItemBoxes = ItemBoxLists.LightningTower; break;
+                        case "Ancestral Forge": ItemBoxes = ItemBoxLists.AncestralForge; break;
+                        case "Magma Starscape": ItemBoxes = ItemBoxLists.MagmaStarscape; break;
+                        case "Gravity Bubble": ItemBoxes = ItemBoxLists.GravityBubble; break;
+                        case "Bakunawa Rush": ItemBoxes = ItemBoxLists.BakunawaRush; break;
+                        case "Clockwork Arboretum": ItemBoxes = ItemBoxLists.ClockworkArboretum; break;
+                        case "Inversion Dynamo": ItemBoxes = ItemBoxLists.InversionDynamo; break;
+                        case "Lunar Cannon": ItemBoxes = ItemBoxLists.LunarCannon; break;
+                    }
+
+                    // If we have an Item Box dictionary, then loop through each entry in it and get the location index for them.
+                    if (ItemBoxes != null)
+                    {
+                        foreach (var itemBox in ItemBoxes)
+                        {
+                            // Get the location index for this chest index.
+                            locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", itemBox.Key);
+                            AddLocation();
+                        }
+                    }
                 }
 
                 void AddLocation()

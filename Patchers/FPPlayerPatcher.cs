@@ -105,22 +105,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 return;
             }
 
-            // Only do this if we actually have chest tracers enabled.
-            try
-            {
-                if ((long)Plugin.slotData["chest_tracers"] == 0)
-                {
-                    // Log the fact that the tracers are disabled, as a debug log.
-                    Plugin.consoleLog?.LogDebug("[ChestTracers] Chest tracers disabled by slotData.");
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                Plugin.consoleLog?.LogError($"[ChestTracers] Failed to read 'chest_tracers' value: {ex.Message}");
-                return;
-            }
-
             // Validate current stage
             if (FPStage.currentStage == null)
             {
@@ -161,40 +145,47 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
             // Set up a list to hold the chest locations.
             List<Vector3> locations = [];
-            
+            List<Vector2> CrystalItemBoxPositions = [];
+            List<Vector2> PetalItemBoxPositions = [];
+            List<Vector2> ShieldItemBoxPositions = [];
+            List<Vector2> GoldGemItemBoxPositions = [];
+
             try
             {
-                bool GetFlag(int idx) => Plugin.save.ChestTracers != null && idx >= 0 && idx < Plugin.save.ChestTracers.Length && Plugin.save.ChestTracers[idx];
-
-                switch (FPStage.currentStage.stageID)
+                if ((long)Plugin.slotData["chest_tracers"] != 0)
                 {
-                    case 1:  if (GetFlag(0))  GetChests(ChestLists.DragonValley); break;
-                    case 2:  if (GetFlag(1))  GetChests(ChestLists.ShenlinPark); break;
-                    case 3:  if (GetFlag(2))  GetChests(ChestLists.AvianMuseum); break;
-                    case 4:  if (GetFlag(3)  && SceneManager.GetActiveScene().name == "AirshipSigwada") GetChests(ChestLists.AirshipSigwada); break;
-                    case 5:  if (GetFlag(4))  GetChests(ChestLists.TigerFalls); break;
-                    case 6:  if (GetFlag(5))  GetChests(ChestLists.RobotGraveyard); break;
-                    case 7:  if (GetFlag(6))  GetChests(ChestLists.ShadeArmory); break;
-                    case 9:  if (GetFlag(7))  GetChests(ChestLists.PhoenixHighway); break;
-                    case 10: if (GetFlag(8))  GetChests(ChestLists.ZaoLand); break;
-                    case 11: if (GetFlag(9))  GetChests(ChestLists.GlobeOpera1); break;
-                    case 12: if (GetFlag(10)) GetChests(ChestLists.GlobeOpera2); break;
-                    case 14: if (GetFlag(11)) GetChests(ChestLists.PalaceCourtyard); break;
-                    case 15: if (GetFlag(12)) GetChests(ChestLists.TidalGate); break;
-                    case 16: if (GetFlag(13)) GetChests(ChestLists.ZulonJungle); break;
-                    case 17: if (GetFlag(14)) GetChests(ChestLists.NalaoLake); break;
-                    case 18: if (GetFlag(15)) GetChests(ChestLists.SkyBridge); break;
-                    case 19: if (GetFlag(16)) GetChests(ChestLists.LightningTower); break;
-                    case 20: if (GetFlag(17)) GetChests(ChestLists.AncestralForge); break;
-                    case 21: if (GetFlag(18)) GetChests(ChestLists.MagmaStarscape); break;
-                    case 23: if (GetFlag(19)) GetChests(ChestLists.GravityBubble); break;
-                    case 24: if (GetFlag(20)) GetChests(ChestLists.BakunawaRush); break;
-                    case 26: if (GetFlag(21)) GetChests(ChestLists.ClockworkArboretum); break;
-                    case 27: if (GetFlag(22)) GetChests(ChestLists.InversionDynamo); break;
-                    case 28: if (GetFlag(23)) GetChests(ChestLists.LunarCannon); break;
-                    default:
-                        Plugin.consoleLog?.LogDebug($"[ChestTracers] No tracer list for stageID={FPStage.currentStage.stageID}. Locations remain empty.");
-                        break;
+                    bool GetFlag(int idx) => Plugin.save.ChestTracers != null && idx >= 0 && idx < Plugin.save.ChestTracers.Length && Plugin.save.ChestTracers[idx];
+
+                    switch (FPStage.currentStage.stageID)
+                    {
+                        case 1: if (GetFlag(0)) GetChests(ChestLists.DragonValley); break;
+                        case 2: if (GetFlag(1)) GetChests(ChestLists.ShenlinPark); break;
+                        case 3: if (GetFlag(2)) GetChests(ChestLists.AvianMuseum); break;
+                        case 4: if (GetFlag(3) && SceneManager.GetActiveScene().name == "AirshipSigwada") GetChests(ChestLists.AirshipSigwada); break;
+                        case 5: if (GetFlag(4)) GetChests(ChestLists.TigerFalls); break;
+                        case 6: if (GetFlag(5)) GetChests(ChestLists.RobotGraveyard); break;
+                        case 7: if (GetFlag(6)) GetChests(ChestLists.ShadeArmory); break;
+                        case 9: if (GetFlag(7)) GetChests(ChestLists.PhoenixHighway); break;
+                        case 10: if (GetFlag(8)) GetChests(ChestLists.ZaoLand); break;
+                        case 11: if (GetFlag(9)) GetChests(ChestLists.GlobeOpera1); break;
+                        case 12: if (GetFlag(10)) GetChests(ChestLists.GlobeOpera2); break;
+                        case 14: if (GetFlag(11)) GetChests(ChestLists.PalaceCourtyard); break;
+                        case 15: if (GetFlag(12)) GetChests(ChestLists.TidalGate); break;
+                        case 16: if (GetFlag(13)) GetChests(ChestLists.ZulonJungle); break;
+                        case 17: if (GetFlag(14)) GetChests(ChestLists.NalaoLake); break;
+                        case 18: if (GetFlag(15)) GetChests(ChestLists.SkyBridge); break;
+                        case 19: if (GetFlag(16)) GetChests(ChestLists.LightningTower); break;
+                        case 20: if (GetFlag(17)) GetChests(ChestLists.AncestralForge); break;
+                        case 21: if (GetFlag(18)) GetChests(ChestLists.MagmaStarscape); break;
+                        case 23: if (GetFlag(19)) GetChests(ChestLists.GravityBubble); break;
+                        case 24: if (GetFlag(20)) GetChests(ChestLists.BakunawaRush); break;
+                        case 26: if (GetFlag(21)) GetChests(ChestLists.ClockworkArboretum); break;
+                        case 27: if (GetFlag(22)) GetChests(ChestLists.InversionDynamo); break;
+                        case 28: if (GetFlag(23)) GetChests(ChestLists.LunarCannon); break;
+                        default:
+                            Plugin.consoleLog?.LogDebug($"[ChestTracers] No tracer list for stageID={FPStage.currentStage.stageID}. Locations remain empty.");
+                            break;
+                    }
                 }
             }
             catch (Exception ex)
@@ -209,6 +200,48 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             {
                 Plugin.consoleLog?.LogError("[ChestTracers] apAssetBundle is null. Cannot instantiate tracer prefabs.");
                 return;
+            }
+
+            // If we're using Item Box locations, then make tracers for them too.
+            if ((long)Plugin.slotData["item_boxes"] != 0)
+            {
+                switch (SceneManager.GetActiveScene().name)
+                {
+                    case "DragonValley": GetChests(ItemBoxLists.DragonValley); break;
+                    case "ShenlinPark": GetChests(ItemBoxLists.ShenlinPark); break;
+                    case "TigerFalls": GetChests(ItemBoxLists.TigerFalls); break;
+                    case "RobotGraveyard": GetChests(ItemBoxLists.RobotGraveyard); break;
+                    case "ShadeArmory": GetChests(ItemBoxLists.ShadeArmory); break;
+                    case "Snowfields": GetChests(ItemBoxLists.Snowfields); break;
+                    case "AvianMuseum": GetChests(ItemBoxLists.AvianMuseum); break;
+                    case "AirshipSigwada": GetChests(ItemBoxLists.AirshipSigwada); break;
+                    case "PhoenixHighway": GetChests(ItemBoxLists.PhoenixHighway); break;
+                    case "ZaoLand": GetChests(ItemBoxLists.ZaoLand); break;
+                    case "GlobeOpera1": GetChests(ItemBoxLists.GlobeOpera1); break;
+                    case "GlobeOpera2": GetChests(ItemBoxLists.GlobeOpera2); break;
+                    case "PalaceCourtyard": GetChests(ItemBoxLists.PalaceCourtyard); break;
+                    case "TidalGate": GetChests(ItemBoxLists.TidalGate); break;
+                    case "SkyBridge": GetChests(ItemBoxLists.SkyBridge); break;
+                    case "LightningTower": GetChests(ItemBoxLists.LightningTower); break;
+                    case "ZulonJungle": GetChests(ItemBoxLists.ZulonJungle); break;
+                    case "NalaoLake": GetChests(ItemBoxLists.NalaoLake); break;
+                    case "AncestralForge": GetChests(ItemBoxLists.AncestralForge); break;
+                    case "MagmaStarscape": GetChests(ItemBoxLists.MagmaStarscape); break;
+                    case "GravityBubble": GetChests(ItemBoxLists.GravityBubble); break;
+                    case "Bakunawa1": GetChests(ItemBoxLists.BakunawaRush); break;
+                    case "Bakunawa2": GetChests(ItemBoxLists.ClockworkArboretum); break;
+                    case "Bakunawa3": GetChests(ItemBoxLists.InversionDynamo); break;
+                    case "Bakunawa4": GetChests(ItemBoxLists.LunarCannon); break;
+                    case "Battlesphere_Course1": GetChests(ItemBoxLists.Battlesphere1); break;
+                    case "Battlesphere_Course2": GetChests(ItemBoxLists.Battlesphere2); break;
+                    case "Battlesphere_Course3": GetChests(ItemBoxLists.Battlesphere3); break;
+                    case "Battlesphere_Course4": GetChests(ItemBoxLists.Battlesphere4); break;
+                    case "Battlesphere_Course5": GetChests(ItemBoxLists.Battlesphere5); break;
+                    case "Battlesphere_Course6": GetChests(ItemBoxLists.Battlesphere6); break;
+                    case "Battlesphere_Course7": GetChests(ItemBoxLists.Battlesphere7); break;
+                    case "Battlesphere_Course8": GetChests(ItemBoxLists.Battlesphere8); break;
+                    case "Battlesphere_Arena": GetChests(ItemBoxLists.BattlesphereArena); break;
+                }
             }
 
             // Loop through each read location.
@@ -229,9 +262,13 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     continue;
                 }
 
-                // Create and attach a tracer script to the game object, setting its targer position to this location.
+                // Create and attach a tracer script to the game object, setting its target position to this location and checking for the type.
                 var tracerScript = tracerPrefab.AddComponent<ChestTracer>();
                 tracerScript.targetPosition = location;
+                if (CrystalItemBoxPositions.Contains(location)) tracerScript.itemTypeIndex = 0;
+                if (PetalItemBoxPositions.Contains(location)) tracerScript.itemTypeIndex = 1;
+                if (ShieldItemBoxPositions.Contains(location)) tracerScript.itemTypeIndex = 2;
+                if (GoldGemItemBoxPositions.Contains(location)) tracerScript.itemTypeIndex = 3;
 
                 // Hide the tracer if we need to.
                 if (shouldKeepHidden)
@@ -300,6 +337,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                     if (exists && !allChecked.Contains(locationIndex))
                     {
+                        if (entry.Key.Contains("Crystal Box")) CrystalItemBoxPositions.Add(entry.Value);
+                        if (entry.Key.Contains("Petal Box")) PetalItemBoxPositions.Add(entry.Value);
+                        if (entry.Key.Contains("Shield Box")) ShieldItemBoxPositions.Add(entry.Value);
+                        if (entry.Key.Contains("Gold Gem Box")) GoldGemItemBoxPositions.Add(entry.Value);
+
                         locations.Add(entry.Value);
                         added++;
                     }

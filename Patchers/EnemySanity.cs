@@ -99,7 +99,7 @@
         [HarmonyPostfix][HarmonyPatch(typeof(Turretus), "State_Death")] static void Turretus(Turretus __instance) => CorruptedEnemy(__instance.faction, "Turretus");
         [HarmonyPostfix][HarmonyPatch(typeof(WaterHopper), "State_Death")] static void WaterHopper() => SendEnemyCheck("Water Hopper");
         [HarmonyPostfix][HarmonyPatch(typeof(WeatherFace), "State_Death")] static void WeatherFace() => SendEnemyCheck("Weather Face");
-        [HarmonyPostfix][HarmonyPatch(typeof(WolfArmor), "State_Death")] static void WolfArmor() => SendEnemyCheck("Wolf Armour");
+        [HarmonyPostfix][HarmonyPatch(typeof(WolfArmor), "State_Death")] static void WolfArmor() => SendEnemyCheck("Wolf Armor");
         [HarmonyPostfix][HarmonyPatch(typeof(WoodHopper), "State_Death")] static void WoodHopper() => SendEnemyCheck("Wood Hopper");
         [HarmonyPostfix][HarmonyPatch(typeof(ZombieTrooper), "State_Death")] static void ZombieTrooper() => SendEnemyCheck("Zombie Trooper");
 
