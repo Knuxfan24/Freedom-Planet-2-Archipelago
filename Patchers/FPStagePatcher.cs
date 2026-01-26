@@ -4,6 +4,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class FPStagePatcher
     {
+        public static Dictionary<GameObject, Vector2> ItemBoxFallbackPositions = [];
+
         /// <summary>
         /// Resets the player character ID to undo a swap trap.
         /// </summary>
@@ -152,5 +154,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 }
             }
         }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPStage), "Start")]
+        private static void ClearItemBoxSanityFallback() => ItemBoxFallbackPositions.Clear();
     }
 }
