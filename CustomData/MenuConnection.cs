@@ -303,6 +303,29 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             // Get the slot data.
             Plugin.slotData = connectionSuccess.SlotData;
 
+            // If our slot data is missing anything, then go ahead and add a default value.
+            if (!Plugin.slotData.ContainsKey("death_link")) Plugin.slotData.Add("death_link", 0L);
+            if (!Plugin.slotData.ContainsKey("ring_link")) Plugin.slotData.Add("ring_link", 0L);
+            if (!Plugin.slotData.ContainsKey("trap_link")) Plugin.slotData.Add("trap_link", 0L);
+            if (!Plugin.slotData.ContainsKey("chest_tracer_items")) Plugin.slotData.Add("chest_tracer_items", 0L);
+            if (!Plugin.slotData.ContainsKey("chapters")) Plugin.slotData.Add("chapters", 2L);
+            if (!Plugin.slotData.ContainsKey("shop_information")) Plugin.slotData.Add("shop_information", 0L);
+            if (!Plugin.slotData.ContainsKey("trap_stones")) Plugin.slotData.Add("trap_stones", 0L);
+            if (!Plugin.slotData.ContainsKey("fast_weapons_core")) Plugin.slotData.Add("fast_weapons_core", 0L);
+            if (!Plugin.slotData.ContainsKey("dangerous_time_limit")) Plugin.slotData.Add("dangerous_time_limit", 0L);
+            if (!Plugin.slotData.ContainsKey("chest_tracers")) Plugin.slotData.Add("chest_tracers", 1L);
+            if (!Plugin.slotData.ContainsKey("chests")) Plugin.slotData.Add("chests", 1L);
+            if (!Plugin.slotData.ContainsKey("chest_tracer_strict")) Plugin.slotData.Add("chest_tracer_strict", 0L);
+            if (!Plugin.slotData.ContainsKey("enemies")) Plugin.slotData.Add("enemies", 1L);
+            if (!Plugin.slotData.ContainsKey("bosses")) Plugin.slotData.Add("bosses", 1L);
+            if (!Plugin.slotData.ContainsKey("milla_shop")) Plugin.slotData.Add("milla_shop", 1L);
+            if (!Plugin.slotData.ContainsKey("milla_shop_price")) Plugin.slotData.Add("milla_shop_price", 1L);
+            if (!Plugin.slotData.ContainsKey("milla_shop_amount")) Plugin.slotData.Add("milla_shop_amount", 30L);
+            if (!Plugin.slotData.ContainsKey("vinyl_shop")) Plugin.slotData.Add("vinyl_shop", 1L);
+            if (!Plugin.slotData.ContainsKey("vinyl_shop_price")) Plugin.slotData.Add("vinyl_shop_price", 100L);
+            if (!Plugin.slotData.ContainsKey("vinyl_shop_amount")) Plugin.slotData.Add("vinyl_shop_amount", 60L);
+            if (!Plugin.slotData.ContainsKey("item_boxes")) Plugin.slotData.Add("item_boxes", 0L);
+
             // Overwrite the link values in the slot data if we need to.
             if (Plugin.configDeathLinkOverride.Value != -1) Plugin.slotData["death_link"] = Plugin.configDeathLinkOverride.Value;
             if (Plugin.configRingLinkOverride.Value != -1) Plugin.slotData["ring_link"] = Plugin.configRingLinkOverride.Value;

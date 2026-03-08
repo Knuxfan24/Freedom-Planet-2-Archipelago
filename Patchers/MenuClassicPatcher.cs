@@ -25,6 +25,16 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         static GameObject EnemyCounter;
 
         /// <summary>
+        /// Reference to the album menu so it can be destroyed when quitting Fists of Frogs.
+        /// </summary>
+        static GameObject AlbumMenu;
+
+        /// <summary>
+        /// Reference to the last playing song so it can be restored when quitting Fists of Frogs.
+        /// </summary>
+        private static AudioClip previousSong;
+
+        /// <summary>
         /// Sets up the classic menu.
         /// </summary>
         [HarmonyPrefix]
@@ -871,6 +881,112 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 codes[codeIndex].opcode = OpCodes.Nop;
 
             return codes.AsEnumerable();
+        }
+
+        /// <summary>
+        /// Stops the album menu from appearing and saves values to restore after quitting Fists of Frogs.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(MenuAlbum), "Start")]
+        static bool KillAlbum(MenuAlbum __instance)
+        {
+            // Check that we're on the Classic Menu before doing any of this.
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "ClassicMenu")
+                return true;
+
+            // Create the Fists of Frogs prefab.
+            GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("FrogMenu"));
+
+            // Disable the album menu's game object.
+            __instance.gameObject.SetActive(false);
+
+            // Save a reference to the album menu's game object.
+            AlbumMenu = __instance.gameObject;
+
+            // Get what song is current playing.
+            previousSong = FPAudio.GetCurrentMusic();
+
+            // Add the HintGame tag to our connection info.
+            // TODO: Is this a good idea?
+            Plugin.session.ConnectionInfo.UpdateConnectionOptions([.. Plugin.session.ConnectionInfo.Tags, .. new string[1] { "HintGame" }]);
+
+            // Stop the album menu's original start function from running.
+            return false;
+        }
+
+        /// <summary>
+        /// Restores the music and destroys the album menu after quitting Fists of Frogs.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FistsOfFrog), "State_Pause")]
+        static void ExitFoF(ref FOFPlayerInput ___input, ref int ___pauseOption)
+        {
+            // Only do this if we're pressing confirm or pause (replicating the original code).
+            if (!___input.confirm && !___input.pause)
+                return;
+
+            // Check that we're highlighting quit.
+            if (___pauseOption == 1)
+            {
+                // Remove the HintGame tag from our connection info.
+                List<string> tags = [.. Plugin.session.ConnectionInfo.Tags];
+                tags.Remove("HintGame");
+                Plugin.session.ConnectionInfo.UpdateConnectionOptions([.. tags]);
+
+                // Play our saved song.
+                FPAudio.PlayMusic(previousSong);
+
+                // Destroy the album menu so we can return to the pause menu.
+                UnityEngine.Object.Destroy(AlbumMenu);
+            }
+        }
+
+        /// <summary>
+        /// Replaces the Photo Album... label with Fists of Frogs...
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MenuText), "GetTextMesh")]
+        static void ReplaceAlbumLabel(ref MenuText __instance)
+        {
+            if (__instance.textMesh != null)
+                if (__instance.textMesh.text == "Photo Album...")
+                    __instance.textMesh.text = "Fists of Frogs...";
+        }
+
+        /// <summary>
+        /// Replaces the Photo Album's button sprites with custom Fists of Frogs ones.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MenuOption), "Start")]
+        static void ReplaceAlbumSprite(ref MenuOption __instance)
+        {
+            if (__instance.gameObject.name == "Pause Icon - Photo")
+            {
+                __instance.normalSprite = Plugin.apAssetBundle.LoadAsset<Sprite>("frog_off");
+                __instance.selectedSprite = Plugin.apAssetBundle.LoadAsset<Sprite>("frog_on");
+            }
+        }
+
+        /// <summary>
+        /// Sends out a hint upon clearing a level in Fists of Frogs.
+        /// TODO: Option to disable this, either in the YAML or mod config.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FistsOfFrog), "State_Clear")]
+        static void SendFoFHint(ref float ___genericTimer)
+        {
+            // Check that the generic timer is set to 0 so we only send one hint.
+            if (___genericTimer == 0f)
+            {
+                // Grab all the locations that haven't been collected yet.
+                List<long> missingLocations = [.. Plugin.session.Locations.AllMissingLocations];
+
+                // Check that we have any remaining locations and send a hint out for it
+                if (missingLocations.Count > 0)
+                    Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfoHint, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Plugin.rng.Next(missingLocations.Count)]);
+            }
+
+            void HandleScoutInfoHint(Dictionary<long, ScoutedItemInfo> dummy) { };
         }
     }
 }
