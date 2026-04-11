@@ -50,7 +50,6 @@
         /// <summary>
         /// Stops this chest from being opened if strict tracers is on and this stage's tracer hasn't been acquired.
         /// TODO: This causes a few minor cosmetic problems with the doors in Globe Opera 2 (for example).
-        /// TODO: This managed to crash the game once?
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(ItemChest), "State_Idle")]

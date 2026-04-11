@@ -981,7 +981,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 // Grab all the locations that haven't been collected yet.
                 List<long> missingLocations = [.. Plugin.session.Locations.AllMissingLocations];
 
-                // Check that we have any remaining locations and send a hint out for it
+                // Check that we have any remaining locations and send a hint out for a randomly selected one.
                 if (missingLocations.Count > 0)
                     Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfoHint, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Plugin.rng.Next(missingLocations.Count)]);
             }

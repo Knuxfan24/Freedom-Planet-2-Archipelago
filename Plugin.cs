@@ -284,7 +284,16 @@ namespace Freedom_Planet_2_Archipelago
             }
 
             // Create a new (probably oversized) array for the text display.
-            TextDisplay.GetComponent<PlayerDialog>().queue = new DialogQueue[4096];
+            DialogQueue placeholder = new()
+            {
+                active = false,
+                audio = null,
+                lengthOffset = 0,
+                name = "",
+                portrait = null,
+                text = ""
+            };
+            TextDisplay.GetComponent<PlayerDialog>().queue = [.. Enumerable.Repeat(placeholder, 1024)];
 
             // Loop through each asset.
             foreach (string asset in apAssetBundle.GetAllAssetNames())

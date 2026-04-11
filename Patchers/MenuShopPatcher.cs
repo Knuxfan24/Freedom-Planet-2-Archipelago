@@ -1,7 +1,11 @@
-﻿namespace Freedom_Planet_2_Archipelago.Patchers
+﻿using System.Reflection;
+
+namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class MenuShopPatcher
     {
+        private static readonly MethodInfo updateListMethod = typeof(MenuShop).GetMethod("UpdateItemList", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(bool) }, null);
+
         /// <summary>
         /// The sprites for the items in this shop.
         /// </summary>
@@ -31,31 +35,22 @@
 
         /// <summary>
         /// Sets the shop prices to the value chosen in the player YAML and sets up both item arrays.
-        /// TODO: High location amounts seem to have the last item break. Figure out
-            /// A: Why that happens.
-            /// B: What the limit is.
-        /// and fix them.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuShop), "Start")]
         static void SetShopPrices(ref bool ___payWithCrystals, ref int[] ___itemCosts, ref FPPowerup[] ___itemsForSale, ref FPMusicTrack[] ___musicID)
         {
+            // Set up the vinyl shop.
             if (___payWithCrystals)
             {
-                ___itemCosts = new int[(int)(long)Plugin.slotData["vinyl_shop_amount"]];
-                for (int costIndex = 0; costIndex < ___itemCosts.Length; costIndex++)
-                    ___itemCosts[costIndex] = (int)(long)Plugin.slotData["vinyl_shop_price"];
-
+                ___itemCosts = [.. Enumerable.Repeat((int)(long)Plugin.slotData["vinyl_shop_price"], (int)(long)Plugin.slotData["vinyl_shop_amount"])];
                 ___itemsForSale = new FPPowerup[(int)(long)Plugin.slotData["vinyl_shop_amount"]];
             }
 
+            // Set up Milla's shop.
             else
             {
-                ___itemCosts = new int[(int)(long)Plugin.slotData["milla_shop_amount"]];
-
-                for (int costIndex = 0; costIndex < ___itemCosts.Length; costIndex++)
-                    ___itemCosts[costIndex] = (int)(long)Plugin.slotData["milla_shop_price"];
-
+                ___itemCosts = [.. Enumerable.Repeat((int)(long)Plugin.slotData["milla_shop_price"], (int)(long)Plugin.slotData["milla_shop_amount"])];
                 ___musicID = new FPMusicTrack[(int)(long)Plugin.slotData["milla_shop_amount"]];
             }
         }
@@ -134,6 +129,14 @@
             void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _ScoutedLocationInfo = scoutedLocationInfo;
             void HandleScoutInfoHint(Dictionary<long, ScoutedItemInfo> dummy) { };
         }
+
+        /// <summary>
+        /// Forces the UpdateItemList method to run on start up to get around an issue that appeared where the shop sprites only update upon moving the cursor.
+        /// </summary>
+        /// <param name="__instance"></param>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MenuShop), "Start")]
+        static void ForceVisualUpdate(MenuShop __instance) => updateListMethod.Invoke(__instance, new object[] { true });
 
         /// <summary>
         /// Set the sprites, names and descriptions for items in this shop.

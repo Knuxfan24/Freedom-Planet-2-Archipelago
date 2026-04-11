@@ -417,7 +417,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         player.lives++;
 
                     // Create a +1 icon for this life.
-                    // TODO: The spacing is weird, fiddle with that Y value calulcation more.
                     CrystalBonus crystalBonus = (CrystalBonus)FPStage.CreateStageObject(CrystalBonus.classID, 292f, -((lifeIndex + 1) * 64));
                     crystalBonus.animator.Play("HUD_Add");
                     crystalBonus.duration = 40f;

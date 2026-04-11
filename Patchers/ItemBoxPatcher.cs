@@ -13,7 +13,9 @@
         [HarmonyPatch(typeof(ItemBox), "BoxHit")]
         static void SendLocationCheck(ItemBox __instance)
         {
-            // TODO: Skip all of this if this item box is a Crate, as we're completely ignoring those.
+            // Skip all of this if this item box is a Crate, as we're completely ignoring those.
+            if (__instance.itemType == FPItemBoxTypes.BOX_CRATE || __instance.itemType == FPItemBoxTypes.BOX_CRATE_PETALS)
+                return;
 
             // Get the index of this item box's location.
             long locationIndex = GetLocationIndex(__instance);
@@ -135,10 +137,12 @@
                     }
 
                     // If we've still come up empty, then throw an error.
-                    // TODO: Check if this item box is a bomb, as we're ignoring those. We have to do that check here to account for the Items to Bombs Brave Stone.
                     if (itemBoxPosition.Key == "" || itemBoxPosition.Value == Vector2.zero)
                     {
-                        Plugin.consoleLog.LogError($"No item box found for position {__instance.position} in stage ID {FPStage.currentStage.stageID} ({FPStage.currentStage.stageName})!");
+                        // Check if this item box is a bomb and don't throw the error if so, as we're ignoring those. We have to do that check here to account for the Items to Bombs Brave Stone.
+                        if (__instance.itemType != FPItemBoxTypes.BOX_BOMB)
+                            Plugin.consoleLog.LogError($"No item box found for position {__instance.position} in stage ID {FPStage.currentStage.stageID} ({FPStage.currentStage.stageName})!");
+                        
                         return -1;
                     }
 
@@ -146,9 +150,10 @@
                     return Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", itemBoxPosition.Key);
                 }
 
-                // TODO: Check if this item box is a bomb, as we're ignoring those. We have to do that check here to account for the Items to Bombs Brave Stone.
-                // Throw an error if we didn't find a fallback position.
-                Plugin.consoleLog.LogError($"No item box found for position {__instance.position} in stage ID {FPStage.currentStage.stageID} ({FPStage.currentStage.stageName})!");
+                // Throw an error if we didn't find a fallback position and this item isn't a bomb.
+                // TODO: This shouldn't cause a problem with the Items to Bombs Brave Stone? Test that to confirm.
+                if (__instance.itemType != FPItemBoxTypes.BOX_BOMB)
+                    Plugin.consoleLog.LogError($"No item box found for position {__instance.position} in stage ID {FPStage.currentStage.stageID} ({FPStage.currentStage.stageName})!");
                 return -1;
             }
 

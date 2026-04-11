@@ -156,6 +156,14 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 Plugin.RingLinkCrystalCount++;
             }
         }
+
+        /// <summary>
+        /// Stops the Rail Trap from persisting through stage reloads.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPSaveManager), "Local_Restart")]
+        [HarmonyPatch(typeof(FPSaveManager), "Local_KO")]
+        static void DisableRailTrapOnReload() => Plugin.RailTrap = false;
     }
 }
 #pragma warning restore IDE0028 // Simplify collection initialization
