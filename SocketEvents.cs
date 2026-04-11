@@ -56,9 +56,10 @@
             // Set up the message showing our DeathLink source.
             string notifyMessage = $"DeathLink received from {deathLink.Source}";
 
-            // Present the cause and source of the DeathLink.
+            // Present the cause and source of the DeathLink, assuming we actually have one.
             if (deathLink.Cause != null)
-                notifyMessage = $"{deathLink.Cause}";
+                if (deathLink.Cause != "")
+                    notifyMessage = $"{deathLink.Cause}";
 
             // Set the player's DeathLink flags accordingly.
             FPPlayerPatcher.canSendDeathLink = false;
