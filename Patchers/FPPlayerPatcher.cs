@@ -613,6 +613,18 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(FPPlayer), "Action_Crush")]
         static void Crush()
         {
+            foreach (GameObject tracer in chestTracers)
+            {
+                if (tracer == null)
+                {
+                    Plugin.consoleLog?.LogDebug("[ChestTracers] Found null tracer reference during cleanup.");
+                    continue;
+                }
+
+                GameObject.Destroy(tracer);
+            }
+            chestTracers.Clear();
+
             if (SceneManager.GetActiveScene().name != "Bakunawa5")
                 SendDeathLink($"{Helpers.GetPlayer()} became a pancake. [{Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot)}]", false);
             else
