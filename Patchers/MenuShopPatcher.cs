@@ -27,11 +27,29 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         public static string SelectedItemName;
 
         /// <summary>
-        /// Stops the shop menu from sorting purchased items to the end of the list.
+        /// Sets the shop vendor name to the slot's and puts the slot's sprite there if one is provided.
         /// </summary>
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(MenuShop), "SortItems")]
-        static bool StopShopSorting() => false;
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MenuShop), "Start")]
+        static void SetShopVendor(MenuShop __instance)
+        {
+            // Check that a sprite for this slot name exists.
+            if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players\Shop\{Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot)}.png"))
+            {
+                // Set up a new texture using point filtering.
+                Texture2D texture = new(32, 32) { filterMode = FilterMode.Point };
+
+                // Read the sprite for this texture.
+                texture.LoadImage(File.ReadAllBytes(($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players\Shop\{Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot)}.png")));
+
+                // Set the seller sprite to a newly created sprite.
+                __instance.sellerSprite.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
+            }
+
+            // Set the shop keeper name to our slot name.
+            __instance.sellerName.textMesh.text = Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot);
+
+        }
 
         /// <summary>
         /// Sets the shop prices to the value chosen in the player YAML and sets up both item arrays.
@@ -140,52 +158,100 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Set the sprites, names and descriptions for items in this shop.
+        /// TODO: This feels a bit iffy (considering I'm copying the same loop twice for the two shops), but it seems to be working.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MenuShop), "UpdateItemList")]
         static void SetShopVisuals(ref int ___currentDetail, ref int ___detailListOffset, ref bool ___payWithCrystals, ref FPHudDigit[] ___powerups,
-                                   ref FPHudDigit[] ___vinyls, ref MenuText[] ___detailName, ref MenuText ___itemDescription)
+                                   ref FPHudDigit[] ___vinyls, ref MenuText[] ___detailName, ref MenuText ___itemDescription, ref FPPowerup[] ___itemsForSale,
+                                   ref int[] ___starCardRequirements, ref FPMusicTrack[] ___musicID)
         {
             // Calculate the highlighted item.
             int selectedItem = ___currentDetail + ___detailListOffset;
 
-            // Handle replacing the sprite on the item depending on the shop type.
+            // Handle Milla's shop.
             if (!___payWithCrystals)
             {
-                for (int powerupIndex = 0; powerupIndex < ___powerups.Length; powerupIndex++)
-                    if (___powerups[powerupIndex].digitValue > 1 && (powerupIndex + ___detailListOffset) < (int)(long)Plugin.slotData["milla_shop_amount"])
-                        ___powerups[powerupIndex].GetComponent<SpriteRenderer>().sprite = Sprites[powerupIndex + ___detailListOffset];
-            }
-            else
-            {
-                for (int vinylIndex = 0; vinylIndex < ___vinyls.Length; vinylIndex++)
-                    if (___vinyls[vinylIndex].digitValue != 0 && (vinylIndex + ___detailListOffset) < (int)(long)Plugin.slotData["vinyl_shop_amount"])
-                        ___vinyls[vinylIndex].GetComponent<SpriteRenderer>().sprite = Sprites[vinylIndex + ___detailListOffset];
-            }
-
-            // Only replace the item name and description if it's unlocked.
-            if (___detailName[0].GetComponent<TextMesh>().text != "? ? ? ? ?")
-            {
-                // Don't try and replace the item name and description if it would end up out of bounds (likely because of FP2Lib adding Vinyls from other mods).
-                if ((___payWithCrystals && selectedItem >= (int)(long)Plugin.slotData["vinyl_shop_amount"]) || (!___payWithCrystals && selectedItem >= (int)(long)Plugin.slotData["milla_shop_amount"]))
-                    return;
-
                 // Get the location for this item.
-                ScoutedItemInfo location = _ScoutedLocationInfo.ElementAt(selectedItem).Value;
+                ScoutedItemInfo location = _ScoutedLocationInfo.ElementAt((int)___itemsForSale[selectedItem] - 2).Value;
 
                 // Store the selected item's sprite and name for the ItemGet menu.
-                SelectedItemSprite = Sprites[selectedItem];
+                SelectedItemSprite = Sprites[(int)___itemsForSale[selectedItem] - 2];
                 SelectedItemName = GetItemName(location);
 
-                // Replace the item name.
-                ___detailName[0].GetComponent<TextMesh>().text = SelectedItemName;
+                // Loop through each item of the eight currently displayed.
+                for (int powerupIndex = 0; powerupIndex < ___powerups.Length; powerupIndex++)
+                {
+                    // Calculate this item's actual slot.
+                    int slotIndex = powerupIndex + ___detailListOffset;
 
-                // Replace the item description based on whether its for us or another player.
-                if (_ScoutedLocationInfo.ElementAt(selectedItem).Value.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
-                    ___itemDescription.GetComponent<TextMesh>().text = FPStage.WrapText(GetItemDescription(location, $"An item for {location.Player.Name}'s {location.ItemGame}."), 40);
-                else
-                    ___itemDescription.GetComponent<TextMesh>().text = FPStage.WrapText(GetItemDescription(location, "An item for you."), 40);
+                    // Check that this slot actually exists? This is copied from the original code, so I'm iffy on its usage.
+                    if (slotIndex >= 0 && slotIndex < ___itemsForSale.Length)
+                    {
+                        // Check that this item is actually unlocked.
+                        // TODO: Why the Mathf.Min calculation? That feels pointless, but GT must have done it for a reason? Or the decomp ended up weird.
+                        if (FPSaveManager.TotalStarCards() >= ___starCardRequirements[Mathf.Min(___starCardRequirements.Length - 1, slotIndex)])
+                        {
+                            // Set this item's sprite.
+                            ___powerups[powerupIndex].GetComponent<SpriteRenderer>().sprite = Sprites[((int)___itemsForSale[slotIndex]) - 2];
 
+                            // Check that this slot is the selected one.
+                            if (slotIndex == selectedItem)
+                            {
+                                // Change the name.
+                                ___detailName[0].GetComponent<TextMesh>().text = $"{SelectedItemName}\r\nMilla Shop Item {(int)___itemsForSale[selectedItem] - 1}";
+
+                                // Replace the item description based on whether its for us or another player.
+                                if (_ScoutedLocationInfo.ElementAt(selectedItem).Value.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                                    ___itemDescription.GetComponent<TextMesh>().text = FPStage.WrapText(GetItemDescription(location, $"An item for {location.Player.Name}'s {location.ItemGame}."), 40);
+                                else
+                                    ___itemDescription.GetComponent<TextMesh>().text = FPStage.WrapText(GetItemDescription(location, "An item for you."), 40);
+                            }
+                        }
+                    }
+                }
+            }
+
+            else
+            {
+
+                // Get the location for this item.
+                ScoutedItemInfo location = _ScoutedLocationInfo.ElementAt((int)___musicID[selectedItem] - 1).Value;
+
+                // Store the selected item's sprite and name for the ItemGet menu.
+                SelectedItemSprite = Sprites[(int)___musicID[selectedItem] - 1];
+                SelectedItemName = GetItemName(location);
+
+                // Loop through each item of the eight currently displayed.
+                for (int powerupIndex = 0; powerupIndex < ___powerups.Length; powerupIndex++)
+                {
+                    // Calculate this item's actual slot.
+                    int slotIndex = powerupIndex + ___detailListOffset;
+
+                    if (slotIndex >= 0 && slotIndex < ___itemsForSale.Length)
+                    {
+                        // Check that this item is actually unlocked.
+                        // TODO: Why the Mathf.Min calculation? That feels pointless, but GT must have done it for a reason? Or the decomp ended up weird.
+                        if (FPSaveManager.TotalStarCards() >= ___starCardRequirements[Mathf.Min(___starCardRequirements.Length - 1, slotIndex)])
+                        {
+                            // Set this item's sprite.
+                            ___vinyls[powerupIndex].GetComponent<SpriteRenderer>().sprite = Sprites[((int)___musicID[slotIndex]) - 1];
+
+                            // Check that this slot is the selected one.
+                            if (slotIndex == selectedItem)
+                            {
+                                // Change the name.
+                                ___detailName[0].GetComponent<TextMesh>().text = $"{SelectedItemName}\r\nVinyl Shop Item {(int)___musicID[selectedItem]}";
+
+                                // Replace the item description based on whether its for us or another player.
+                                if (_ScoutedLocationInfo.ElementAt(selectedItem).Value.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                                    ___itemDescription.GetComponent<TextMesh>().text = FPStage.WrapText(GetItemDescription(location, $"An item for {location.Player.Name}'s {location.ItemGame}."), 40);
+                                else
+                                    ___itemDescription.GetComponent<TextMesh>().text = FPStage.WrapText(GetItemDescription(location, "An item for you."), 40);
+                            }
+                        }
+                    }
+                }
             }
 
             static string GetItemName(ScoutedItemInfo location)

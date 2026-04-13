@@ -139,6 +139,7 @@ namespace Freedom_Planet_2_Archipelago
             // Create the Archipelago directories if they doesn't exist.
             if (!Directory.Exists($@"{Paths.GameRootPath}\Archipelago Saves")) Directory.CreateDirectory($@"{Paths.GameRootPath}\Archipelago Saves");
             if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players")) Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players\Shop")) Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players\Shop");
             if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sounds")) Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sounds");
             if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites")) Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites");
             if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Template Sprite Definitions")) Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Template Sprite Definitions");
