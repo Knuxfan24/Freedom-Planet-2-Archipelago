@@ -21,6 +21,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         public static bool canSendDeathLink = true;
 
         /// <summary>
+        /// Whether or not a crush death has been trigger from a Trivia Trap.
+        /// </summary>
+        public static bool dyingFromTriviaTrap = false;
+
+        /// <summary>
         /// Whether or not we have a Powerup queued.
         /// </summary>
         public static bool hasBufferedPowerup;
@@ -624,6 +629,14 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 GameObject.Destroy(tracer);
             }
             chestTracers.Clear();
+
+            // Change the DeathLink message if this was caused by a Trivia Trap.
+            if (dyingFromTriviaTrap)
+            {
+                SendDeathLink($"{Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot)} is bad at trivia. So sad.", false);
+                dyingFromTriviaTrap = false;
+                return;
+            }
 
             if (SceneManager.GetActiveScene().name != "Bakunawa5")
                 SendDeathLink($"{Helpers.GetPlayer()} became a pancake. [{Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot)}]", false);

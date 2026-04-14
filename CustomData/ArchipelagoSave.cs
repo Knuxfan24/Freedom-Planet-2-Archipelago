@@ -82,6 +82,11 @@
         public int SyntaxJumpscareTrapCount { get; set; }
 
         /// <summary>
+        /// The amount of Trivia Jumpscare Traps we've gotten from the server.
+        /// </summary>
+        public int TriviaTrapCount { get; set; }
+
+        /// <summary>
         /// The amount of Gold Gems we've gotten from the server.
         /// </summary>
         public int GoldGemCount { get; set; }

@@ -471,6 +471,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case "Rail Trap": return "Makes every solid surface in the stage into a grind rail.";
                         case "Spam Trap": return "Places a message box on the screen that moves around and changes to distract the player.";
                         case "Syntax Jumpscare Trap": return "Suddenly spawns a giant Syntax on the screen.";
+                        case "Trivia Trap": return "Forces the player to answer a life or death trivia question.";
                     }
                 }
 

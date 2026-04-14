@@ -21,6 +21,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using Newtonsoft.Json.Linq;
 using System.Collections;
+using static Freedom_Planet_2_Archipelago.CustomData.TriviaTrap;
 
 namespace Freedom_Planet_2_Archipelago
 {
@@ -49,6 +50,7 @@ namespace Freedom_Planet_2_Archipelago
         public static ConfigEntry<bool> configRemotePlayers;
         public static ConfigEntry<int> configChat;
         public static ConfigEntry<int> configShopHints;
+        public static ConfigEntry<int> configTriviaDifficulty;
 
         // The AP session's data.
         public static ArchipelagoSession session;
@@ -85,6 +87,8 @@ namespace Freedom_Planet_2_Archipelago
         public static List<ArchipelagoItem> TrapLinks = [];
         public static bool RailTrap = false;
         public static float BufferTrapTimer = -1;
+        public static bool TriviaTrap = false;
+        public static Dictionary<string, List<DKCQuestion>> TriviaGames = [];
 
         // RingLink based values.
         public static int RingLinkCrystalCount = 0;
@@ -240,6 +244,14 @@ namespace Freedom_Planet_2_Archipelago
                                           "1: Progressive Items Only\r\n" +
                                           "2: All");
 
+            configTriviaDifficulty = Config.Bind("Misc",
+                                                 "Trivia Trap Maximum Difficulty",
+                                                 2,
+                                                 "The maximum difficulty for questions in the Trivia Trap.\r\n" +
+                                                 "0: Easy\r\n" +
+                                                 "1: Normal\r\n" +
+                                                 "2: Hard");
+
             // Load our asset bundle.
             apAssetBundle = AssetBundle.LoadFromFile($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets");
             
@@ -309,6 +321,11 @@ namespace Freedom_Planet_2_Archipelago
                     if (Path.GetFileNameWithoutExtension(asset).StartsWith("fp2_neera")) NeeraTrapSounds = NeeraTrapSounds.AddToArray(apAssetBundle.LoadAsset<AudioClip>(Path.GetFileNameWithoutExtension(asset)));
                 }
             }
+
+            // Parse the DKC2 trivia database files for the Trivia Trap.
+            if (Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Trivia"))
+                foreach (var triviaFile in Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Trivia", "*.txt", SearchOption.AllDirectories))
+                    Helpers.ParseQuestionDatabase(triviaFile);
 
             // Patch all the functions that need patching.
             Harmony.CreateAndPatchAll(typeof(AcrabellePieTrapPatcher));

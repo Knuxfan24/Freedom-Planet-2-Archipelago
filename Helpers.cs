@@ -1,5 +1,7 @@
 ﻿using FP2Lib.Player;
 using System.Text;
+using System.Text.RegularExpressions;
+using static Freedom_Planet_2_Archipelago.CustomData.TriviaTrap;
 
 namespace Freedom_Planet_2_Archipelago
 {
@@ -278,6 +280,7 @@ namespace Freedom_Planet_2_Archipelago
             int railTrapCount = 0;
             int spamTrapCount = 0;
             int syntaxJumpscareTrapCount = 0;
+            int triviaTrapCount = 0;
             int goldGemCount = 0;
             int crystalCount = 0;
             int extraLifeCount = 0;
@@ -297,6 +300,7 @@ namespace Freedom_Planet_2_Archipelago
             int saveRailTrapCount = Plugin.save.RailTrapCount;
             int saveSpamTrapCount = Plugin.save.SpamTrapCount;
             int saveSyntaxJumpscareTrapCount = Plugin.save.SyntaxJumpscareTrapCount;
+            int saveTriviaTrapCount = Plugin.save.TriviaTrapCount;
             int saveGoldGemCount = Plugin.save.GoldGemCount;
             int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveCrystalCount = Plugin.save.CrystalCount;
@@ -322,6 +326,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Rail Trap": railTrapCount += item.Value; break;
                     case "Spam Trap": spamTrapCount += item.Value; break;
                     case "Syntax Jumpscare Trap": syntaxJumpscareTrapCount += item.Value; break;
+                    case "Trivia Trap": triviaTrapCount += item.Value; break;
 
                     case "Gold Gem": goldGemCount += item.Value; break;
                     case "Crystals": crystalCount += item.Value * 100; break;
@@ -359,6 +364,7 @@ namespace Freedom_Planet_2_Archipelago
             int trueRailTrapCount = railTrapCount - saveRailTrapCount;
             int trueSpamTrapCount = spamTrapCount - saveSpamTrapCount;
             int trueSyntaxJumpscareTrapCount = syntaxJumpscareTrapCount - saveSyntaxJumpscareTrapCount;
+            int trueTriviaTrapCount = triviaTrapCount - saveTriviaTrapCount;
             int trueCrystalCount = crystalCount - saveCrystalCount;
             int trueExtraLifeCount = extraLifeCount - saveExtraLifeCount;
             int trueInvincibilityCount = invincibilityCount - saveInvincibilityCount;
@@ -378,6 +384,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.save.RailTrapCount = saveRailTrapCount + trueRailTrapCount;
             Plugin.save.SpamTrapCount = saveSpamTrapCount + trueSpamTrapCount;
             Plugin.save.SyntaxJumpscareTrapCount = saveSyntaxJumpscareTrapCount + trueSyntaxJumpscareTrapCount;
+            Plugin.save.TriviaTrapCount = saveTriviaTrapCount + trueTriviaTrapCount;
             Plugin.SpamTrapCount = trueSpamTrapCount + 1;
             Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
             Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
@@ -924,6 +931,18 @@ namespace Freedom_Planet_2_Archipelago
                     if (!trapLink) Plugin.save.SyntaxJumpscareTrapCount += item.Value;
                     break;
 
+                case "Trivia Trap":
+                    if (!trapLink) Plugin.save.TriviaTrapCount += item.Value;
+                    if (!Plugin.TriviaTrap && FPPlayerPatcher.player != null && FPStage.objectsRegistered)
+                    {
+                        Plugin.TriviaTrap = true;
+                        GameObject triviaTrap = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("TriviaTrap"));
+                        triviaTrap.AddComponent<TriviaTrap>();
+                    }
+                    else
+                        Plugin.BufferedTraps.Add(item.Key);
+                    break;
+
                 // Unhandled items, throw an error into the console.
                 default: Plugin.consoleLog.LogError($"Item Type '{item.Key.ItemName}' (sent by '{item.Key.Source}' {item.Value} time(s)) not yet handled!"); return;
             }
@@ -1178,6 +1197,111 @@ namespace Freedom_Planet_2_Archipelago
 
             // Make sure the spam trap persists through scene changes.
             UnityEngine.Object.DontDestroyOnLoad(syntaxJumpscare);
+        }
+
+        /// <summary>
+        /// Parses a randomly selected DKC2 trivia database file.
+        /// https://github.com/TheLX5/DKC2-Trivia/tree/master
+        /// </summary>
+        /// <param name="questionFile">The question file we're parsing.</param>
+        public static void ParseQuestionDatabase(string questionFile)
+        {
+            // Set up a list of questions.
+            List<DKCQuestion> questions = [];
+
+            // Read the question file into a string array.
+            string[] questionDatabase = File.ReadAllLines(questionFile);
+
+            // Ignore this file if it doesn't starter with the PARSER: line.
+            if (!questionDatabase[0].StartsWith("PARSER: "))
+            {
+                Plugin.consoleLog.LogError($"DKC2 Trivia Database file '{questionFile}' doesn't start with a PARSER: line! Ignoring.");
+                return;
+            }
+
+            // Parse this question file's game and author.
+            string game = questionDatabase[1].Substring(questionDatabase[1].IndexOf(' ') + 1);
+            string author = questionDatabase[2].Substring(questionDatabase[2].IndexOf(' ') + 1);
+
+            // Set up a question and the values to determine what we're parsing.
+            DKCQuestion questionEntry = new() { Author = author };
+            bool parsingQuestion = true;
+            bool parsingAnswers = false;
+
+            // Loop through the question database file, starting from line 4 to bypass the header and first divider.
+            for (int questionDatabaseIndex = 4; questionDatabaseIndex < questionDatabase.Length; questionDatabaseIndex++)
+            {
+                // Check if this line is a --- terminator.
+                if (questionDatabase[questionDatabaseIndex] == "---")
+                {
+                    // Trim out any extra spaces.
+                    questionEntry.Question = Regex.Replace(questionEntry.Question, @"\s+", " ");
+                    questionEntry.Question = questionEntry.Question.Trim();
+
+                    // Save our current question.
+                    questions.Add(questionEntry);
+
+                    // Reset the question and parsing values.
+                    questionEntry = new() { Author = author };
+                    parsingQuestion = true;
+                    parsingAnswers = false;
+
+                    // Skip the rest of the loop.
+                    continue;
+                }
+
+                // If this line starts with ANSWERS: (feels safer to check that than an equal value?) then switch to parsing answers and skip the rest of the loop.
+                if (questionDatabase[questionDatabaseIndex].StartsWith("ANSWERS:"))
+                {
+                    parsingQuestion = false;
+                    parsingAnswers = true;
+                    continue;
+                }
+
+                // Read the question difficulty.
+                if (parsingQuestion && questionDatabase[questionDatabaseIndex].StartsWith("QUESTION: "))
+                    questionEntry.Difficulty = questionDatabase[questionDatabaseIndex].Split(' ')[1].ToUpper();
+
+                // Parse each line of the question.
+                if (parsingQuestion && !questionDatabase[questionDatabaseIndex].StartsWith("QUESTION: "))
+                    questionEntry.Question += $"{questionDatabase[questionDatabaseIndex]} ";
+
+                // Parse each answer of the question, removing the DKC2 line break trick.
+                if (parsingAnswers)
+                {
+                    string answer = questionDatabase[questionDatabaseIndex];
+                    answer = answer.Replace("°", " ");
+                    answer = Regex.Replace(answer, @"\s+", " ");
+                    answer = answer.Trim();
+                    questionEntry.Answers.Add(answer);
+                }
+            }
+
+            // Store these questions, either appending it to an existing entry or creating a new one.
+            if (Plugin.TriviaGames.ContainsKey(game)) Plugin.TriviaGames[game].AddRange(questions);
+            else Plugin.TriviaGames.Add(game, questions);
+        }
+    }
+}
+
+/// <summary>
+/// Extension to shuffle an array, sourced from: https://discussions.unity.com/t/clever-way-to-shuffle-a-list-t-in-one-line-of-c-code/535113/2
+/// </summary>
+public static class IListExtensions
+{
+    /// <summary>
+    /// Shuffles the element order of the specified list.
+    /// </summary>
+    public static void Shuffle<T>(this IList<T> ts)
+    {
+        var count = ts.Count;
+        var last = count - 1;
+        for (var i = 0; i < last; ++i)
+        {
+            var r = UnityEngine.Random.Range(i, count);
+            var tmp = ts[i];
+            ts[i] = ts[r];
+            ts[r] = tmp;
         }
     }
 }

@@ -41,6 +41,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(MenuClassic), "Start")]
         static void MenuSetup(MenuClassic __instance)
         {
+            // TODO: Should I leave this here just to be safe?
+            Plugin.TriviaTrap = false;
+
             // Randomise the character if we need to.
             if (Plugin.usingRandomCharacter)
             {
