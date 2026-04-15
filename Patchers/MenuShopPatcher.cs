@@ -49,7 +49,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 texture.LoadImage(File.ReadAllBytes(($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players\Shop\{Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot)}.png")));
 
                 // Set the seller sprite to a newly created sprite.
-                __instance.sellerSprite.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
+                __instance.sellerSprite.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0f), 1);
+
+                // Adjust the sprite's position to fit the fact that our custom sprites have the origin at the bottom rather than the center.
+                __instance.sellerSprite.transform.localPosition = new(60, -189);
             }
 
             // Set the shop keeper name to our slot name.
