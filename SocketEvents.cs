@@ -320,6 +320,7 @@
                         case "Rail Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
                         case "Spam Trap": AddTrap(bouncedPacket, "Spam Trap"); break;
                         case "Syntax Jumpscare Trap": AddTrap(bouncedPacket, "Syntax Jumpscare Trap"); break;
+                        case "Trivia Trap": AddTrap(bouncedPacket, "Trivia Trap", true); break;
 
                         // None FP2 Based Traps, sourced from https://docs.google.com/spreadsheets/d/1yoNilAzT5pSU9c2hYK7f2wHAe9GiWDiHFZz8eMe1oeQ/edit?gid=811965759#gid=811965759.
                         case "144p Trap": AddTrap(bouncedPacket, "Pixellation Trap", true); break;
@@ -327,9 +328,17 @@
                         case "Army Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "Banana Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Banana Peel Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "Banner Trap": AddTrap(bouncedPacket, "Double Damage", true); break;
                         case "Bee Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
                         case "Blue Balls Curse": AddTrap(bouncedPacket, "One Hit KO", true); break;
-                        case "Bomb": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                        case "Bomb":
+                        case "Bomb Trap":
+                            RandomTrap(new()
+                            {
+                                { "Spike Ball Trap", true },
+                                { "Items To Bombs", true }
+                            });
+                            break;
                         case "Bonk Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Bubble Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Bullet Time Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
@@ -340,6 +349,7 @@
                         case "Confuse Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                         case "Confusion Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                         case "Controller Drift Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
+                        case "Crystal Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                         case "Cutscene Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
                         case "Damage Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
                         case "Deisometric Trap":
@@ -359,6 +369,7 @@
                         case "Electrocution Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
                         case "Empty Item Box Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
                         case "Exposition Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        case "Explosion Trap": AddTrap(bouncedPacket, "Items To Bombs", true); break;
                         case "Fake Transition": AddTrap(bouncedPacket, "Zoom Trap"); break;
                         case "Fast Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
                         case "Fear Trap": AddTrap(bouncedPacket, "Syntax Jumpscare Trap"); break;
@@ -371,22 +382,36 @@
                                 { "Pixellation Trap", false }
                             });
                             break;
+                        case "Flip Horizontal Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                         case "Flip Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                        case "Flip Vertical Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                        case "Fracture Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                         case "Freeze Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Frog Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
                         case "Frozen Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Fuzzy Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break; // Doesn't have a source or effect listed on the sheet? Thinking of Yoshi's Island?
                         case "Gadget Shuffle Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
+                        case "Gas Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                         case "Get Out Trap": AddTrap(bouncedPacket, "Time Limit", true); break;
                         case "Ghost": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "Ghost Chat": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        case "Help Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        case "Hey! Trap":
+                            RandomTrap(new()
+                            {
+                                { "Aaa Trap", false },
+                                { "Spam Trap", false }
+                            });
+                            break;
                         case "Hiccup Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
                         case "Honey Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
                         case "Ice Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Ice Floor Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
                         case "Icy Hot Pants Trap": AddTrap(bouncedPacket, "Spring Trap", true); break;
+                        case "Impatience Trap": AddTrap(bouncedPacket, "Time Limit", true); break;
                         case "Input Sequence Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Instant Death Trap": AddTrap(bouncedPacket, "One Hit KO", true); break;
+                        case "Inverted Mouse Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                         case "Laughter Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
                         case "Literature Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
                         case "Meteor Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
@@ -404,8 +429,10 @@
                         case "Posession Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
                         case "Push Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
                         case "Reversal Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                        case "Reverse Controls Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                         case "Reverse Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                         case "Rockfall Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                        case "Sandstorm Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                         case "Screen Flip Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                         case "Sleep Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                         case "Slip Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
@@ -428,13 +455,17 @@
                             });
                             break;
                         case "Tarr Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                        case "Text Trap": AddTrap(bouncedPacket, "Spam Trap"); break;
                         case "Thwimp Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "Timer Trap": AddTrap(bouncedPacket, "Time Limit", true); break;
                         case "Time Warp Trap": AddTrap(bouncedPacket, "Time Limit", true); break;
                         case "Tiny Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
                         case "Tip Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
+                        case "TNT Trap": AddTrap(bouncedPacket, "Items To Bombs", true); break;
                         case "TNT Barrel Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                         case "W I D E Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
+                        case "Zoom In Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
+                        case "Zoom Out Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
 
                         default: Plugin.consoleLog.LogDebug($"No trap matchup found for {bouncedPacket.Data["source"]}'s {bouncedPacket.Data["trap_name"]}!"); break;
                     }
