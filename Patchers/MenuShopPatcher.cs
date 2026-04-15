@@ -27,6 +27,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         public static string SelectedItemName;
 
         /// <summary>
+        /// A label to show the number of the selected item in the shop.
+        /// TODO: This sometimes seems to just... Not update?
+        /// </summary>
+        private static GameObject? ItemNumberLabel;
+
+        /// <summary>
         /// Sets the shop vendor name to the slot's and puts the slot's sprite there if one is provided.
         /// </summary>
         [HarmonyPostfix]
@@ -148,6 +154,23 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             void HandleScoutInfoHint(Dictionary<long, ScoutedItemInfo> dummy) { };
         }
 
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MenuShop), "Start")]
+        static void CreateItemNumberLabel(ref MenuText ___itemDescription, MenuShop __instance)
+        {
+            // Clone the item description label.
+            ItemNumberLabel = GameObject.Instantiate(___itemDescription.gameObject);
+
+            // Change the alignment, anchor and template text on the label.
+            ItemNumberLabel.GetComponent<TextMesh>().alignment = TextAlignment.Left;
+            ItemNumberLabel.GetComponent<TextMesh>().anchor = TextAnchor.MiddleLeft;
+            ItemNumberLabel.GetComponent<TextMesh>().text = "????? Shop Item X";
+
+            // Parent the label to the inventory window and place it in the correct location on the bottom left.
+            ItemNumberLabel.transform.parent = __instance.transform.GetChild(1);
+            ItemNumberLabel.transform.localPosition = new(8, -288, 0);
+        }
+
         /// <summary>
         /// Forces the UpdateItemList method to run on start up to get around an issue that appeared where the shop sprites only update upon moving the cursor.
         /// </summary>
@@ -198,8 +221,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                             // Check that this slot is the selected one.
                             if (slotIndex == selectedItem)
                             {
-                                // Change the name.
-                                ___detailName[0].GetComponent<TextMesh>().text = $"{SelectedItemName}\r\nMilla Shop Item {(int)___itemsForSale[selectedItem] - 1}";
+                                // Change the name and item number display.
+                                ___detailName[0].GetComponent<TextMesh>().text = FPStage.WrapText(SelectedItemName, 35);
+                                ItemNumberLabel?.GetComponent<TextMesh>().text = $"Milla Shop Item {(int)___itemsForSale[selectedItem] - 1}";
 
                                 // Replace the item description based on whether its for us or another player.
                                 if (_ScoutedLocationInfo.ElementAt(selectedItem).Value.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
@@ -240,8 +264,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                             // Check that this slot is the selected one.
                             if (slotIndex == selectedItem)
                             {
-                                // Change the name.
-                                ___detailName[0].GetComponent<TextMesh>().text = $"{SelectedItemName}\r\nVinyl Shop Item {(int)___musicID[selectedItem]}";
+                                // Change the name and item number display.
+                                ___detailName[0].GetComponent<TextMesh>().text = FPStage.WrapText(SelectedItemName, 35);
+                                ItemNumberLabel?.GetComponent<TextMesh>().text = $"Vinyl Shop Item {(int)___musicID[selectedItem]}";
 
                                 // Replace the item description based on whether its for us or another player.
                                 if (_ScoutedLocationInfo.ElementAt(selectedItem).Value.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
@@ -479,5 +504,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 return defaultDescription;
             }
         }
+
+        /// <summary>
+        /// Nulls out the Item Number Label reference, as destroying it doesn't seem to be enough?
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(MenuShop), "State_Close")]
+        static void ClearItemNumberLabel() => ItemNumberLabel = null;
     }
 }
