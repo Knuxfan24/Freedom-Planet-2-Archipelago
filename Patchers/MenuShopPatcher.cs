@@ -226,7 +226,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                             {
                                 // Change the name and item number display.
                                 ___detailName[0].GetComponent<TextMesh>().text = FPStage.WrapText(SelectedItemName, 35);
-                                ItemNumberLabel?.GetComponent<TextMesh>().text = $"Milla Shop Item {(int)___itemsForSale[selectedItem] - 1}";
+                                ItemNumberLabel?.GetComponent<TextMesh>().text = _ScoutedLocationInfo.ElementAt(selectedItem).Value.LocationName;
 
                                 // Replace the item description based on whether its for us or another player.
                                 if (_ScoutedLocationInfo.ElementAt(selectedItem).Value.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
@@ -269,7 +269,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                             {
                                 // Change the name and item number display.
                                 ___detailName[0].GetComponent<TextMesh>().text = FPStage.WrapText(SelectedItemName, 35);
-                                ItemNumberLabel?.GetComponent<TextMesh>().text = $"Vinyl Shop Item {(int)___musicID[selectedItem]}";
+                                ItemNumberLabel?.GetComponent<TextMesh>().text = _ScoutedLocationInfo.ElementAt(selectedItem).Value.LocationName;
 
                                 // Replace the item description based on whether its for us or another player.
                                 if (_ScoutedLocationInfo.ElementAt(selectedItem).Value.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
@@ -510,9 +510,13 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Nulls out the Item Number Label reference, as destroying it doesn't seem to be enough?
+        /// TODO: If a shop is reopened quick enough, this will renull the reference from the new one, as the old one is still closing. At least I think that's the problem.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuShop), "State_Close")]
-        static void ClearItemNumberLabel() => ItemNumberLabel = null;
+        static void ClearItemNumberLabel()
+        {
+            ItemNumberLabel = null;
+        }
     }
 }
