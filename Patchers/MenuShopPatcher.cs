@@ -28,7 +28,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// A label to show the number of the selected item in the shop.
-        /// TODO: This sometimes seems to just... Not update?
+        /// TODO: This sometimes doesn't update due to the closing state overwriting it.
         /// </summary>
         private static GameObject? ItemNumberLabel;
 
@@ -214,6 +214,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     // Check that this slot actually exists? This is copied from the original code, so I'm iffy on its usage.
                     if (slotIndex >= 0 && slotIndex < ___itemsForSale.Length)
                     {
+                        // Set the item number display's text.
+                        ItemNumberLabel?.GetComponent<TextMesh>().text = location.LocationName;
+
                         // Check that this item is actually unlocked.
                         // TODO: Why the Mathf.Min calculation? That feels pointless, but GT must have done it for a reason? Or the decomp ended up weird.
                         if (FPSaveManager.TotalStarCards() >= ___starCardRequirements[Mathf.Min(___starCardRequirements.Length - 1, slotIndex)])
@@ -224,12 +227,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                             // Check that this slot is the selected one.
                             if (slotIndex == selectedItem)
                             {
-                                // Change the name and item number display.
+                                // Change the item name.
                                 ___detailName[0].GetComponent<TextMesh>().text = FPStage.WrapText(SelectedItemName, 35);
-                                ItemNumberLabel?.GetComponent<TextMesh>().text = _ScoutedLocationInfo.ElementAt(selectedItem).Value.LocationName;
 
                                 // Replace the item description based on whether its for us or another player.
-                                if (_ScoutedLocationInfo.ElementAt(selectedItem).Value.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                                if (location.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
                                     ___itemDescription.GetComponent<TextMesh>().text = FPStage.WrapText(GetItemDescription(location, $"An item for {location.Player.Name}'s {location.ItemGame}."), 40);
                                 else
                                     ___itemDescription.GetComponent<TextMesh>().text = FPStage.WrapText(GetItemDescription(location, "An item for you."), 40);
@@ -257,6 +259,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                     if (slotIndex >= 0 && slotIndex < ___itemsForSale.Length)
                     {
+                        // Set the item number display's text.
+                        ItemNumberLabel?.GetComponent<TextMesh>().text = location.LocationName;
+
                         // Check that this item is actually unlocked.
                         // TODO: Why the Mathf.Min calculation? That feels pointless, but GT must have done it for a reason? Or the decomp ended up weird.
                         if (FPSaveManager.TotalStarCards() >= ___starCardRequirements[Mathf.Min(___starCardRequirements.Length - 1, slotIndex)])
@@ -267,12 +272,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                             // Check that this slot is the selected one.
                             if (slotIndex == selectedItem)
                             {
-                                // Change the name and item number display.
+                                // Change the item name.
                                 ___detailName[0].GetComponent<TextMesh>().text = FPStage.WrapText(SelectedItemName, 35);
-                                ItemNumberLabel?.GetComponent<TextMesh>().text = _ScoutedLocationInfo.ElementAt(selectedItem).Value.LocationName;
 
                                 // Replace the item description based on whether its for us or another player.
-                                if (_ScoutedLocationInfo.ElementAt(selectedItem).Value.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                                if (location.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
                                     ___itemDescription.GetComponent<TextMesh>().text = FPStage.WrapText(GetItemDescription(location, $"An item for {location.Player.Name}'s {location.ItemGame}."), 40);
                                 else
                                     ___itemDescription.GetComponent<TextMesh>().text = FPStage.WrapText(GetItemDescription(location, "An item for you."), 40);
