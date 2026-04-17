@@ -28,7 +28,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// A label to show the number of the selected item in the shop.
-        /// TODO: This sometimes doesn't update due to the closing state overwriting it.
         /// </summary>
         private static GameObject? ItemNumberLabel;
 
@@ -513,14 +512,13 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         }
 
         /// <summary>
-        /// Nulls out the Item Number Label reference, as destroying it doesn't seem to be enough?
-        /// TODO: If a shop is reopened quick enough, this will renull the reference from the new one, as the old one is still closing. At least I think that's the problem.
+        /// Nulls out the Item Number Label reference when starting the close state, as destroying it doesn't seem to be enough?
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuShop), "State_Close")]
-        static void ClearItemNumberLabel()
+        static void ClearItemNumberLabel(ref float ___genericTimer)
         {
-            ItemNumberLabel = null;
+            if (___genericTimer == 0) ItemNumberLabel = null;
         }
     }
 }
