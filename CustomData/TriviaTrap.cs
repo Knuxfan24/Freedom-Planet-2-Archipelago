@@ -40,11 +40,47 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         // A reference to the stage HUD.
         private FPHudMaster HUD;
 
+        // The traps that can replace this if we don't have any trivia database files.
+        private readonly string[] replacementTraps =
+        [
+            "Swap Trap",
+            "Mirror Trap",
+            "Pie Trap",
+            "Spring Trap",
+            "PowerPoint Trap",
+            "Zoom Trap",
+            "Aaa Trap",
+            "Spike Ball Trap",
+            "Pixellation Trap",
+            "Rail Trap",
+            "Spam Trap",
+            "Syntax Jumpscare Trap"
+        ];
+
         private new void Start()
         {
+            // If we don't have any trivia, then swap this trap out for another one.
             if (Plugin.TriviaGames.Count == 0)
             {
-                // TODO: Handle the trivia not existing at all. Probably just swap the trap out.
+                // Create and handle a new trap.
+                ArchipelagoItem replacementTrap = new()
+                {
+                    ItemName = replacementTraps[Plugin.rng.Next(replacementTraps.Length)],
+                    Source = "Trivia Trap"
+                };
+                Helpers.HandleItem(new(replacementTrap, 1));
+
+                // Tell the player what trap activated and why.
+                Plugin.sentMessageQueue.Add($"No Trivia Found. Have a {replacementTrap.ItemName} instead!");
+
+                // Disable the trivia trap flag.
+                Plugin.TriviaTrap = false;
+
+                // Destroy this trivia trap.
+                GameObject.Destroy(this.gameObject);
+
+                // Don't do anything else.
+                return;
             }
 
             // Get the HUD and hide it.
