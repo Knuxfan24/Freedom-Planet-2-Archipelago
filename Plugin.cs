@@ -785,9 +785,10 @@ namespace Freedom_Planet_2_Archipelago
 
             while (t > 0f)
             {
-                // Match original behavior: pixelate only when banner is idle; otherwise restore temporarily for readability.
+                // Match original behavior: pixelate only when banner is idle and a trivia trap isn't active; otherwise restore temporarily for readability.
                 if (messageBanner != null &&
-                    messageBanner.GetComponent<MessageBanner>().state == messageBanner.GetComponent<MessageBanner>().State_Idle)
+                    messageBanner.GetComponent<MessageBanner>().state == messageBanner.GetComponent<MessageBanner>().State_Idle
+                    && !TriviaTrap)
                 {
                     FPCamera.stageCamera?.ResizeRenderTextures(0.25f);
                     t -= Time.deltaTime;

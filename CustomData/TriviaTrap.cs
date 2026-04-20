@@ -217,13 +217,23 @@ namespace Freedom_Planet_2_Archipelago.CustomData
 
             if (FPPlayerPatcher.player.input.leftPress)
             {
-                if (answerIndex == 1) HandleRightAnswer();
+                // Flip the answer index for this answer if a Mirror Trap is active.
+                int directionIndex = 1;
+                if (Plugin.MirrorTrapTimer > 0)
+                    directionIndex = 0;
+
+                if (answerIndex == directionIndex) HandleRightAnswer();
                 else HandleWrongAnswer();
             }
 
             if (FPPlayerPatcher.player.input.rightPress)
             {
-                if (answerIndex == 0) HandleRightAnswer();
+                // Flip the answer index for this answer if a Mirror Trap is active.
+                int directionIndex = 0;
+                if (Plugin.MirrorTrapTimer > 0)
+                    directionIndex = 1;
+
+                if (answerIndex == directionIndex) HandleRightAnswer();
                 else HandleWrongAnswer();
             }
         }
