@@ -81,6 +81,7 @@ namespace Freedom_Planet_2_Archipelago
         public static float PowerPointTrapTimer = -1;
         public static float ZoomTrapTimer = -1;
         public static float PixellationTrapTimer = -1;
+        public static float MachSpeedTrapTimer = -1;
         public static GameObject TextDisplay;
         public static List<DialogQueue> AaaTrapLines = [];
         public static List<ArchipelagoItem> BufferedTraps = [];
@@ -380,6 +381,7 @@ namespace Freedom_Planet_2_Archipelago
             StartCoroutine(BufferedTrapLoop());
             StartCoroutine(TrapLinksLoop());
             StartCoroutine(RailTrapLoop());
+            StartCoroutine(MachSpeedTrapWatcher());
 
             // Start background sender for bounce packets to avoid blocking the main thread.
             if (bounceThread == null)
@@ -877,6 +879,43 @@ namespace Freedom_Planet_2_Archipelago
                 }
                 yield return wait;
             }
+        }
+
+        private bool _machSpeedActive;
+        private IEnumerator MachSpeedTrapWatcher()
+        {
+            while (Application.isPlaying)
+            {
+                if (MachSpeedTrapTimer > 0 && FPPlayerPatcher.player != null && !_machSpeedActive)
+                {
+                    float duration = MachSpeedTrapTimer;
+                    MachSpeedTrapTimer = -1; // consume timer; routine handles timing
+                    yield return StartCoroutine(MachSpeedTrapRoutine(duration));
+                }
+                else if (MachSpeedTrapTimer <= 0 && MachSpeedTrapTimer > -1 && !_machSpeedActive)
+                {
+                    // Ensure restoration if a zero/expired value arrives.
+                    MachSpeedTrapTimer = -1;
+                    Time.timeScale = 1f;
+                }
+                yield return null;
+            }
+        }
+
+        private IEnumerator MachSpeedTrapRoutine(float duration)
+        {
+            _machSpeedActive = true;
+
+            float t = duration;
+            while (t > 0f)
+            {
+                t -= Time.deltaTime;
+                Time.timeScale = 2f;
+                yield return null;
+            }
+
+            Time.timeScale = 1f;
+            _machSpeedActive = false;
         }
     }
 }

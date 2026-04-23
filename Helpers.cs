@@ -281,6 +281,7 @@ namespace Freedom_Planet_2_Archipelago
             int spamTrapCount = 0;
             int syntaxJumpscareTrapCount = 0;
             int triviaTrapCount = 0;
+            int machSpeedTrapCount = 0;
             int goldGemCount = 0;
             int crystalCount = 0;
             int extraLifeCount = 0;
@@ -301,6 +302,7 @@ namespace Freedom_Planet_2_Archipelago
             int saveSpamTrapCount = Plugin.save.SpamTrapCount;
             int saveSyntaxJumpscareTrapCount = Plugin.save.SyntaxJumpscareTrapCount;
             int saveTriviaTrapCount = Plugin.save.TriviaTrapCount;
+            int saveMachSpeedTrapCount = Plugin.save.MachSpeedTrapCount;
             int saveGoldGemCount = Plugin.save.GoldGemCount;
             int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveCrystalCount = Plugin.save.CrystalCount;
@@ -327,6 +329,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Spam Trap": spamTrapCount += item.Value; break;
                     case "Syntax Jumpscare Trap": syntaxJumpscareTrapCount += item.Value; break;
                     case "Trivia Trap": triviaTrapCount += item.Value; break;
+                    case "Mach Speed Trap": machSpeedTrapCount += item.Value; break;
 
                     case "Gold Gem": goldGemCount += item.Value; break;
                     case "Crystals": crystalCount += item.Value * 100; break;
@@ -365,6 +368,7 @@ namespace Freedom_Planet_2_Archipelago
             int trueSpamTrapCount = spamTrapCount - saveSpamTrapCount;
             int trueSyntaxJumpscareTrapCount = syntaxJumpscareTrapCount - saveSyntaxJumpscareTrapCount;
             int trueTriviaTrapCount = triviaTrapCount - saveTriviaTrapCount;
+            int trueMachSpeedTrapCount = machSpeedTrapCount - saveMachSpeedTrapCount;
             int trueCrystalCount = crystalCount - saveCrystalCount;
             int trueExtraLifeCount = extraLifeCount - saveExtraLifeCount;
             int trueInvincibilityCount = invincibilityCount - saveInvincibilityCount;
@@ -385,6 +389,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.save.SpamTrapCount = saveSpamTrapCount + trueSpamTrapCount;
             Plugin.save.SyntaxJumpscareTrapCount = saveSyntaxJumpscareTrapCount + trueSyntaxJumpscareTrapCount;
             Plugin.save.TriviaTrapCount = saveTriviaTrapCount + trueTriviaTrapCount;
+            Plugin.save.MachSpeedTrapCount = saveMachSpeedTrapCount + trueMachSpeedTrapCount;
             Plugin.SpamTrapCount = trueSpamTrapCount + 1;
             Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
             Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
@@ -397,6 +402,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.PowerPointTrapTimer = truePowerPointTrapCount * 30;
             Plugin.ZoomTrapTimer = trueZoomTrapCount * 30;
             Plugin.PixellationTrapTimer = truePixellationTrapCount * 30;
+            Plugin.MachSpeedTrapTimer = trueMachSpeedTrapCount * 30;
 
             // Set our number of total gold gems to the correct value.
             FPSaveManager.totalGoldGems = fp2SaveGoldGemCount + trueGoldGemCount;
@@ -937,6 +943,12 @@ namespace Freedom_Planet_2_Archipelago
                     }
                     else
                         Plugin.BufferedTraps.Add(item.Key);
+                    break;
+
+                case "Mach Speed Trap":
+                    SendTrapLink();
+                    Plugin.MachSpeedTrapTimer += 30f * item.Value;
+                    if (!trapLink) Plugin.save.MachSpeedTrapCount += item.Value;
                     break;
 
                 // Unhandled items, throw an error into the console.

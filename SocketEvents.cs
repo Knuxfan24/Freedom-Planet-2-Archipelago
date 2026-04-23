@@ -321,6 +321,7 @@
                         case "Spam Trap": AddTrap(bouncedPacket, "Spam Trap"); break;
                         case "Syntax Jumpscare Trap": AddTrap(bouncedPacket, "Syntax Jumpscare Trap"); break;
                         case "Trivia Trap": AddTrap(bouncedPacket, "Trivia Trap", true); break;
+                        case "Mach Speed Trap": AddTrap(bouncedPacket, "Mach Speed Trap", true); break;
 
                         // None FP2 Based Traps, sourced from https://docs.google.com/spreadsheets/d/1yoNilAzT5pSU9c2hYK7f2wHAe9GiWDiHFZz8eMe1oeQ/edit?gid=811965759#gid=811965759.
                         case "144p Trap": AddTrap(bouncedPacket, "Pixellation Trap", true); break;
