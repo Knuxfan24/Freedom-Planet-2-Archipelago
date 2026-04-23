@@ -838,20 +838,16 @@ namespace Freedom_Planet_2_Archipelago
                         // Check that the player exists and that the stage has finished registering its objects.
                         if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
                         {
-                            // Create a spring from the prefab and set its name to APSpringTrap.
+                            // Create a spring from the prefab, set its name to APSpringTrap and slap it atop the player.
                             GameObject trapSpring = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("SpringTrap"));
                             trapSpring.name = "APSpringTrap";
+                            trapSpring.transform.position = new(FPPlayerPatcher.player.position.x, FPPlayerPatcher.player.position.y - 32, 0);
 
-                            // Set the spring's position, angle and rotation depending on the player's direction.
+                            // If the player is facing right, then flip this spring to face left.
                             if (FPPlayerPatcher.player.direction == FPDirection.FACING_RIGHT)
                             {
-                                trapSpring.transform.position = new(FPPlayerPatcher.player.position.x + 64, FPPlayerPatcher.player.position.y, 0);
-                                trapSpring.GetComponent<Spring>().angle = 90;
-                                trapSpring.transform.rotation = Quaternion.Euler(0, 0, 90);
-                            }
-                            else
-                            {
-                                trapSpring.transform.position = new(FPPlayerPatcher.player.position.x - 64, FPPlayerPatcher.player.position.y, 0);
+                                trapSpring.GetComponent<Spring>().direction = FPDirection.FACING_LEFT;
+                                trapSpring.transform.localScale = new(-1, 1, 1);
                             }
                         }
                         else
