@@ -975,19 +975,26 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// TODO: Option to disable this, either in the YAML or mod config.
         /// </summary>
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(FistsOfFrog), "State_Clear")]
-        static void SendFoFHint(ref float ___genericTimer)
+        [HarmonyPatch(typeof(FistsOfFrog), "State_Gameplay")]
+        static void SendFoFHint(ref SpriteRenderer[] ___flies)
         {
-            // Check that the generic timer is set to 0 so we only send one hint.
-            if (___genericTimer == 0f)
+            // Check that we've eaten all the flies in the stage.
+            for (int flyIndex = 0; flyIndex < ___flies.Length; flyIndex++)
             {
-                // Grab all the locations that haven't been collected yet.
-                List<long> missingLocations = [.. Plugin.session.Locations.AllMissingLocations];
+                if (___flies[flyIndex].sprite == null)
+                    continue;
 
-                // Check that we have any remaining locations and send a hint out for a randomly selected one.
-                if (missingLocations.Count > 0)
-                    Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfoHint, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Plugin.rng.Next(missingLocations.Count)]);
+                return;
             }
+
+            // If we've eaten all the flies in the stage, then pick and send a hint.
+            // Grab all the locations that haven't been collected yet.
+            List<long> missingLocations = [.. Plugin.session.Locations.AllMissingLocations];
+
+            // Check that we have any remaining locations and send a hint out for a randomly selected one.
+            // TODO: Sometimes this doesn't seem to actually send the hint? Try and figure out why, missingLocations is always populated, so its not the count check failing.
+            if (missingLocations.Count > 0)
+                Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfoHint, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounce, [Plugin.rng.Next(missingLocations.Count)]);
 
             void HandleScoutInfoHint(Dictionary<long, ScoutedItemInfo> dummy) { };
         }
