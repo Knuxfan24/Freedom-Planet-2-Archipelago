@@ -19,14 +19,11 @@
                 // Check if the time limit has elapsed.
                 if (FPSaveManager.GetStageParTime(FPStage.currentStage.stageID) - (FPStage.currentStage.minutes * 6000 + FPStage.currentStage.seconds * 100 + FPStage.currentStage.milliSeconds) < 0)
                 {
-                    // Disable the player's DeathLink flag so we don't send a "became a pancake" message.
-                    FPPlayerPatcher.canSendDeathLink = false;
+                    // Send a DeathLink with the message "Character ran out of time."
+                    FPPlayerPatcher.SendDeathLink($"{Helpers.GetPlayer()} ran out of time.", false);
 
                     // Forcibly run the player's crush action to blow them up.
                     FPPlayerPatcher.player.Action_Crush();
-
-                    // Send a DeathLink with the message "Character ran out of time."
-                    Plugin.DeathLink.SendDeathLink(new DeathLink(Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot), $"{Helpers.GetPlayer()} ran out of time."));
                 }
             }
         }
