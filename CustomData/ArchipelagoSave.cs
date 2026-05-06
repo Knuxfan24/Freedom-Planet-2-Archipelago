@@ -7,6 +7,11 @@
         /// </summary>
         public int SaveSlot { get; set; }
 
+        /// <summary>
+        /// An ID for this save, used for DamageLink.
+        /// </summary>
+        public Guid UUID { get; set; }
+
         #region Item Quantities
         /// <summary>
         /// The amount of Star Cards we've gotten from the server.
@@ -157,9 +162,10 @@
         public bool WeaponsCoreAccess { get; set; }
 
         public ArchipelagoSave() { }
-        public ArchipelagoSave(int slot)
+        public ArchipelagoSave(int slot, Guid uuid)
         {
             SaveSlot = slot;
+            UUID = uuid;
         }
     }
 }

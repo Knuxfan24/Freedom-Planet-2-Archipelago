@@ -307,6 +307,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             if (!Plugin.slotData.ContainsKey("death_link")) Plugin.slotData.Add("death_link", 0L);
             if (!Plugin.slotData.ContainsKey("ring_link")) Plugin.slotData.Add("ring_link", 0L);
             if (!Plugin.slotData.ContainsKey("trap_link")) Plugin.slotData.Add("trap_link", 0L);
+            if (!Plugin.slotData.ContainsKey("damage_link")) Plugin.slotData.Add("damage_link", 0L);
             if (!Plugin.slotData.ContainsKey("chest_tracer_items")) Plugin.slotData.Add("chest_tracer_items", 0L);
             if (!Plugin.slotData.ContainsKey("chapters")) Plugin.slotData.Add("chapters", 2L);
             if (!Plugin.slotData.ContainsKey("shop_information")) Plugin.slotData.Add("shop_information", 0L);
@@ -330,6 +331,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             if (Plugin.configDeathLinkOverride.Value != -1) Plugin.slotData["death_link"] = Plugin.configDeathLinkOverride.Value;
             if (Plugin.configRingLinkOverride.Value != -1) Plugin.slotData["ring_link"] = Plugin.configRingLinkOverride.Value;
             if (Plugin.configTrapLinkOverride.Value != -1) Plugin.slotData["trap_link"] = Plugin.configTrapLinkOverride.Value;
+            if (Plugin.configDamageLinkOverride.Value != -1) Plugin.slotData["damage_link"] = Plugin.configDamageLinkOverride.Value;
             
             // Print all the slot data to the log, as a debug log.
             foreach (var key in Plugin.slotData)
@@ -362,6 +364,10 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             if ((long)Plugin.slotData["trap_link"] != 0)
                 Plugin.session.ConnectionInfo.UpdateConnectionOptions([.. Plugin.session.ConnectionInfo.Tags, .. new string[1] { "TrapLink" }]);
 
+            // Add the SharedDamage tag if DamageLink is enabled in our slot data.
+            if ((long)Plugin.slotData["damage_link"] != 0)
+                Plugin.session.ConnectionInfo.UpdateConnectionOptions([.. Plugin.session.ConnectionInfo.Tags, .. new string[1] { "SharedDamage" }]);
+
             // Set up the socket events.
             Plugin.session.Socket.PacketReceived += SocketEvents.Socket_LinkPackets;
 
@@ -380,7 +386,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                     saveSlot = rng.Next();
 
                 // Create a save with this slot.
-                Plugin.save = new(saveSlot);
+                Plugin.save = new(saveSlot, Guid.NewGuid());
             }
 
             // If we do already have a save, then just load it.

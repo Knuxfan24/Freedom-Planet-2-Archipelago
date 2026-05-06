@@ -66,6 +66,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         public static AudioClip[] storedItemVoices = null;
 
         /// <summary>
+        /// How much damage we've taken and should convert to DamageLink points.
+        /// </summary>
+        public static float DamageLinkHealth = 0f;
+
+        /// <summary>
         /// Initial set up of the player's object.
         /// </summary>
         [HarmonyPostfix]
@@ -1258,5 +1263,13 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Push the updated entry to the data storage.
             Plugin.updatedRemotePlayer = true;
         }
+
+        // Calculate the damage values for the DamageLink.
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPPlayer), "Action_Hurt")]
+        static void StoreHealthBeforeDamage() => DamageLinkHealth = player.health;
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPPlayer), "Action_Hurt")]
+        static void CalculateTakenDamage() => DamageLinkHealth -= player.health;
     }
 }

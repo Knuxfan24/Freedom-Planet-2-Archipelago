@@ -71,6 +71,7 @@
 
         /// <summary>
         /// Event handler for when we receive a packet from the Multiworld.
+        /// TODO: Anything erroring here seems to silently kill the whole socket events, which might be why the chat piper seems to break?
         /// </summary>
         public static void Socket_LinkPackets(ArchipelagoPacketBase packet)
         {
@@ -482,6 +483,23 @@
 
                         Plugin.TrapLinks.Add(new ArchipelagoItem(trapName, bouncedPacket.Data["source"].ToObject<string>()));
                         received = true;
+                    }
+
+                    break;
+
+                case BouncedPacket bouncedPacket when bouncedPacket.Tags.Contains("SharedDamage"):
+                    // Check that the damage source isn't us and that we actually have DamageLink enabled.
+                    if (bouncedPacket.Data["source"].ToObject<string>() == Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot) || ((long)Plugin.slotData["damage_link"] == 0))
+                        return;
+
+                    // Check that the player exists.
+                    if (FPPlayerPatcher.player != null)
+                    {
+                        // Take the damage_points value, divide it by 10 (lining up with Megaman X, where 10 points is 1 blip on the health bar) and add it to the player's healthDamage value.
+                        FPPlayerPatcher.player.healthDamage += bouncedPacket.Data["damage_points"].ToObject<float>() / 10;
+
+                        // Force run the Hurt action on the player to apply the damage (or let them guard through it if they can pull that off).
+                        FPPlayerPatcher.player.Action_Hurt();
                     }
 
                     break;

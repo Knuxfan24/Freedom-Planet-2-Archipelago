@@ -47,6 +47,7 @@ namespace Freedom_Planet_2_Archipelago
         public static ConfigEntry<long> configDeathLinkOverride;
         public static ConfigEntry<long> configRingLinkOverride;
         public static ConfigEntry<long> configTrapLinkOverride;
+        public static ConfigEntry<long> configDamageLinkOverride;
         public static ConfigEntry<bool> configRemotePlayers;
         public static ConfigEntry<int> configChat;
         public static ConfigEntry<int> configShopHints;
@@ -222,6 +223,14 @@ namespace Freedom_Planet_2_Archipelago
                                                  "0: Disabled\r\n" +
                                                  "1: Enabled");
 
+            configDamageLinkOverride = Config.Bind("Overrides",
+                                                   "DamageLink",
+                                                   -1L,
+                                                   "Overrides the DamageLink setting in the player YAML.\r\n" +
+                                                   "-1: No Override\r\n" +
+                                                   "0: Disabled\r\n" +
+                                                   "1: Enabled");
+
             configRemotePlayers = Config.Bind("Misc",
                                               "Remote Players",
                                               false,
@@ -374,6 +383,7 @@ namespace Freedom_Planet_2_Archipelago
             StartCoroutine(SceneGuardLoop());
             StartCoroutine(ItemQueueLoop());
             StartCoroutine(RingLinkLoop());
+            StartCoroutine(DamageLinkLoop());
             StartCoroutine(MirrorTrapLoop());
             StartCoroutine(PowerPointTrapWatcher());
             StartCoroutine(ZoomTrapWatcher());
@@ -673,6 +683,36 @@ namespace Freedom_Planet_2_Archipelago
                     // Enqueue to background sender to avoid main-thread blocking.
                     EnqueueBounce(packet);
                     RingLinkCrystalCount = 0;
+                }
+                yield return tick;
+            }
+        }
+
+        private IEnumerator DamageLinkLoop()
+        {
+            var tick = new WaitForSeconds(0.25f);
+            while (Application.isPlaying)
+            {
+                if (FPPlayerPatcher.DamageLinkHealth != 0 && session != null)
+                {
+                    if ((long)slotData["damage_link"] != 0)
+                        yield return tick;
+
+                    BouncePacket packet = new()
+                    {
+                        Tags = ["SharedDamage"],
+                        Data = new()
+                        {
+                            { "time", (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds },
+                            { "source", session.Players.GetPlayerName(session.ConnectionInfo.Slot) },
+                            { "uuid", save.UUID.ToString() },
+                            { "damage_points", (int)(Math.Floor(FPPlayerPatcher.DamageLinkHealth * 10)) }
+                        }
+                    };
+
+                    // Enqueue to background sender to avoid main-thread blocking.
+                    EnqueueBounce(packet);
+                    FPPlayerPatcher.DamageLinkHealth = 0;
                 }
                 yield return tick;
             }
