@@ -35,7 +35,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new(null, "eastmost peninsula\r\nis the secret"), // Reference to The Legend of Zelda.
             new("CONGRATULATIONS", "You've won your\r\nvery own mansion.\r\n\r\nClick here for\r\ndetails!"), // Reference to Luigi's Mansion.
             new("Thief Alert!", "The word\r\n[PLAYER NAME],\r\nthey stole it too!"), // Reference to Kingdom Hearts 2.
-            new(null, "You want fun?\r\n[PLAYER NAME]\r\nwill show you fun..."), 
+            new(null, "You want fun?\r\n[PLAYER NAME]\r\nwill show you fun..."),
             new("Did You Know?", "There's a Mew\r\nunder the truck."), // Reference to Pokémon Red.
             new(null, "i showed you my\r\ncacodemon plz\r\nrespond"), // Reference to Doom.
             new("Message from Ghandi", "Our words are backed\r\nby nuclear weapons!"), // Reference to Civilization.
@@ -46,7 +46,21 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new("Need Reception?", "Climb to the top\r\nof Hawk Peak!"), // Reference to A Short Hike.
             new("AURORA BOREALIS", "At this time of year?\r\nAt this time of day?\r\nIn this part of the\r\nmutliworld?\r\n\r\nLocalised entirely\r\nwithin your slot data?!"), // Reference to that Simpsons meme.
             new("Dear [PLAYER NAME]", "Please come to the\r\ncastle. I've baked\r\na cake for you.\r\nYours truly--\r\nPrincess Toadstool"), // Reference to Super Mario 64.
-            new("ALERT", "[PLAYER NAME]\r\nhas died in an\r\naccident on\r\nSteeplechase 1!") // Also a reference to OpenRCT2.
+            new("ALERT", "[PLAYER NAME]\r\nhas died in an\r\naccident on\r\nSteeplechase 1!"), // Also a reference to OpenRCT2.
+            new("ACCESS DENIED", "Adam has yet to\r\nauthorise usage\r\nof this Spam Trap."), // Reference to Metroid: Other M, which isn't in AP (or even has a Randomiser) but oh well.
+            new("FACT", "The square root\r\nof rope is string."), // Reference to Portal 2
+            new("ACT QUICKLY!", "Local TESTIFICATE\r\nlooking for local\r\nadventurer to\r\ntrade with in\r\nyour area!"), // Reference to Minecraft.
+            new(null, "What is a man?\r\nA miserable little\r\npile of secrets!"), // Reference to Castlevania: Symphony of the Night
+            new(null, "Yer' treasure\r\nchest's looking a\r\nbit light boy!"), // Reference to Spongebob Squarepants: Battle for Bikini Bottom.
+            new("Zoe", "I'm sorry,\r\n[PLAYER NAME],\r\nbut you seem to be\r\nplaying a hacked\r\nversion of this\r\ngame."), // Reference to Spyro 3.
+            new(null, "IT'S JUST\r\nA BIG NOSE BUSH"), // Reference to Rayman 2.
+            new(null, "Local boy discovers\r\nfriends are power.\r\n\r\nSword responds\r\nwith confusion."), // Reference to Kingdom Hearts.
+            new(null, "DeathLink received\r\nfrom [PLAYER NAME]?"),
+            new("Exciting Tournament!", "Not just a race...\r\nBut a special race,\r\nto see who's the\r\nfastest!"), // Reference to Sonic Riders.
+            new(null, "KTOX TV reports\r\nDangerous Games\r\ndelayed due to\r\nDigger related\r\nincidents."), // Reference to Megaman Legends.
+            new(null, "Blue haired CEO\r\nforces castle\r\nvisitors to play\r\ncard games.\r\n\r\nExperts still\r\nconfused."), // Reference to Kingdom Hearts: Chain of Memories with a slight Birth by Sleep reference too.
+            new(null, "\"Barrier continues\r\nto hold\" reports\r\nfrustrated conductor."), // Reference to The Legend of Zelda: Wind Waker.
+            new("Wheel of Fortune", "NOPE!"), // Reference to Balatro.
         ];
 
         // The valid colours to tint the background.
