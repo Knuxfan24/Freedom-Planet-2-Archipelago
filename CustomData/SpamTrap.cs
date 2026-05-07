@@ -1,9 +1,22 @@
 ﻿using Archipelago.MultiClient.Net.Helpers;
+using System.Text.RegularExpressions;
 
 namespace Freedom_Planet_2_Archipelago.CustomData
 {
     internal class SpamTrap : FPBaseObject
     {
+        /// <summary>
+        /// Valid placeholder types for replacing parts of a string in the header or message body.
+        /// </summary>
+        private enum PlaceholderTypes
+        {
+            RandomName, // Picks any name from the server.
+            RandomNameNoServer, // Excludes the word "Server".
+            RandomNameNotOurs, // Excludes our own name.
+            RandomNameNotOursOrServer, // Excludes both "Server" and our own name.
+            OurName // Shows our own name.
+        }
+
         private class SpamTrapMessage(string? header, string message)
         {
             /// <summary>
@@ -15,6 +28,14 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             /// Text shown in the message body.
             /// </summary>
             public string Message { get; set; } = message;
+
+            /// <summary>
+            /// Placeholder types for replacing text in the header or body.
+            /// </summary>
+            public List<PlaceholderTypes> Placeholders = [];
+
+            // Initialiser that includes placeholders.
+            public SpamTrapMessage(string? header, string message, List<PlaceholderTypes> placeholders) : this(header, message) => Placeholders = placeholders;
         }
 
         // The various messages that can be picked for display.
@@ -34,8 +55,8 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new("A MYURRDERRRR?!", "ON MY OWL EXPRESS?!"), // Reference to A Hat in Time.
             new(null, "eastmost peninsula\r\nis the secret"), // Reference to The Legend of Zelda.
             new("CONGRATULATIONS", "You've won your\r\nvery own mansion.\r\n\r\nClick here for\r\ndetails!"), // Reference to Luigi's Mansion.
-            new("Thief Alert!", "The word\r\n[PLAYER NAME],\r\nthey stole it too!"), // Reference to Kingdom Hearts 2.
-            new(null, "You want fun?\r\n[PLAYER NAME]\r\nwill show you fun..."),
+            new("Thief Alert!", "The word\r\n{$},\r\nthey stole it too!", [PlaceholderTypes.RandomName]), // Reference to Kingdom Hearts 2.
+            new(null, "You want fun?\r\n{$}\r\nwill show you fun...", [PlaceholderTypes.RandomNameNotOursOrServer]),
             new("Did You Know?", "There's a Mew\r\nunder the truck."), // Reference to Pokémon Red.
             new(null, "i showed you my\r\ncacodemon plz\r\nrespond"), // Reference to Doom.
             new("Message from Ghandi", "Our words are backed\r\nby nuclear weapons!"), // Reference to Civilization.
@@ -45,17 +66,17 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new(null, "This advert\r\ndedicated to those\r\nwho perished on\r\nthe climb..."), // Reference to Celeste
             new("Need Reception?", "Climb to the top\r\nof Hawk Peak!"), // Reference to A Short Hike.
             new("AURORA BOREALIS", "At this time of year?\r\nAt this time of day?\r\nIn this part of the\r\nmutliworld?\r\n\r\nLocalised entirely\r\nwithin your slot data?!"), // Reference to that Simpsons meme.
-            new("Dear [PLAYER NAME]", "Please come to the\r\ncastle. I've baked\r\na cake for you.\r\nYours truly--\r\nPrincess Toadstool"), // Reference to Super Mario 64.
-            new("ALERT", "[PLAYER NAME]\r\nhas died in an\r\naccident on\r\nSteeplechase 1!"), // Also a reference to OpenRCT2.
+            new("Dear {$}", "Please come to the\r\ncastle. I've baked\r\na cake for you.\r\nYours truly--\r\nPrincess Toadstool", [PlaceholderTypes.OurName]), // Reference to Super Mario 64.
+            new("ALERT", "{$}\r\nhas died in an\r\naccident on\r\nSteeplechase 1!", [PlaceholderTypes.RandomName]), // Also a reference to OpenRCT2.
             new("ACCESS DENIED", "Adam has yet to\r\nauthorise usage\r\nof this Spam Trap."), // Reference to Metroid: Other M, which isn't in AP (or even has a Randomiser) but oh well.
             new("FACT", "The square root\r\nof rope is string."), // Reference to Portal 2
             new("ACT QUICKLY!", "Local TESTIFICATE\r\nlooking for local\r\nadventurer to\r\ntrade with in\r\nyour area!"), // Reference to Minecraft.
             new(null, "What is a man?\r\nA miserable little\r\npile of secrets!"), // Reference to Castlevania: Symphony of the Night
             new(null, "Yer' treasure\r\nchest's looking a\r\nbit light boy!"), // Reference to Spongebob Squarepants: Battle for Bikini Bottom.
-            new("Zoe", "I'm sorry,\r\n[PLAYER NAME],\r\nbut you seem to be\r\nplaying a hacked\r\nversion of this\r\ngame."), // Reference to Spyro 3.
+            new("Zoe", "I'm sorry,\r\n{$},\r\nbut you seem to be\r\nplaying a hacked\r\nversion of this\r\ngame.", [PlaceholderTypes.OurName]), // Reference to Spyro 3.
             new(null, "IT'S JUST\r\nA BIG NOSE BUSH"), // Reference to Rayman 2.
             new(null, "Local boy discovers\r\nfriends are power.\r\n\r\nSword responds\r\nwith confusion."), // Reference to Kingdom Hearts.
-            new(null, "DeathLink received\r\nfrom [PLAYER NAME]?"),
+            new(null, "DeathLink received\r\nfrom {$}?", [PlaceholderTypes.RandomNameNotOursOrServer]),
             new("Exciting Tournament!", "Not just a race...\r\nBut a special race,\r\nto see who's the\r\nfastest!"), // Reference to Sonic Riders.
             new(null, "KTOX TV reports\r\nDangerous Games\r\ndelayed due to\r\nDigger related\r\nincidents."), // Reference to Megaman Legends.
             new(null, "Blue haired CEO\r\nforces castle\r\nvisitors to play\r\ncard games.\r\n\r\nExperts still\r\nconfused."), // Reference to Kingdom Hearts: Chain of Memories with a slight Birth by Sleep reference too.
@@ -83,8 +104,22 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         // A timer that counts down to destroy this spam trap.
         private float genericTimer = 5;
 
+        // The values for the text in the actual spam trap.
+        private string? header;
+        private string message = "";
+        private List<PlaceholderTypes> placeholders = [];
+        private int placeholderIndex = 0;
+
+        // Debug specific message for testing the placeholders.
+        private readonly SpamTrapMessage DebugMessage = new("***DEBUG for {$}***",
+                                                            "Random Name: {$}\r\nNot Server: {$}\r\nNot Us: {$}\r\nNeither: {$}\r\nUs: {$}",
+                                                            [PlaceholderTypes.OurName, PlaceholderTypes.RandomName, PlaceholderTypes.RandomNameNoServer, PlaceholderTypes.RandomNameNotOurs, PlaceholderTypes.RandomNameNotOursOrServer, PlaceholderTypes.OurName]);
+
         private new void Start()
         {
+            // Reset the placeholder index.
+            placeholderIndex = 0;
+
             state = State_Default;
 
             // Start the FPBaseObject setup.
@@ -101,13 +136,32 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             // Select the message to display.
             int messageIndex = Plugin.rng.Next(messages.Length);
 
+            // Load our header and message.
+            header = messages[messageIndex].Header;
+            message = messages[messageIndex].Message;
+            placeholders = messages[messageIndex].Placeholders;
+
+            // DEBUG: Replace the stuff with our debug message. Only use this if adding new placeholder types.
+            //header = DebugMessage.Header;
+            //message = DebugMessage.Message;
+            //placeholders = DebugMessage.Placeholders;
+
+            // Get the names of the players in this multiworld.
+            List<string> playerNames = [];
+            foreach (PlayerInfo? player in Plugin.session.Players.AllPlayers)
+                playerNames.Add(player.Name);
+
+            // Swap out any placeholders the header and message may have.
+            if (header != null) header = ReplacePlaceholders(header, placeholders);
+            message = ReplacePlaceholders(message, placeholders);
+
             // Select a colour for the background.
             gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().color = colours[Plugin.rng.Next(colours.Length)];
 
             // If the target message has a header, then just update its text.
             // If not, then hide the header element and shift the body element up by 8 pixels.
-            if (messages[messageIndex].Header != null)
-                gameObject.transform.GetChild(1).GetComponent<TextMesh>().text = messages[messageIndex].Header;
+            if (header != null)
+                gameObject.transform.GetChild(1).GetComponent<TextMesh>().text = header;
             else
             {
                 gameObject.transform.GetChild(1).gameObject.SetActive(false);
@@ -115,16 +169,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             }
 
             // Update the body element's text.
-            gameObject.transform.GetChild(2).GetComponent<TextMesh>().text = messages[messageIndex].Message;
-
-            // Swap out [PLAYER NAME] in the header with our name.
-            gameObject.transform.GetChild(1).GetComponent<TextMesh>().text = gameObject.transform.GetChild(1).GetComponent<TextMesh>().text.Replace("[PLAYER NAME]", Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot));
-
-            // Swap out [PLAYER NAME] in the body with a random name from the multiworld.
-            List<string> playerNames = [];
-            foreach (PlayerInfo? player in Plugin.session.Players.AllPlayers)
-                playerNames.Add(player.Name);
-            gameObject.transform.GetChild(2).GetComponent<TextMesh>().text = gameObject.transform.GetChild(2).GetComponent<TextMesh>().text.Replace("[PLAYER NAME]", playerNames[Plugin.rng.Next(playerNames.Count)]);
+            gameObject.transform.GetChild(2).GetComponent<TextMesh>().text = message;
         }
 
         private void Update()
@@ -155,6 +200,74 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                 if (Plugin.SpamTrapCount > 0)
                     Helpers.SpawnSpamTrap();
             }
+        }
+
+        private string ReplacePlaceholders(string text, List<PlaceholderTypes> placeholders)
+        {
+            // If we only have at most two players (likely our own name and the server), then force replace RandomNameNotOursOrServer with RandomName.
+            if (Plugin.session.Players.AllPlayers.Count() <= 2)
+                for (int placeholderIndex = 0; placeholderIndex < placeholders.Count; placeholderIndex++)
+                    if (placeholders[placeholderIndex] == PlaceholderTypes.RandomNameNotOursOrServer)
+                        placeholders[placeholderIndex] = PlaceholderTypes.RandomName;
+
+            // Split the string on the {$} indicators.
+            string[] split = Regex.Split(text, "({\\$})");
+
+            // Loop through each split.
+            for (int splitIndex = 0; splitIndex < split.Length; splitIndex++)
+            {
+                // Check that this split is a placeholder one.
+                if (split[splitIndex] == "{$}")
+                {
+                    // Check that we haven't got more placeholders than we actually called for.
+                    if (placeholderIndex >= placeholders.Count)
+                    {
+                        Plugin.consoleLog.LogError($"Spam Trap value '{text}' had more placeholders than defined!");
+                        break;
+                    }
+
+                    // Determine what to do based on our current placeholder's type.
+                    switch (placeholders[placeholderIndex])
+                    {
+                        // Pick a random name from the player list.
+                        case PlaceholderTypes.RandomName:
+                            split[splitIndex] = Plugin.session.Players.AllPlayers.ToArray()[Plugin.rng.Next(Plugin.session.Players.AllPlayers.ToArray().Length)].Name;
+                            break;
+
+                        // Force our split to "Server", then select from the player list until we pick something else.
+                        case PlaceholderTypes.RandomNameNoServer:
+                            split[splitIndex] = "Server";
+
+                            while (split[splitIndex] == "Server")
+                                split[splitIndex] = Plugin.session.Players.AllPlayers.ToArray()[Plugin.rng.Next(Plugin.session.Players.AllPlayers.ToArray().Length)].Name;
+                            break;
+
+                        // Force our split to our slot name, then select from the player list until we pick something valid.
+                        case PlaceholderTypes.OurName:
+                        case PlaceholderTypes.RandomNameNotOurs:
+                        case PlaceholderTypes.RandomNameNotOursOrServer:
+                            split[splitIndex] = Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot);
+
+                            if (placeholders[placeholderIndex] is PlaceholderTypes.RandomNameNotOurs)
+                                while (split[splitIndex] == Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                                    split[splitIndex] = Plugin.session.Players.AllPlayers.ToArray()[Plugin.rng.Next(Plugin.session.Players.AllPlayers.ToArray().Length)].Name;
+
+                            if (placeholders[placeholderIndex] is PlaceholderTypes.RandomNameNotOursOrServer)
+                                while (split[splitIndex] == Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot) || split[splitIndex] == "Server")
+                                    split[splitIndex] = Plugin.session.Players.AllPlayers.ToArray()[Plugin.rng.Next(Plugin.session.Players.AllPlayers.ToArray().Length)].Name;
+                            break;
+
+                        // Log an error if we haven't handled this placeholder type.
+                        default: Plugin.consoleLog.LogError($"Placeholder type {placeholders[placeholderIndex]} not handled!"); break;
+                    }
+
+                    // Increment our placeholder index.
+                    placeholderIndex++;
+                }
+            }
+
+            // Return our edited string.
+            return String.Join("", split);
         }
     }
 }
