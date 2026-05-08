@@ -62,15 +62,15 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new("Message from Ghandi", "Our words are backed\r\nby nuclear weapons!"), // Reference to Civilization.
             new("Did You Know?", "Metal Harbor is\r\nactually beatable\r\nwithout the\r\nLight Shoes!"), // Reference to Sonic Adventure 2: Battle.
             new("Shrine of Chance", "You offer to the\r\nshrine, but gain\r\nnothing."), // Reference to Risk of Rain 2.
-            new("The Ocean", "Now with 75%\r\nmore Leviathan!"), // Reference to Subnautica
+            new("The Ocean", "Now with 75%\r\nmore Leviathan!"), // Reference to Subnautica.
             new(null, "This advert\r\ndedicated to those\r\nwho perished on\r\nthe climb..."), // Reference to Celeste
             new("Need Reception?", "Climb to the top\r\nof Hawk Peak!"), // Reference to A Short Hike.
             new("AURORA BOREALIS", "At this time of year?\r\nAt this time of day?\r\nIn this part of the\r\nmutliworld?\r\n\r\nLocalised entirely\r\nwithin your slot data?!"), // Reference to that Simpsons meme.
             new("Dear {$}", "Please come to the\r\ncastle. I've baked\r\na cake for you.\r\nYours truly--\r\nPrincess Toadstool", [PlaceholderTypes.OurName]), // Reference to Super Mario 64.
-            new("ALERT", "{$}\r\nhas died in an\r\naccident on\r\nSteeplechase 1!", [PlaceholderTypes.RandomName]), // Also a reference to OpenRCT2.
+            new("ALERT", "{$}\r\nhas died in an\r\naccident on\r\nSteeplechase 1!", [PlaceholderTypes.RandomName]), // Reference to OpenRCT2.
             new("ACCESS DENIED", "Adam has yet to\r\nauthorise usage\r\nof this Spam Trap."), // Reference to Metroid: Other M.
             new("FACT", "The square root\r\nof rope is string."), // Reference to Portal 2.
-            new("ACT QUICKLY!", "Local TESTIFICATE\r\nlooking for local\r\nadventurer to\r\ntrade with in\r\nyour area!"), // Reference to Minecraft.
+            new("ACT QUICKLY!", "Roaming TESTIFICATE\r\nlooking for local\r\nadventurer to\r\ntrade with in\r\nyour area!"), // Reference to Minecraft.
             new(null, "What is a man?\r\nA miserable little\r\npile of secrets!"), // Reference to Castlevania: Symphony of the Night.
             new(null, "Yer' treasure\r\nchest's looking a\r\nbit light boy!"), // Reference to Spongebob Squarepants: Battle for Bikini Bottom.
             new("Zoe", "I'm sorry,\r\n{$},\r\nbut you seem to be\r\nplaying a hacked\r\nversion of this\r\ngame.", [PlaceholderTypes.OurName]), // Reference to Spyro 3.
@@ -84,7 +84,10 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new("Wheel of Fortune", "NOPE!"), // Reference to Balatro.
             new("COMING SOON!", "Something\r\nNew\r\n'n'\r\nTasty"), // Reference to Oddworld: Abe's Oddysee.
             new("Hey all!", "{$}\r\nhere!", [PlaceholderTypes.RandomNameNotOurs]), // Reference to Scott the Woz.
-            new(null, "The train headed\r\nto the Mystic Ruins\r\nwill be departing\r\nsoon."), // Reference to Sonic Adventure.
+            new(null, "The train headed\r\nfor the Mystic Ruins\r\nwill be departing\r\nsoon."), // Reference to Sonic Adventure.
+            new("FOOOOOOOOOOOOOOL!!", "You blew it!\r\nYou've totally\r\nscrewed yourself!\r\nNobody enter my\r\nhome and leaves in\r\none piece!"), // Reference to A Hat in Time.
+            new("BREAKING NEWS", "Regional Chuckola\r\nreserves low!\r\n\r\nTwo brothers are on\r\nthe scene to\r\ninvestigate!"), // Reference to Mario & Luigi: Superstar Saga.
+            new("TRAGEDY", "Local resident dies\r\ndue to mysterious\r\npool ladder related\r\nincident.\r\n{$} denies\r\ninvolvement.", [PlaceholderTypes.RandomNameNoServer]), // Reference to The Sims.
         ];
 
         // The valid colours to tint the background.
