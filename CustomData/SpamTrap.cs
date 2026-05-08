@@ -50,7 +50,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new("Adventure Awaits", "Explore the Keep\r\ntoday.\r\n\r\nThis message\r\nsponsored by\r\nThe Keymaster."), // Reference to Keymaster's Keep.
             new("Buzz Cola", "For humans!\r\n\r\nIsn't posionous to\r\nanybody!\r\n(that we know of...)"), // Reference to The Simpsons: Hit and Run.
             new("Advertisment", "75% off your next\r\npurchase at JojaMart."), // Reference to Stardew Valley.
-            new(null, "Receiving this\r\nSpam Trap...\r\n\r\nIt fills you with\r\ndetermination."), // Reference to Undertale
+            new(null, "Receiving this\r\nSpam Trap...\r\n\r\nIt fills you with\r\ndetermination."), // Reference to Undertale.
             new(null, "You feel an evil\r\npresence watching\r\nyou..."), // Reference to Terraria.
             new("A MYURRDERRRR?!", "ON MY OWL EXPRESS?!"), // Reference to A Hat in Time.
             new(null, "eastmost peninsula\r\nis the secret"), // Reference to The Legend of Zelda.
@@ -68,10 +68,10 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new("AURORA BOREALIS", "At this time of year?\r\nAt this time of day?\r\nIn this part of the\r\nmutliworld?\r\n\r\nLocalised entirely\r\nwithin your slot data?!"), // Reference to that Simpsons meme.
             new("Dear {$}", "Please come to the\r\ncastle. I've baked\r\na cake for you.\r\nYours truly--\r\nPrincess Toadstool", [PlaceholderTypes.OurName]), // Reference to Super Mario 64.
             new("ALERT", "{$}\r\nhas died in an\r\naccident on\r\nSteeplechase 1!", [PlaceholderTypes.RandomName]), // Also a reference to OpenRCT2.
-            new("ACCESS DENIED", "Adam has yet to\r\nauthorise usage\r\nof this Spam Trap."), // Reference to Metroid: Other M, which isn't in AP (or even has a Randomiser) but oh well.
-            new("FACT", "The square root\r\nof rope is string."), // Reference to Portal 2
+            new("ACCESS DENIED", "Adam has yet to\r\nauthorise usage\r\nof this Spam Trap."), // Reference to Metroid: Other M.
+            new("FACT", "The square root\r\nof rope is string."), // Reference to Portal 2.
             new("ACT QUICKLY!", "Local TESTIFICATE\r\nlooking for local\r\nadventurer to\r\ntrade with in\r\nyour area!"), // Reference to Minecraft.
-            new(null, "What is a man?\r\nA miserable little\r\npile of secrets!"), // Reference to Castlevania: Symphony of the Night
+            new(null, "What is a man?\r\nA miserable little\r\npile of secrets!"), // Reference to Castlevania: Symphony of the Night.
             new(null, "Yer' treasure\r\nchest's looking a\r\nbit light boy!"), // Reference to Spongebob Squarepants: Battle for Bikini Bottom.
             new("Zoe", "I'm sorry,\r\n{$},\r\nbut you seem to be\r\nplaying a hacked\r\nversion of this\r\ngame.", [PlaceholderTypes.OurName]), // Reference to Spyro 3.
             new(null, "IT'S JUST\r\nA BIG NOSE BUSH"), // Reference to Rayman 2.
@@ -82,6 +82,9 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new(null, "Blue haired CEO\r\nforces castle\r\nvisitors to play\r\ncard games.\r\n\r\nExperts still\r\nconfused."), // Reference to Kingdom Hearts: Chain of Memories with a slight Birth by Sleep reference too.
             new(null, "\"Barrier continues\r\nto hold\" reports\r\nfrustrated conductor."), // Reference to The Legend of Zelda: Wind Waker.
             new("Wheel of Fortune", "NOPE!"), // Reference to Balatro.
+            new("COMING SOON!", "Something\r\nNew\r\n'n'\r\nTasty"), // Reference to Oddworld: Abe's Oddysee.
+            new("Hey all!", "{$}\r\nhere!", [PlaceholderTypes.RandomNameNotOurs]), // Reference to Scott the Woz.
+            new(null, "The train headed\r\nto the Mystic Ruins\r\nwill be departing\r\nsoon."), // Reference to Sonic Adventure.
         ];
 
         // The valid colours to tint the background.
