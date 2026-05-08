@@ -38,9 +38,9 @@ namespace Freedom_Planet_2_Archipelago
 
             // Swap to the Progression or Trap sprite if needed.
             if (scoutedLocationInfo.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement)
-                sprite = apLogo[1];
+                sprite = apLogo[3];
             if (scoutedLocationInfo.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Trap)
-                sprite = apLogo[2];
+                sprite = apLogo[4];
 
             // If the Show Item Names in Shops setting is set to Flags, then return whichever AP Logo we have loaded.
             if (respectInfoSetting)
@@ -239,9 +239,10 @@ namespace Freedom_Planet_2_Archipelago
                     case "Spring Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("spring_trap");
                     case "Zoom Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("zoom_trap");
                     case "Spike Ball Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("spike_ball_trap");
-                    case "Pixellation Trap": return apLogo[4];
-                    case "Mirror Trap": return apLogo[3];
+                    case "Pixellation Trap": return apLogo[2];
+                    case "Mirror Trap": return apLogo[1];
                     case "Syntax Jumpscare Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("syntax_jumpscare_trap");
+                    case "Trivia Trap": return apLogo[5];
                 }
 
             }
