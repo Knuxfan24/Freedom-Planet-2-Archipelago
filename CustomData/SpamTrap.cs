@@ -88,6 +88,13 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new("FOOOOOOOOOOOOOOL!!", "You blew it!\r\nYou've totally\r\nscrewed yourself!\r\nNobody enter my\r\nhome and leaves in\r\none piece!"), // Reference to A Hat in Time.
             new("BREAKING NEWS", "Regional Chuckola\r\nreserves low!\r\n\r\nTwo brothers are on\r\nthe scene to\r\ninvestigate!"), // Reference to Mario & Luigi: Superstar Saga.
             new("TRAGEDY", "Local resident dies\r\ndue to mysterious\r\npool ladder related\r\nincident.\r\n{$} denies\r\ninvolvement.", [PlaceholderTypes.RandomNameNoServer]), // Reference to The Sims.
+            new(null, "The only thing\r\nthey fear is\r\n{$}.", [PlaceholderTypes.RandomName]), // Reference to Doom.
+            new(null, "According to all\r\nknown laws of\r\naviation, there is\r\nno way a Milla\r\nshould be able\r\nto fly."), // Reference to the Bee Movie copy pasta.
+            new("ArchipelaVPN", "For all your\r\nprivacy* needs.\r\n\r\n\r\n*privacy not\r\nguaranteed"), // Reference to VPNs being a common YouTube sponsorship.
+            new("{$}cast", "Welcome.\r\nWelcome to City 17.\r\nYou have chosen, or\r\nbeen chosen, to\r\nrelocate to one of\r\nour finest remaining\r\nurban centers.", [PlaceholderTypes.RandomNameNotOurs]), // Reference to Half-Life 2.
+            new(null, "Thank you\r\n{$}!\r\n\r\nBut our princess is\r\nin another\r\nmultiworld!", [PlaceholderTypes.OurName]),
+            new("CATS:", "How are you\r\ngentlemen !!\r\n\r\nAll your base\r\nare belong to us."), // Reference to Zero Wing.
+            new(null, "Boy gets beaten in\r\nfoot race by one\r\nsecond despite\r\nspeedrunner\r\ntechniques."), // Reference to The Legend of Zelda: Ocarina of Time.
         ];
 
         // The valid colours to tint the background.
