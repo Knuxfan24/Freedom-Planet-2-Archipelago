@@ -52,6 +52,7 @@ namespace Freedom_Planet_2_Archipelago
         public static ConfigEntry<int> configChat;
         public static ConfigEntry<int> configShopHints;
         public static ConfigEntry<int> configTriviaDifficulty;
+        public static ConfigEntry<int> configItemInfo;
 
         // The AP session's data.
         public static ArchipelagoSession session;
@@ -261,6 +262,15 @@ namespace Freedom_Planet_2_Archipelago
                                                  "0: Easy\r\n" +
                                                  "1: Normal\r\n" +
                                                  "2: Hard");
+
+            configItemInfo = Config.Bind("Misc",
+                                         "Item Information",
+                                         0,
+                                         "How much information should be given when viewing an item in the shop or end of stage Star Card.\r\n" +
+                                         "0: Full - The item's name, flags and description (if one is provided) will be shown in the shop. The item's sprite (if one is provided) will also be displayed.\r\n" +
+                                         "1: Flags - Shows whether the item is a trap or progression one, but doesn't display the name or description in the shop.\r\n" +
+                                         "2: Hidden - No information about the item other than the receiver will be given in the shop.\r\n" +
+                                         "3: Nothing - Gives no information about the item at all.");
 
             // Load our asset bundle.
             apAssetBundle = AssetBundle.LoadFromFile($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets");

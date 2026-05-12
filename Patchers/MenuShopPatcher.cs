@@ -121,7 +121,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 Sprites = [.. sprites];
 
                 // If our shop information setting is set to full and the shop hints are enabled, then also send them.
-                if ((long)Plugin.slotData["shop_information"] == 0 && Plugin.configShopHints.Value > 0)
+                if (Plugin.configItemInfo.Value == 0 && Plugin.configShopHints.Value > 0)
                 {
                     // Reset the location ID lost.
                     locationIDs = [];
@@ -298,7 +298,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 if (location.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Trap) itemType = "Trap ";
 
                 // Return the right string for the Show Item Names in Shops setting.
-                switch ((long)Plugin.slotData["shop_information"])
+                switch (Plugin.configItemInfo.Value)
                 {
                     default: return $"{itemTarget}{location.ItemName}";
                     case 1: return $"{itemTarget}{itemType}Item";
@@ -315,7 +315,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     itemTarget = "you";
 
                 // If the shop is set to hide information, then determine what we need to return.
-                switch ((long)Plugin.slotData["shop_information"])
+                switch (Plugin.configItemInfo.Value)
                 {
                     case 1:
                         if (location.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement)

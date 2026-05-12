@@ -1,4 +1,5 @@
-﻿using Archipelago.MultiClient.Net.Helpers;
+﻿// TODO: The Spam Trap script can sometimes get deactivated when changing scene, leading to the message getting frozen. Find a way to fix this.
+using Archipelago.MultiClient.Net.Helpers;
 using System.Text.RegularExpressions;
 
 namespace Freedom_Planet_2_Archipelago.CustomData

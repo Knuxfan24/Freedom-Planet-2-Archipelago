@@ -33,7 +33,7 @@ namespace Freedom_Planet_2_Archipelago
 
             // If the Show Item Names in Shops setting is set to either Hidden or Nothing, then return the base sprite no matter what.
             if (respectInfoSetting)
-                if ((long)Plugin.slotData["shop_information"] >= 2)
+                if (Plugin.configItemInfo.Value >= 2)
                     return sprite;
 
             // Swap to the Progression or Trap sprite if needed.
@@ -44,7 +44,7 @@ namespace Freedom_Planet_2_Archipelago
 
             // If the Show Item Names in Shops setting is set to Flags, then return whichever AP Logo we have loaded.
             if (respectInfoSetting)
-                if ((long)Plugin.slotData["shop_information"] == 1)
+                if (Plugin.configItemInfo.Value == 1)
                     return sprite;
 
             // Check if an items file exists for the game this item is for.
