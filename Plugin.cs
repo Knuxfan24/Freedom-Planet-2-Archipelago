@@ -53,6 +53,7 @@ namespace Freedom_Planet_2_Archipelago
         public static ConfigEntry<int> configShopHints;
         public static ConfigEntry<int> configTriviaDifficulty;
         public static ConfigEntry<int> configItemInfo;
+        public static ConfigEntry<bool> configItemBoxDisplay;
 
         // The AP session's data.
         public static ArchipelagoSession session;
@@ -271,6 +272,13 @@ namespace Freedom_Planet_2_Archipelago
                                          "1: Flags - Shows whether the item is a trap or progression one, but doesn't display the name or description in the shop.\r\n" +
                                          "2: Hidden - No information about the item other than the receiver will be given in the shop.\r\n" +
                                          "3: Nothing - Gives no information about the item at all.");
+
+            configItemBoxDisplay = Config.Bind("Misc",
+                                               "Item Box/Chest Display",
+                                               true,
+                                               "Displays the sprite for the item that will be given for opening a Chest or breaking an Item Box, adhering to the setting of Item Information.\r\n" +
+                                               "false: Disabled\r\n" +
+                                               "true: Enabled");
 
             // Load our asset bundle.
             apAssetBundle = AssetBundle.LoadFromFile($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets");

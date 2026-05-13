@@ -6,6 +6,46 @@
         [HarmonyPatch(typeof(ItemBox), "Start")]
         static void AddToFallBacks(ItemBox __instance) => FPStagePatcher.ItemBoxFallbackPositions.Add(__instance.gameObject, new(__instance.transform.position.x, __instance.transform.position.y));
 
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ItemBox), "Start")]
+        static void CreateSpriteIndicator(ItemBox __instance)
+        {
+            // Skip all of this if this item box is a Crate, as we're completely ignoring those. Also check if we want to be displaying the item sprite at all.
+            if (__instance.itemType == FPItemBoxTypes.BOX_CRATE || __instance.itemType == FPItemBoxTypes.BOX_CRATE_PETALS || !Plugin.configItemBoxDisplay.Value)
+                return;
+
+            // Get the location index for this item box.
+            long locationIndex = GetLocationIndex(__instance);
+
+            // If this location exists, then draw the item sprite atop the box.
+            if (Helpers.CheckLocationExists(locationIndex) && !Plugin.session.Locations.AllLocationsChecked.Contains(locationIndex))
+            {
+                // Set up a variable to hold our scouted location's information.
+                ScoutedItemInfo _scoutedLocationInfo = null;
+
+                // Scout this item box's location.
+                Plugin.session.Locations.ScoutLocationsAsync(HandleScoutInfo, [locationIndex]);
+
+                // Pause operation until the location is scouted.
+                while (_scoutedLocationInfo == null)
+                    Thread.Sleep(1);
+
+                void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _scoutedLocationInfo = scoutedLocationInfo.First().Value;
+
+                // Create a game object for this sprite.
+                GameObject itemSprite = new("BoxAPSprite");
+
+                // Set the sprite to the right item (or AP logo) and set the sorting order to this item box's plus one.
+                itemSprite.AddComponent<SpriteRenderer>().sprite = Helpers.GetItemSprite(_scoutedLocationInfo, true);
+                itemSprite.GetComponent<SpriteRenderer>().sortingOrder = __instance.GetComponent<SpriteRenderer>().sortingOrder + 1;
+
+                // Set the position, parent and layer of this sprite to the item box's.
+                itemSprite.transform.position = __instance.transform.position;
+                itemSprite.transform.parent = __instance.transform;
+                itemSprite.layer = __instance.gameObject.layer;
+            }
+        }
+
         /// <summary>
         /// Sends a location check out upon breaking an item box.
         /// </summary>
@@ -34,6 +74,10 @@
 
                 // Reset the chest tracers to remove this item box from it.
                 FPPlayerPatcher.CreateChestTracers();
+
+                // Check for and destroy the AP item sprite object.
+                if (__instance.transform.GetChild(0) != null)
+                    GameObject.Destroy(__instance.transform.GetChild(0).gameObject);
             }
         }
 

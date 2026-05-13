@@ -40,6 +40,25 @@
 
                     // Set this chest's item sprite to the correct one.
                     __instance.itemSprite = Helpers.GetItemSprite(_scoutedLocationInfo);
+
+                    // Check if we want to display the item this chest will give.
+                    if (Plugin.configItemBoxDisplay.Value)
+                    {
+                        // Create a game object for this sprite.
+                        GameObject itemSprite = new("BoxAPSprite");
+
+                        // Set the sprite to the right item (or AP logo) and set the sorting order to this chest's plus one.
+                        itemSprite.AddComponent<SpriteRenderer>().sprite = __instance.itemSprite;
+                        itemSprite.GetComponent<SpriteRenderer>().sortingOrder = __instance.GetComponent<SpriteRenderer>().sortingOrder + 1;
+
+                        // Set the position, parent and layer of this sprite to the chest's.
+                        itemSprite.transform.position = __instance.transform.position;
+                        itemSprite.transform.parent = __instance.transform;
+                        itemSprite.layer = __instance.gameObject.layer;
+
+                        // Shift the item sprite up by four pixels so its centered better.
+                        itemSprite.transform.localPosition = new(0, 4, 0);
+                    }
                 }
 
                 void HandleScoutInfo(Dictionary<long, ScoutedItemInfo> scoutedLocationInfo) => _scoutedLocationInfo = scoutedLocationInfo.First().Value;
@@ -199,6 +218,10 @@
                         case FPCharacterID.NEERA: FPPlayerPatcher.overrideAnimator = new(Plugin.apAssetBundle.LoadAsset<RuntimeAnimatorController>("Neera Shock")); break;
                     }
                 }
+
+                // Check for and destroy the AP item sprite object.
+                if (__instance.transform.GetChild(0) != null)
+                    GameObject.Destroy(__instance.transform.GetChild(0).gameObject);
             }
         }
 
