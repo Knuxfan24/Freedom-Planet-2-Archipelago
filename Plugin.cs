@@ -275,7 +275,7 @@ namespace Freedom_Planet_2_Archipelago
 
             configItemBoxDisplay = Config.Bind("Misc",
                                                "Item Box/Chest Display",
-                                               true,
+                                               false,
                                                "Displays the sprite for the item that will be given for opening a Chest or breaking an Item Box, adhering to the setting of Item Information.\r\n" +
                                                "false: Disabled\r\n" +
                                                "true: Enabled");
