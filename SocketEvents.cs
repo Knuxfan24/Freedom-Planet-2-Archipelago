@@ -467,6 +467,13 @@
                             case "Tip Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
                             case "TNT Trap": AddTrap(bouncedPacket, "Items To Bombs", true); break;
                             case "TNT Barrel Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                            case "Tutorial Trap":
+                                RandomTrap(new()
+                            {
+                                { "Aaa Trap", false },
+                                { "Spam Trap", false }
+                            });
+                                break;
                             case "W I D E Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
                             case "Zoom In Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
                             case "Zoom Out Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
