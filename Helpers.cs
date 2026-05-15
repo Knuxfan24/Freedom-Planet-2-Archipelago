@@ -48,6 +48,7 @@ namespace Freedom_Planet_2_Archipelago
                     return sprite;
 
             // Check if an items file exists for the game this item is for.
+            // TODO: Handle games with a colon in the name, Linux is apparently fine with this, but on Windows that's a massive no no.
             if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{scoutedLocationInfo.Player.Game}\items.json"))
             {
                 // Load the item.json file.
