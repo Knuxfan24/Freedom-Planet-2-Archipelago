@@ -83,31 +83,63 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             if (Plugin.slotData == null)
                 return;
 
-            // Only do this if we're actually using chest locations.
-            if ((long)Plugin.slotData["chests"] == 0)
-                return;
-
-            switch (SceneManager.GetActiveScene().name)
+            // Only do this set if we're actually using chest locations.
+            if ((long)Plugin.slotData["chests"] != 0)
             {
-                // If we're in Globe Opera, then clone one of the Lantern Platforms to make reaching Chest 4 possible.
-                case "GlobeOpera1":
-                    var goPlatform = GameObject.Instantiate(UnityEngine.GameObject.Find("GO_LanternPlatform (17)"), new(32048, -720, 0), Quaternion.identity);
-                    goPlatform.name = "Chest Platform";
-                    break;
+                switch (SceneManager.GetActiveScene().name)
+                {
+                    // If we're in Globe Opera 1, then clone one of the Lantern Platforms to make reaching Chest 4 possible.
+                    case "GlobeOpera1":
+                        var goPlatform = GameObject.Instantiate(UnityEngine.GameObject.Find("GO_LanternPlatform (17)"), new(32048, -720, 0), Quaternion.identity);
+                        goPlatform.name = "Chest Platform";
+                        break;
 
-                // If we're in Sky Bridge, then clone the two parts of one of the platforms to make reaching Chest 2 possible with the help of the Super Feather potion.
-                case "SkyBridge":
-                    var sbPlatformL = GameObject.Instantiate(UnityEngine.GameObject.Find("hb_bigplatform_0 (4)"), new(6144, -4128, 0), Quaternion.identity);
-                    sbPlatformL.name = "Chest Platform L";
-                    var sbPlatformR = GameObject.Instantiate(UnityEngine.GameObject.Find("hb_bigplatform_0 (5)"), new(6432, -4128, 0), Quaternion.identity);
-                    sbPlatformR.name = "Chest Platform R";
-                    break;
+                    // If we're in Sky Bridge, then clone the two parts of one of the platforms to make reaching Chest 2 possible with the help of the Super Feather potion.
+                    // TODO: No longer happy with this solution.
+                    case "SkyBridge":
+                        var sbPlatformL = GameObject.Instantiate(UnityEngine.GameObject.Find("hb_bigplatform_0 (4)"), new(6144, -4128, 0), Quaternion.identity);
+                        sbPlatformL.name = "Chest Platform L";
+                        var sbPlatformR = GameObject.Instantiate(UnityEngine.GameObject.Find("hb_bigplatform_0 (5)"), new(6432, -4128, 0), Quaternion.identity);
+                        sbPlatformR.name = "Chest Platform R";
+                        break;
 
-                // If we're in Nalao Lake, then clone one of the Rising Bubbles to make reaching Chest 3 possible with the help of the Super Feather potion.
-                case "NalaoLake":
-                    var nlBubble = GameObject.Instantiate(UnityEngine.GameObject.Find("NL_RisingBubble (12)"), new(20600, -984, 0), Quaternion.identity);
-                    nlBubble.name = "Chest Bubble";
-                    break;
+                    // If we're in Nalao Lake, then clone one of the Rising Bubbles to make reaching Chest 3 possible with the help of the Super Feather potion.
+                    case "NalaoLake":
+                        var nlBubble = GameObject.Instantiate(UnityEngine.GameObject.Find("NL_RisingBubble (12)"), new(20600, -984, 0), Quaternion.identity);
+                        nlBubble.name = "Chest Bubble";
+                        break;
+                }
+            }
+
+            // Only do this set if we're actually using item box locations.
+            if ((long)Plugin.slotData["item_boxes"] != 0)
+            {
+                switch (SceneManager.GetActiveScene().name)
+                {
+                    // If we're in Robot Graveyard, then clone a Spring to make reaching the Metal Shield box not be a pain in the ass and a ledge to make reaching a Crystal Box possible.
+                    case "RobotGraveyard":
+                        var rgSpring = GameObject.Instantiate(UnityEngine.GameObject.Find("High Spring Up (3)"), new(3494, -5414, 0), Quaternion.identity);
+                        rgSpring.name = "Shield Box Spring";
+                        rgSpring.GetComponent<Spring>().springStrength = 30;
+
+                        var rgLedge = GameObject.Instantiate(UnityEngine.GameObject.Find("RG Junk Ledge (3)"), new(20062, -1404, 0), Quaternion.identity);
+                        rgLedge.name = "Crystal Box Ledge";
+                        break;
+
+                    // If we're in Sky Bridge, then clone a Spring to aid in reaching a Shield Box near the start.
+                    // TODO: Those two Crystal Boxes.
+                    case "SkyBridge":
+                        var sbSpring = GameObject.Instantiate(UnityEngine.GameObject.Find("High Spring Up (1)"), new(4784, -8832, 0), Quaternion.identity);
+                        sbSpring.name = "Shield Box Spring";
+                        break;
+
+                    // If we're in Magma Starscape, then clone a Spring to aid in reaching the Crystal Boxes above the spawn.
+                    case "MagmaStarscape":
+                        var msSpring = GameObject.Instantiate(UnityEngine.GameObject.Find("Low Spring Diagonal (2)"), new(3264, -20688, 0), Quaternion.identity);
+                        msSpring.name = "Crystal Boxes Spring";
+                        msSpring.GetComponent<Spring>().springStrength = 16;
+                        break;
+                }
             }
         }
 
