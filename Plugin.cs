@@ -151,6 +151,7 @@ namespace Freedom_Planet_2_Archipelago
             if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sounds")) Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sounds");
             if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites")) Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites");
             if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Template Sprite Definitions")) Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Template Sprite Definitions");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Trivia")) Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Trivia");
                  
             // Loop through each WAV file in the sounds directory.
             foreach (string wavFile in Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sounds\", "*.wav"))
@@ -351,9 +352,8 @@ namespace Freedom_Planet_2_Archipelago
             }
 
             // Parse the DKC2 trivia database files for the Trivia Trap.
-            if (Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Trivia"))
-                foreach (var triviaFile in Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Trivia", "*.txt", SearchOption.AllDirectories))
-                    Helpers.ParseQuestionDatabase(triviaFile);
+            foreach (var triviaFile in Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Trivia", "*.txt", SearchOption.AllDirectories))
+                Helpers.ParseQuestionDatabase(triviaFile);
 
             // Patch all the functions that need patching.
             Harmony.CreateAndPatchAll(typeof(AcrabellePieTrapPatcher));
