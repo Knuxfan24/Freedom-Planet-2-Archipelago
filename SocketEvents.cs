@@ -388,10 +388,12 @@
                             case "Flip Horizontal Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                             case "Flip Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                             case "Flip Vertical Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                            case "Food Poisoning Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
                             case "Fracture Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                             case "Freeze Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                             case "Frog Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
                             case "Frozen Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
+                            case "Furry Convention Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
                             case "Fuzzy Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break; // Doesn't have a source or effect listed on the sheet? Thinking of Yoshi's Island?
                             case "Gadget Shuffle Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
                             case "Gas Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
