@@ -71,7 +71,6 @@
 
         /// <summary>
         /// Event handler for when we receive a packet from the Multiworld.
-        /// TODO: Anything erroring here seems to silently kill the whole socket events, which might be why the chat piper seems to break?
         /// </summary>
         public static void Socket_LinkPackets(ArchipelagoPacketBase packet)
         {

@@ -21,6 +21,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using Newtonsoft.Json.Linq;
 using System.Collections;
+using System.Security.Cryptography;
 using static Freedom_Planet_2_Archipelago.CustomData.TriviaTrap;
 
 namespace Freedom_Planet_2_Archipelago
@@ -29,8 +30,9 @@ namespace Freedom_Planet_2_Archipelago
     [BepInDependency("000.kuborro.libraries.fp2.fp2lib")]
     public class Plugin : BaseUnityPlugin
     {
-        // The asset bundle exported from the Unity project.
+        // The asset bundle exported from the Unity project and its MD5 hash.
         public static AssetBundle apAssetBundle;
+        private const string apAssetBundleHash = "abe610e7906bc0f6a23484167b1547fc";
 
         // The icons used for the chat box.
         public static Sprite apChatIcon;
@@ -283,13 +285,29 @@ namespace Freedom_Planet_2_Archipelago
 
             // Load our asset bundle.
             apAssetBundle = AssetBundle.LoadFromFile($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets");
-            
+                        
             // Print all the asset names from the asset bundle, as a debug log.
             foreach (string assetName in apAssetBundle.GetAllAssetNames())
                 consoleLog.LogDebug(assetName);
 
+            // Check the MD5 hash of the asset bundle to see if it matches the one we expect.
+            // While this does require me to remember to manually update the expected hash, this'll help with troubleshooting issues caused by an outdated asset bundle.
+            using (MD5 md5 = MD5.Create())
+            {
+                using (FileStream stream = File.OpenRead($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets"))
+                {
+                    string hash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
+                    if (hash != apAssetBundleHash)
+                    {
+                        consoleLog.LogWarning($"Asset Bundle MD5 hash didn't match our expected value!\r\n" +
+                                              $"Expected '{apAssetBundleHash}', Got '{hash}'!\r\n\r\n" +
+                                              $"Things may break!");
+                    }
+                }
+            }
+
             // Load the chat icon.
-            apChatIcon = Plugin.apAssetBundle.LoadAsset<Sprite>("chat_ap");
+            apChatIcon = apAssetBundle.LoadAsset<Sprite>("chat_ap");
 
             // Loop through and get the player icons for the chat.
             foreach (string file in Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players", "*.png"))
