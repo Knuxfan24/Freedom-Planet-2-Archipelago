@@ -173,7 +173,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                         Plugin.consoleLog.LogInfo($"Creating template items.json file for {gameName}");
 
                         // Create the directory for this game in the Template Sprite Definitions directory.
-                        Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Template Sprite Definitions\{gameName}");
+                        Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Template Sprite Definitions\{gameName.Replace('\"', '_')}");
 
                         // Get the newest JSON.
                         FileInfo newestJson = new DirectoryInfo(directory).GetFiles("*.json").OrderByDescending(f => f.LastWriteTime).First();
@@ -198,7 +198,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                         }
 
                         // Write our generated items.json file to our directory.
-                        File.WriteAllText($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Template Sprite Definitions\{gameName}\items.json", JsonConvert.SerializeObject(itemDescriptors, Formatting.Indented));
+                        File.WriteAllText($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Template Sprite Definitions\{gameName.Replace('\"', '_')}\items.json", JsonConvert.SerializeObject(itemDescriptors, Formatting.Indented));
                     }
                 }
             }

@@ -334,10 +334,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Check if an items file exists for the game this item is for.
                 // TODO: Handle games with a colon in the name, Linux is apparently fine with this, but on Windows that's a massive no no.
-                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.ItemGame}\items.json"))
+                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.ItemGame.Replace('\"', '_')}\items.json"))
                 {
                     // Load the item.json file.
-                    ItemDescriptor[] itemDescriptors = JsonConvert.DeserializeObject<ItemDescriptor[]>(File.ReadAllText($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.ItemGame}\items.json"));
+                    ItemDescriptor[] itemDescriptors = JsonConvert.DeserializeObject<ItemDescriptor[]>(File.ReadAllText($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.ItemGame.Replace('\"', '_')}\items.json"));
 
                     // Loop through each item descriptor in the json file to find one with this item's name. If we find one, then return its description, if it has one.
                     foreach (ItemDescriptor item in itemDescriptors)

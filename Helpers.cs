@@ -48,11 +48,10 @@ namespace Freedom_Planet_2_Archipelago
                     return sprite;
 
             // Check if an items file exists for the game this item is for.
-            // TODO: Handle games with a colon in the name, Linux is apparently fine with this, but on Windows that's a massive no no.
-            if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{scoutedLocationInfo.Player.Game}\items.json"))
+            if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{scoutedLocationInfo.Player.Game.Replace('\"', '_')}\items.json"))
             {
                 // Load the item.json file.
-                ItemDescriptor[] itemDescriptors = JsonConvert.DeserializeObject<ItemDescriptor[]>(File.ReadAllText($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{scoutedLocationInfo.Player.Game}\items.json"));
+                ItemDescriptor[] itemDescriptors = JsonConvert.DeserializeObject<ItemDescriptor[]>(File.ReadAllText($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{scoutedLocationInfo.Player.Game.Replace('\"', '_')}\items.json"));
 
                 // Loop through each item descriptor in the json file.
                 foreach (ItemDescriptor item in itemDescriptors)
@@ -61,13 +60,13 @@ namespace Freedom_Planet_2_Archipelago
                     if (item.ItemNames.Contains(scoutedLocationInfo.ItemName))
                     {
                         // Check if the sprite called for in this item descriptor actually exists.
-                        if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{scoutedLocationInfo.Player.Game}\{item.SpriteName}.png"))
+                        if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{scoutedLocationInfo.Player.Game.Replace('\"', '_')}\{item.SpriteName}.png"))
                         {
                             // Set up a texture with this sprite.
-                            Texture2D texture = GetCustomSprite($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{scoutedLocationInfo.Player.Game}\{item.SpriteName}.png");
+                            Texture2D texture = GetCustomSprite($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{scoutedLocationInfo.Player.Game.Replace('\"', '_')}\{item.SpriteName}.png");
 
                             // Return our custom sprite.
-                            return Sprite.Create(GetCustomSprite($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{scoutedLocationInfo.Player.Game}\{item.SpriteName}.png"), new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
+                            return Sprite.Create(GetCustomSprite($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{scoutedLocationInfo.Player.Game.Replace('\"', '_')}\{item.SpriteName}.png"), new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
 
                             static Texture2D GetCustomSprite(string file)
                             {

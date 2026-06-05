@@ -158,8 +158,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Loop through each player in the multiworld and add their moon graphic if the file exists.
                 foreach (Archipelago.MultiClient.Net.Helpers.PlayerInfo player in Plugin.session.Players.AllPlayers)
-                    if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{player.Game}\merga_moon.png") && !moonGraphics.Contains($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{player.Game}\shattered_moon.png"))
-                        moonGraphics.Add($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{player.Game}\merga_moon.png");
+                    if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{player.Game.Replace('\"', '_')}\merga_moon.png") && !moonGraphics.Contains($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{player.Game.Replace('\"', '_')}\shattered_moon.png"))
+                        moonGraphics.Add($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{player.Game.Replace('\"', '_')}\merga_moon.png");
 
                 // Abort if we haven't gotten any moon graphics.
                 if (moonGraphics.Count == 0)
