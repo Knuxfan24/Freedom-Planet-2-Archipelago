@@ -1,4 +1,5 @@
 ﻿// TODO: Release "Found [x]'s [y]" messages.
+// TODO: Starting to not like the trap timers being based on a coroutine, while this is needed for packet handling and stuff, I'm not sure about it being used for timers.
 global using Archipelago.MultiClient.Net;
 global using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 global using Archipelago.MultiClient.Net.Models;
@@ -32,7 +33,7 @@ namespace Freedom_Planet_2_Archipelago
     {
         // The asset bundle exported from the Unity project and its MD5 hash.
         public static AssetBundle apAssetBundle;
-        private const string apAssetBundleHash = "abe610e7906bc0f6a23484167b1547fc";
+        private const string apAssetBundleHash = "4f691bffd6d4b0c429def6c7a156a9ea";
 
         // The icons used for the chat box.
         public static Sprite apChatIcon;
@@ -87,6 +88,8 @@ namespace Freedom_Planet_2_Archipelago
         public static float ZoomTrapTimer = -1;
         public static float PixellationTrapTimer = -1;
         public static float MachSpeedTrapTimer = -1;
+        public static float ScottTrapTimer = -1;
+        public static GameObject? ScottTrap;
         public static GameObject TextDisplay;
         public static List<DialogQueue> AaaTrapLines = [];
         public static List<ArchipelagoItem> BufferedTraps = [];
@@ -422,6 +425,7 @@ namespace Freedom_Planet_2_Archipelago
             StartCoroutine(DamageLinkLoop());
             StartCoroutine(MirrorTrapLoop());
             StartCoroutine(PowerPointTrapWatcher());
+            StartCoroutine(ScottTrapWatcher());
             StartCoroutine(ZoomTrapWatcher());
             StartCoroutine(PixellationTrapWatcher());
             StartCoroutine(BufferedTrapLoop());
@@ -762,6 +766,43 @@ namespace Freedom_Planet_2_Archipelago
                     MirrorTrapTimer -= Time.deltaTime;
                 yield return null;
             }
+        }
+
+        private bool _scottActive;
+        private IEnumerator ScottTrapWatcher()
+        {
+            while (Application.isPlaying)
+            {
+                if (ScottTrapTimer > 0 && !_scottActive)
+                {
+                    float duration = ScottTrapTimer;
+                    ScottTrapTimer = -1; // consume timers
+                    yield return StartCoroutine(ScottTrapRoutine(duration));
+                }
+                else if (ScottTrapTimer <= 0 && ScottTrapTimer > -1 && !_scottActive)
+                {
+                    if (ScottTrap != null)
+                        GameObject.Destroy(ScottTrap);
+
+                    ScottTrapTimer = -1;
+                }
+                yield return null;
+            }
+        }
+        private IEnumerator ScottTrapRoutine(float duration)
+        {
+            _scottActive = true;
+            float t = duration;
+            while (t > 0f)
+            {
+                t -= Time.deltaTime;
+                yield return null;
+            }
+
+            if (ScottTrap != null)
+                GameObject.Destroy(ScottTrap);
+
+            _scottActive = false;
         }
 
         private bool _powerPointActive;

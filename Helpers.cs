@@ -283,6 +283,7 @@ namespace Freedom_Planet_2_Archipelago
             int syntaxJumpscareTrapCount = 0;
             int triviaTrapCount = 0;
             int machSpeedTrapCount = 0;
+            int scottTrapCount = 0;
             int goldGemCount = 0;
             int crystalCount = 0;
             int extraLifeCount = 0;
@@ -304,6 +305,7 @@ namespace Freedom_Planet_2_Archipelago
             int saveSyntaxJumpscareTrapCount = Plugin.save.SyntaxJumpscareTrapCount;
             int saveTriviaTrapCount = Plugin.save.TriviaTrapCount;
             int saveMachSpeedTrapCount = Plugin.save.MachSpeedTrapCount;
+            int saveScottTrapCount = Plugin.save.ScottTrapCount;
             int saveGoldGemCount = Plugin.save.GoldGemCount;
             int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveCrystalCount = Plugin.save.CrystalCount;
@@ -331,6 +333,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Syntax Jumpscare Trap": syntaxJumpscareTrapCount += item.Value; break;
                     case "Trivia Trap": triviaTrapCount += item.Value; break;
                     case "Mach Speed Trap": machSpeedTrapCount += item.Value; break;
+                    case "Scott The Woz Trap": scottTrapCount += item.Value; break;
 
                     case "Gold Gem": goldGemCount += item.Value; break;
                     case "Crystals": crystalCount += item.Value * 100; break;
@@ -370,6 +373,7 @@ namespace Freedom_Planet_2_Archipelago
             int trueSyntaxJumpscareTrapCount = syntaxJumpscareTrapCount - saveSyntaxJumpscareTrapCount;
             int trueTriviaTrapCount = triviaTrapCount - saveTriviaTrapCount;
             int trueMachSpeedTrapCount = machSpeedTrapCount - saveMachSpeedTrapCount;
+            int trueScottTrapCount = scottTrapCount - saveScottTrapCount;
             int trueCrystalCount = crystalCount - saveCrystalCount;
             int trueExtraLifeCount = extraLifeCount - saveExtraLifeCount;
             int trueInvincibilityCount = invincibilityCount - saveInvincibilityCount;
@@ -391,6 +395,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.save.SyntaxJumpscareTrapCount = saveSyntaxJumpscareTrapCount + trueSyntaxJumpscareTrapCount;
             Plugin.save.TriviaTrapCount = saveTriviaTrapCount + trueTriviaTrapCount;
             Plugin.save.MachSpeedTrapCount = saveMachSpeedTrapCount + trueMachSpeedTrapCount;
+            Plugin.save.ScottTrapCount = saveScottTrapCount + trueScottTrapCount;
             Plugin.SpamTrapCount = trueSpamTrapCount + 1;
             Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
             Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
@@ -404,6 +409,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.ZoomTrapTimer = trueZoomTrapCount * 30;
             Plugin.PixellationTrapTimer = truePixellationTrapCount * 30;
             Plugin.MachSpeedTrapTimer = trueMachSpeedTrapCount * 30;
+            Plugin.ScottTrapTimer = trueScottTrapCount * 30;
 
             // Set our number of total gold gems to the correct value.
             FPSaveManager.totalGoldGems = fp2SaveGoldGemCount + trueGoldGemCount;
@@ -440,6 +446,16 @@ namespace Freedom_Planet_2_Archipelago
                             break;
                         }
                     }
+                }
+            }
+
+            // Spawn the Scott The Woz Trap if we got one.
+            if (trueScottTrapCount > 0)
+            {
+                if (Plugin.ScottTrap == null)
+                {
+                    Plugin.ScottTrap = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("ScottTrap"));
+                    UnityEngine.Object.DontDestroyOnLoad(Plugin.ScottTrap);
                 }
             }
 
@@ -950,6 +966,18 @@ namespace Freedom_Planet_2_Archipelago
                     SendTrapLink();
                     Plugin.MachSpeedTrapTimer += 30f * item.Value;
                     if (!trapLink) Plugin.save.MachSpeedTrapCount += item.Value;
+                    break;
+
+                case "Scott The Woz Trap":
+                    SendTrapLink();
+                    Plugin.ScottTrapTimer += 30f * item.Value;
+
+                    if (Plugin.ScottTrap == null)
+                    {
+                        Plugin.ScottTrap = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("ScottTrap"));
+                        UnityEngine.Object.DontDestroyOnLoad(Plugin.ScottTrap);
+                    }
+                    if (!trapLink) Plugin.save.ScottTrapCount += item.Value;
                     break;
 
                 // Unhandled items, throw an error into the console.

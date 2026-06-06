@@ -97,6 +97,11 @@
         public int MachSpeedTrapCount { get; set; }
 
         /// <summary>
+        /// The amount of Scott The Woz Traps we've gotten from the server.
+        /// </summary>
+        public int ScottTrapCount { get; set; }
+
+        /// <summary>
         /// The amount of Gold Gems we've gotten from the server.
         /// </summary>
         public int GoldGemCount { get; set; }
