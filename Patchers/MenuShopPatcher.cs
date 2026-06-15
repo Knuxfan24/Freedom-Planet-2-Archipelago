@@ -504,6 +504,15 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case "Syntax Jumpscare Trap": return "Suddenly spawns a giant Syntax on the screen.";
                         case "Trivia Trap": return "Forces the player to answer a life or death trivia question.";
                         case "Mach Speed Trap": return "Doubles the game speed for 15 seconds.";
+
+                        // Sonic mod compatibility Chaos Emeralds.
+                        case "Red Chaos Emerald": 
+                        case "Blue Chaos Emerald": 
+                        case "Yellow Chaos Emerald": 
+                        case "Green Chaos Emerald": 
+                        case "White Chaos Emerald": 
+                        case "Cyan Chaos Emerald": 
+                        case "Purple Chaos Emerald": return "A gem from another universe, said to have the ability to turn thoughts into power.";
                     }
                 }
 

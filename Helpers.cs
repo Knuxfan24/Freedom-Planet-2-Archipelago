@@ -980,6 +980,15 @@ namespace Freedom_Planet_2_Archipelago
                     if (!trapLink) Plugin.save.ScottTrapCount += item.Value;
                     break;
 
+                // Sonic mod compatibility Chaos Emeralds.
+                case "Red Chaos Emerald": Plugin.save.ChaosEmeralds[0] = true; break;
+                case "Blue Chaos Emerald": Plugin.save.ChaosEmeralds[1] = true; break;
+                case "Yellow Chaos Emerald": Plugin.save.ChaosEmeralds[2] = true; break;
+                case "Green Chaos Emerald": Plugin.save.ChaosEmeralds[3] = true; break;
+                case "White Chaos Emerald": Plugin.save.ChaosEmeralds[4] = true; break;
+                case "Cyan Chaos Emerald": Plugin.save.ChaosEmeralds[5] = true; break;
+                case "Purple Chaos Emerald": Plugin.save.ChaosEmeralds[6] = true; break;
+
                 // Unhandled items, throw an error into the console.
                 default: Plugin.consoleLog.LogError($"Item Type '{item.Key.ItemName}' (sent by '{item.Key.Source}' {item.Value} time(s)) not yet handled!"); return;
             }

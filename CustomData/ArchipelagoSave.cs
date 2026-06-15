@@ -157,6 +157,12 @@
         public bool[] Potions { get; set; } = new bool[9];
 
         /// <summary>
+        /// The Chaos Emeralds we've received from the server.
+        /// </summary>
+        [JsonIgnore]
+        public bool[] ChaosEmeralds { get; set; } = new bool[7];
+
+        /// <summary>
         /// Dictionary of enemy sanity names and IDs.
         /// </summary>
         public Dictionary<string, long> EnemySanityIDs { get; set; } = [];
