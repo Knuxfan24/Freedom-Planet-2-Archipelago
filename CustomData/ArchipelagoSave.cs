@@ -157,10 +157,22 @@
         public bool[] Potions { get; set; } = new bool[9];
 
         /// <summary>
-        /// The Chaos Emeralds we've received from the server.
+        /// The Chaos Emeralds we've received from the server for Sonic mod compatibility.
         /// </summary>
         [JsonIgnore]
-        public bool[] ChaosEmeralds { get; set; } = new bool[7];
+        public bool[] SonicChaosEmeralds { get; set; } = new bool[7];
+
+        /// <summary>
+        /// The Brave Stones we've received from the server for the Potion Seller mod compatbility.
+        /// </summary>
+        [JsonIgnore]
+        public bool[] PotionSellerBraveStones { get; set; } = new bool[15];
+
+        /// <summary>
+        /// The Potions we've received from the server for the Potion Seller mod compatbility.
+        /// </summary>
+        [JsonIgnore]
+        public bool[] PotionSellerPotions { get; set; } = new bool[3];
 
         /// <summary>
         /// Dictionary of enemy sanity names and IDs.

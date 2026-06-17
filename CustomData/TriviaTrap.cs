@@ -1,4 +1,6 @@
 ﻿// TODO: The prefab for this has a timer in it, but considering the movement keys are the answer keys, I'm not sure the extra stress of the timer is needed?
+// TODO: These don't work in Bakunawa Chase.
+// TODO: Wrong answers don't successfully kill the BFF2000.
 namespace Freedom_Planet_2_Archipelago.CustomData
 {
     public class TriviaTrap : FPBaseObject

@@ -140,6 +140,7 @@
                                             textPart = Plugin.session.Items.GetItemName(int.Parse(jsonData.Text), playerInfo.Game);
 
                                             // Set the colour of the text based on the item's flag.
+                                            // TODO: If an item has more than one flag then none of these end up applying.
                                             switch (jsonData.Flags)
                                             {
                                                 case Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement: textPart = $"<c=purple>{textPart}</c>"; break;

@@ -513,6 +513,31 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case "White Chaos Emerald": 
                         case "Cyan Chaos Emerald": 
                         case "Purple Chaos Emerald": return "A gem from another universe, said to have the ability to turn thoughts into power.";
+
+                        // Potion Seller mod items.
+                        case "Potion - Hover": return "(Potion) Reduces your maximum falling speed.";
+                        case "Potion - Energy":
+                            switch (FPSaveManager.character)
+                            {
+                                case FPCharacterID.MILLA: return "(Potion) Milla's Cube Blaster drains less Phantom Cube energy.";
+                                default: return "(Potion) Your special meter regenerates faster.";
+                            }
+                        case "Potion - Resonance": return "(Potion) Standing in place charges up a shockwave. Launch in front of you by pressing Attack.";
+                        case "Angel Tear": return "All damage to you is reduced by 50%, and you slowly renegerate life.";
+                        case "Turtle Godshell": return "Blocking a hit with Guard grants 30% longer invincibility and a small amount of life.";
+                        case "Tinker Glove": return "Gain 50% more Cores.";
+                        case "Pheonix Tonic": return "You start with 1 extra stock, and recover 2 extra life on your first revival.";
+                        case "Warpstone": return "While you are in a stage, everything is 20% slower.";
+                        case "Madstone": return "While you are in a stage, everything is 20% faster.";
+                        case "Guardian Charm": return "After a shield takes elemental damage, it changes to that element.";
+                        case "Explosive Finale": return "Revivals only restore a sliver of life, but you cause an explosion when knocked down.";
+                        case "Idol of Greed": return "You have 1 less maximum life, but bosses drop crystals as you damage them.";
+                        case "Bomb Magnet": return "Each non-boss enemy has a 35% chance to be rigged with a proximity bomb.";
+                        case "Ninja Garb": return "Do a short roll in the direction you're holding when you Guard. (Except on bike)";
+                        case "Ice Crown": return "Creates icy shockwaves when hit. Recharges after you lose 3 petals of life or shields.";
+                        case "Invisibility Cloak": return "You can't see your own body.";
+                        case "Gravity Boots": return "The Down key is constantly held down while you are on the ground.";
+                        case "Magic Compass": return "Points towards the closest checkpoint you haven't reached yet.";
                     }
                 }
 

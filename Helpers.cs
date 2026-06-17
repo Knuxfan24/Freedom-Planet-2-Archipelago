@@ -243,6 +243,26 @@ namespace Freedom_Planet_2_Archipelago
                     case "Mirror Trap": return apLogo[1];
                     case "Syntax Jumpscare Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("syntax_jumpscare_trap");
                     case "Trivia Trap": return apLogo[5];
+
+                    // Potion Seller Mod Items (the repo was MIT licensed so I assume including these is fine?)
+                    case "Potion - Hover": return Plugin.apAssetBundle.LoadAsset<Sprite>("hoverPotion");
+                    case "Potion - Energy": return Plugin.apAssetBundle.LoadAsset<Sprite>("energyPotion");
+                    case "Potion - Resonance": return Plugin.apAssetBundle.LoadAsset<Sprite>("resonancePotion");
+                    case "Angel Tear": return Plugin.apAssetBundle.LoadAsset<Sprite>("angelTear");
+                    case "Turtle Godshell": return Plugin.apAssetBundle.LoadAsset<Sprite>("turtleGodshell");
+                    case "Tinker Glove": return Plugin.apAssetBundle.LoadAsset<Sprite>("tinkerGlove");
+                    case "Pheonix Tonic": return Plugin.apAssetBundle.LoadAsset<Sprite>("phoenixTonic");
+                    case "Warpstone": return Plugin.apAssetBundle.LoadAsset<Sprite>("warpstone");
+                    case "Madstone": return Plugin.apAssetBundle.LoadAsset<Sprite>("madstone");
+                    case "Guardian Charm": return Plugin.apAssetBundle.LoadAsset<Sprite>("guardianCharm");
+                    case "Explosive Finale": return Plugin.apAssetBundle.LoadAsset<Sprite>("explosiveFinale");
+                    case "Idol of Greed": return Plugin.apAssetBundle.LoadAsset<Sprite>("idolOfGreed");
+                    case "Bomb Magnet": return Plugin.apAssetBundle.LoadAsset<Sprite>("bombMagnet");
+                    case "Ninja Garb": return Plugin.apAssetBundle.LoadAsset<Sprite>("ninjaGarb");
+                    case "Ice Crown": return Plugin.apAssetBundle.LoadAsset<Sprite>("iceCrown");
+                    case "Invisibility Cloak": return Plugin.apAssetBundle.LoadAsset<Sprite>("invisibilityCloak");
+                    case "Gravity Boots": return Plugin.apAssetBundle.LoadAsset<Sprite>("gravityBoots");
+                    case "Magic Compass": return Plugin.apAssetBundle.LoadAsset<Sprite>("magicCompass");
                 }
 
             }
@@ -981,13 +1001,33 @@ namespace Freedom_Planet_2_Archipelago
                     break;
 
                 // Sonic mod compatibility Chaos Emeralds.
-                case "Red Chaos Emerald": Plugin.save.ChaosEmeralds[0] = true; break;
-                case "Blue Chaos Emerald": Plugin.save.ChaosEmeralds[1] = true; break;
-                case "Yellow Chaos Emerald": Plugin.save.ChaosEmeralds[2] = true; break;
-                case "Green Chaos Emerald": Plugin.save.ChaosEmeralds[3] = true; break;
-                case "White Chaos Emerald": Plugin.save.ChaosEmeralds[4] = true; break;
-                case "Cyan Chaos Emerald": Plugin.save.ChaosEmeralds[5] = true; break;
-                case "Purple Chaos Emerald": Plugin.save.ChaosEmeralds[6] = true; break;
+                case "Red Chaos Emerald": Plugin.save.SonicChaosEmeralds[0] = true; break;
+                case "Blue Chaos Emerald": Plugin.save.SonicChaosEmeralds[1] = true; break;
+                case "Yellow Chaos Emerald": Plugin.save.SonicChaosEmeralds[2] = true; break;
+                case "Green Chaos Emerald": Plugin.save.SonicChaosEmeralds[3] = true; break;
+                case "White Chaos Emerald": Plugin.save.SonicChaosEmeralds[4] = true; break;
+                case "Cyan Chaos Emerald": Plugin.save.SonicChaosEmeralds[5] = true; break;
+                case "Purple Chaos Emerald": Plugin.save.SonicChaosEmeralds[6] = true; break;
+
+                // Potion Seller mod compatibility items.
+                case "Potion - Hover": Plugin.save.PotionSellerPotions[0] = true; break;
+                case "Potion - Energy": Plugin.save.PotionSellerPotions[1] = true; break;
+                case "Potion - Resonance": Plugin.save.PotionSellerPotions[2] = true; break;
+                case "Angel Tear": Plugin.save.PotionSellerBraveStones[0] = true; break;
+                case "Turtle Godshell": Plugin.save.PotionSellerBraveStones[1] = true; break;
+                case "Tinker Glove": Plugin.save.PotionSellerBraveStones[2] = true; break;
+                case "Pheonix Tonic": Plugin.save.PotionSellerBraveStones[3] = true; break;
+                case "Warpstone": Plugin.save.PotionSellerBraveStones[4] = true; break;
+                case "Madstone": Plugin.save.PotionSellerBraveStones[5] = true; break;
+                case "Guardian Charm": Plugin.save.PotionSellerBraveStones[6] = true; break;
+                case "Explosive Finale": Plugin.save.PotionSellerBraveStones[7] = true; break;
+                case "Idol of Greed": Plugin.save.PotionSellerBraveStones[8] = true; break;
+                case "Bomb Magnet": Plugin.save.PotionSellerBraveStones[9] = true; break;
+                case "Ninja Garb": Plugin.save.PotionSellerBraveStones[10] = true; break;
+                case "Ice Crown": Plugin.save.PotionSellerBraveStones[11] = true; break;
+                case "Invisibility Cloak": Plugin.save.PotionSellerBraveStones[12] = true; break;
+                case "Gravity Boots": Plugin.save.PotionSellerBraveStones[13] = true; break;
+                case "Magic Compass": Plugin.save.PotionSellerBraveStones[14] = true; break;
 
                 // Unhandled items, throw an error into the console.
                 default: Plugin.consoleLog.LogError($"Item Type '{item.Key.ItemName}' (sent by '{item.Key.Source}' {item.Value} time(s)) not yet handled!"); return;
