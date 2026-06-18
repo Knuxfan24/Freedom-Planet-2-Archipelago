@@ -432,6 +432,7 @@
                             case "Pixelate Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                             case "Poison Mushroom": AddTrap(bouncedPacket, "Zoom Trap"); break;
                             case "Poison Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
+                            case "Pokemon Trivia Trap": AddTrap(bouncedPacket, "Trivia Trap", true); break;
                             case "Police Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
                             case "Posession Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
                             case "Push Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
