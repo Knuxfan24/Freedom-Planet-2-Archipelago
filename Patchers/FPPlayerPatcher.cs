@@ -1271,5 +1271,56 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "Action_Hurt")]
         static void CalculateTakenDamage() => DamageLinkHealth -= player.health;
+
+        /// <summary>
+        /// Handles activating the Potion Seller's Invisibility Cloak item mid stage.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPPlayer), "Update")]
+        static void PotionSellerCloak(FPPlayer __instance)
+        {
+            // Check if we have item 95 equipped and our sprite renderer active.
+            if (__instance.powerups.Contains((FPPowerup)95) && __instance.GetComponent<SpriteRenderer>().enabled)
+            {
+                // Check if our sprite renderer's alpha is above 0.
+                if (__instance.GetComponent<SpriteRenderer>().color.a > 0)
+                {
+                    // Lower the value of our sprite renderer's alpha.
+                    // This is affected by framerate but I don't care.
+                    __instance.GetComponent<SpriteRenderer>().color = new(__instance.GetComponent<SpriteRenderer>().color.r,
+                                                                          __instance.GetComponent<SpriteRenderer>().color.g,
+                                                                          __instance.GetComponent<SpriteRenderer>().color.b,
+                                                                          __instance.GetComponent<SpriteRenderer>().color.a - 0.01f);
+
+                    // Do the same to our child sprite if we have one.
+                    if (__instance.childSprite)
+                        __instance.childSprite.GetComponent<SpriteRenderer>().color = new(__instance.childSprite.GetComponent<SpriteRenderer>().color.r,
+                                                                                          __instance.childSprite.GetComponent<SpriteRenderer>().color.g,
+                                                                                          __instance.childSprite.GetComponent<SpriteRenderer>().color.b,
+                                                                                          __instance.childSprite.GetComponent<SpriteRenderer>().color.a - 0.01f);
+                }
+
+                // Check if our sprite renderer's alpha has reached 0.
+                else
+                {
+                    // Disable our sprite renderer and set the alpha back to 1 just to be safe.
+                    __instance.GetComponent<SpriteRenderer>().enabled = false;
+                    __instance.GetComponent<SpriteRenderer>().color = new(__instance.GetComponent<SpriteRenderer>().color.r,
+                                                                          __instance.GetComponent<SpriteRenderer>().color.g,
+                                                                          __instance.GetComponent<SpriteRenderer>().color.b,
+                                                                          1);
+
+                    // Do the same to our child sprite if we have one.
+                    if (__instance.childSprite)
+                    {
+                        __instance.childSprite.GetComponent<SpriteRenderer>().enabled = false;
+                        __instance.childSprite.GetComponent<SpriteRenderer>().color = new(__instance.childSprite.GetComponent<SpriteRenderer>().color.r,
+                                                                                          __instance.childSprite.GetComponent<SpriteRenderer>().color.g,
+                                                                                          __instance.childSprite.GetComponent<SpriteRenderer>().color.b,
+                                                                                          1f);
+                    }
+                }
+            }
+        }
     }
 }

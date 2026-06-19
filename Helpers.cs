@@ -1170,12 +1170,6 @@ namespace Freedom_Planet_2_Archipelago
                             }
                             break;
 
-                        case (FPPowerup)95: // Potion Seller Invisibility Cloak.
-                            FPPlayerPatcher.player.GetComponent<SpriteRenderer>().enabled = false;
-                            if (FPPlayerPatcher.player.childSprite)
-                                FPPlayerPatcher.player.childSprite.GetComponent<SpriteRenderer>().enabled = false;
-                            break;
-
                         case (FPPowerup)91: // Potion Seller Idol of Greed.
                             FPPlayerPatcher.player.healthMax = Math.Min(6, FPPlayerPatcher.player.healthMax);
                             FPPlayerPatcher.player.health = Math.Min(6, FPPlayerPatcher.player.healthMax);
