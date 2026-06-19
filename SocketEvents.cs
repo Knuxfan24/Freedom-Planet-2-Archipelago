@@ -310,6 +310,13 @@
                             case "One Hit KO": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "One Hit KO", true); break;
                             case "Time Limit": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Time Limit", true); break;
 
+                            // Potion Seller Brave Stones.
+                            case "Invisibility Cloak": if ((long)Plugin.slotData["trap_stones"] != 0 && (long)Plugin.slotData["potion_seller_mod"] != 0) AddTrap(bouncedPacket, "Invisibility Cloak", true); break;
+                            case "Madstone": if ((long)Plugin.slotData["trap_stones"] != 0 && (long)Plugin.slotData["potion_seller_mod"] != 0) AddTrap(bouncedPacket, "Madstone", true); break;
+                            case "Explosive Finale": if ((long)Plugin.slotData["trap_stones"] != 0 && (long)Plugin.slotData["potion_seller_mod"] != 0) AddTrap(bouncedPacket, "Explosive Finale", true); break;
+                            case "Idol of Greed": if ((long)Plugin.slotData["trap_stones"] != 0 && (long)Plugin.slotData["potion_seller_mod"] != 0) AddTrap(bouncedPacket, "Idol of Greed", true); break;
+                            case "Gravity Boots": if ((long)Plugin.slotData["trap_stones"] != 0 && (long)Plugin.slotData["potion_seller_mod"] != 0) AddTrap(bouncedPacket, "Gravity Boots", true); break;
+
                             // FP2 Traps.
                             case "Swap Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
                             case "Mirror Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;

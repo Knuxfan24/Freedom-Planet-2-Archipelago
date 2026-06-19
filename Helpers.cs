@@ -1018,16 +1018,38 @@ namespace Freedom_Planet_2_Archipelago
                 case "Tinker Glove": Plugin.save.PotionSellerBraveStones[2] = true; break;
                 case "Pheonix Tonic": Plugin.save.PotionSellerBraveStones[3] = true; break;
                 case "Warpstone": Plugin.save.PotionSellerBraveStones[4] = true; break;
-                case "Madstone": Plugin.save.PotionSellerBraveStones[5] = true; break;
                 case "Guardian Charm": Plugin.save.PotionSellerBraveStones[6] = true; break;
-                case "Explosive Finale": Plugin.save.PotionSellerBraveStones[7] = true; break;
-                case "Idol of Greed": Plugin.save.PotionSellerBraveStones[8] = true; break;
-                case "Bomb Magnet": Plugin.save.PotionSellerBraveStones[9] = true; break;
+                case "Bomb Magnet": Plugin.save.PotionSellerBraveStones[9] = true; break; // Can't realistically do the things that the Potion Seller mod does to add the bombs.
                 case "Ninja Garb": Plugin.save.PotionSellerBraveStones[10] = true; break;
                 case "Ice Crown": Plugin.save.PotionSellerBraveStones[11] = true; break;
-                case "Invisibility Cloak": Plugin.save.PotionSellerBraveStones[12] = true; break;
-                case "Gravity Boots": Plugin.save.PotionSellerBraveStones[13] = true; break;
                 case "Magic Compass": Plugin.save.PotionSellerBraveStones[14] = true; break;
+
+                // Potion Seller mod compatibility items (Traps)
+                case "Invisibility Cloak":
+                    if (!trapLink) Plugin.save.PotionSellerBraveStones[12] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone((FPPowerup)95);
+                    break;
+                case "Madstone":
+                    if (!trapLink) Plugin.save.PotionSellerBraveStones[5] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone((FPPowerup)88);
+                    break;
+                case "Explosive Finale": // Doesn't have the sound.
+                    if (!trapLink) Plugin.save.PotionSellerBraveStones[7] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone((FPPowerup)90);
+                    break;
+                case "Idol of Greed":
+                    if (!trapLink) Plugin.save.PotionSellerBraveStones[8] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone((FPPowerup)91);
+                    break;
+                case "Gravity Boots":
+                    if (!trapLink) Plugin.save.PotionSellerBraveStones[13] = true;
+                    SendTrapLink();
+                    SetTrapBraveStone((FPPowerup)96);
+                    break;
 
                 // Unhandled items, throw an error into the console.
                 default: Plugin.consoleLog.LogError($"Item Type '{item.Key.ItemName}' (sent by '{item.Key.Source}' {item.Value} time(s)) not yet handled!"); return;
@@ -1077,6 +1099,14 @@ namespace Freedom_Planet_2_Archipelago
                 {
                     // If this Brave Stone is already equipped on the player, then don't add a second copy of it.
                     if (FPPlayerPatcher.player.powerups.Contains(item))
+                        return;
+
+                    // Check if we should add this item and bail out if we shouldn't.
+                    bool shouldAdd = true;
+                    if (item == (FPPowerup)96 && FPPlayerPatcher.player.characterID == (FPCharacterID)FP2Lib.Player.PlayerHandler.GetPlayableCharaByUid("k24.sonic").id)
+                        shouldAdd = false; // The Potion Seller's Gravity Boots cause Sonic to get stuck in the Spin Dash state due to how it works.
+
+                    if (!shouldAdd)
                         return;
 
                     // Add this item to the player.
@@ -1138,6 +1168,17 @@ namespace Freedom_Planet_2_Archipelago
                                     Traverse.Create(hud).Field("countdownThreshold").SetValue(2000);
                                 }
                             }
+                            break;
+
+                        case (FPPowerup)95: // Potion Seller Invisibility Cloak.
+                            FPPlayerPatcher.player.GetComponent<SpriteRenderer>().enabled = false;
+                            if (FPPlayerPatcher.player.childSprite)
+                                FPPlayerPatcher.player.childSprite.GetComponent<SpriteRenderer>().enabled = false;
+                            break;
+
+                        case (FPPowerup)91: // Potion Seller Idol of Greed.
+                            FPPlayerPatcher.player.healthMax = Math.Min(6, FPPlayerPatcher.player.healthMax);
+                            FPPlayerPatcher.player.health = Math.Min(6, FPPlayerPatcher.player.healthMax);
                             break;
                     }
                 }
