@@ -1,5 +1,6 @@
 ﻿using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
+using BepInEx.Bootstrap;
 using FP2Lib.Player;
 
 namespace Freedom_Planet_2_Archipelago.CustomData
@@ -75,6 +76,11 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         /// The object for the connect button when it is highlighted.
         /// </summary>
         private static GameObject connectButtonOn;
+
+        /// <summary>
+        /// The object for the mod alert.
+        /// </summary>
+        private static GameObject modAlert;
 
         /// <summary>
         /// The set of characters, filled in with the base game characters initially.
@@ -325,6 +331,8 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             if (!Plugin.slotData.ContainsKey("vinyl_shop_price")) Plugin.slotData.Add("vinyl_shop_price", 100L);
             if (!Plugin.slotData.ContainsKey("vinyl_shop_amount")) Plugin.slotData.Add("vinyl_shop_amount", 60L);
             if (!Plugin.slotData.ContainsKey("item_boxes")) Plugin.slotData.Add("item_boxes", 0L);
+            if (!Plugin.slotData.ContainsKey("sonic_mod")) Plugin.slotData.Add("sonic_mod", 0L);
+            if (!Plugin.slotData.ContainsKey("potion_seller_mod")) Plugin.slotData.Add("potion_seller_mod", 0L);
 
             // Overwrite the link values in the slot data if we need to.
             if (Plugin.configDeathLinkOverride.Value != -1) Plugin.slotData["death_link"] = Plugin.configDeathLinkOverride.Value;
@@ -458,6 +466,56 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             Plugin.itemQueueTimer = 0f;
             #endregion
 
+            #region Check for any missing mods.
+            List<string> missingMods = [];
+
+            if ((long)Plugin.slotData["sonic_mod"] != 0 && !Chainloader.PluginInfos.ContainsKey("K24_FP2_Sonic")) missingMods.Add("Sonic");
+            if ((long)Plugin.slotData["potion_seller_mod"] != 0 && !Chainloader.PluginInfos.ContainsKey("com.eps.plugin.fp2.potion-seller")) missingMods.Add("Potion Seller");
+
+            // Handle making the alert if we're missing any mods.
+            if (missingMods.Count > 0)
+            {
+                string missingModAlert = $"Warning!\r\n\r\nArchipelago seed {Plugin.session.RoomState.Seed} has the ";
+
+                // Loop through and add the missing mod strings.
+                for (int missingModIndex = 0; missingModIndex < missingMods.Count; missingModIndex++)
+                {
+                    missingModAlert += $"{missingMods[missingModIndex]} Mod Compatability";
+                    if (missingMods.Count > 1)
+                    {
+                        if (missingModIndex < missingMods.Count - 2) missingModAlert += ", ";
+                        else if (missingModIndex != missingMods.Count - 1) missingModAlert += " and ";
+                    }
+                }
+
+                missingModAlert += " option";
+                if (missingMods.Count > 1) missingModAlert += "s";
+
+                missingModAlert += " enabled, but the mod";
+                if (missingMods.Count > 1) missingModAlert += "s themselves are";
+                else missingModAlert += " itself is";
+                missingModAlert += " missing!\r\n\r\nExpect things to break!";
+
+                missingModAlert = FPStage.WrapText(missingModAlert, 56);
+
+                // Create the alert prefab and set its text.
+                modAlert = UnityEngine.Object.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("MissingModAlert"));
+                modAlert.transform.GetChild(3).GetComponent<TextMesh>().text = missingModAlert;
+
+                // Swap to the Wait for Warning state then stop here.
+                state = State_WaitForWarning;
+                return;
+            }
+            #endregion
+
+            MoveToClassicMenu();
+
+            // Swap to the nothing state.
+            state = State_Nothing;
+        }
+
+        private void MoveToClassicMenu()
+        {
             // Find the menu's screen transition object.
             FPScreenTransition transition = GameObject.Find("Screen Transition").GetComponent<FPScreenTransition>();
 
@@ -506,9 +564,19 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                         Plugin.session.DataStorage[$"FP2_PlayerSlot{player.Slot}"].OnValueChanged += Plugin.RemotePlayerChanged;
                 }
             }
+        }
 
-            // Swap to the nothing state.
-            state = State_Nothing;
+        private void State_WaitForWarning()
+        {
+            // Move the connection menu up off the screen so it doesn't overlap the warning.
+            base.transform.position = new Vector3(base.transform.position.x, (base.transform.position.y + (32f * FPStage.frameScale)), base.transform.position.z);
+
+            // If the warning has been closed, then transition to the classic map.
+            if (modAlert == null)
+            {
+                MoveToClassicMenu();
+                state = State_Nothing;
+            }
         }
 
         private void State_Nothing() { }
