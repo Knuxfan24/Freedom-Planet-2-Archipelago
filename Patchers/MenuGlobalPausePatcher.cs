@@ -37,7 +37,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             if (!Chainloader.PluginInfos.ContainsKey("K24_FP2_Sonic"))
                 return;
 
-            // TODO: The display still appears even if the Sonic Mod Compatability option is disabled.
+            // TODO: The display still appears even if the Sonic Mod Compatibility option is disabled.
 
             // Find and set the alpha to 1 on each emerald depending on the collected ones.
             if (Plugin.save.SonicChaosEmeralds[0]) UnityEngine.GameObject.Find("Red Chaos Emerald").GetComponent<SpriteRenderer>().color = new(1, 1, 1, 1);

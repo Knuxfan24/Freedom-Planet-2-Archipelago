@@ -480,7 +480,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                 // Loop through and add the missing mod strings.
                 for (int missingModIndex = 0; missingModIndex < missingMods.Count; missingModIndex++)
                 {
-                    missingModAlert += $"{missingMods[missingModIndex]} Mod Compatability";
+                    missingModAlert += $"{missingMods[missingModIndex]} Mod Compatibility";
                     if (missingMods.Count > 1)
                     {
                         if (missingModIndex < missingMods.Count - 2) missingModAlert += ", ";
