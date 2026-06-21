@@ -37,7 +37,18 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             if (!Chainloader.PluginInfos.ContainsKey("K24_FP2_Sonic"))
                 return;
 
-            // TODO: The display still appears even if the Sonic Mod Compatibility option is disabled.
+            // If the Sonic Mod Compatiblity option isn't enabled, then just delete the tracker.
+            if ((long)Plugin.slotData["sonic_mod"] == 0)
+            {
+                GameObject.Destroy(UnityEngine.GameObject.Find("Red Chaos Emerald"));
+                GameObject.Destroy(UnityEngine.GameObject.Find("Blue Chaos Emerald"));
+                GameObject.Destroy(UnityEngine.GameObject.Find("Yellow Chaos Emerald"));
+                GameObject.Destroy(UnityEngine.GameObject.Find("Green Chaos Emerald"));
+                GameObject.Destroy(UnityEngine.GameObject.Find("White Chaos Emerald"));
+                GameObject.Destroy(UnityEngine.GameObject.Find("Cyan Chaos Emerald"));
+                GameObject.Destroy(UnityEngine.GameObject.Find("Purple Chaos Emerald"));
+                return;
+            }
 
             // Find and set the alpha to 1 on each emerald depending on the collected ones.
             if (Plugin.save.SonicChaosEmeralds[0]) UnityEngine.GameObject.Find("Red Chaos Emerald").GetComponent<SpriteRenderer>().color = new(1, 1, 1, 1);
