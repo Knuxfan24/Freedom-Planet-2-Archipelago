@@ -226,8 +226,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 __instance.stages[stageIndices[lockPanelIndex]].starCardText = lockPanel.transform.GetChild(0).GetComponent<MenuText>();
             }
             
-            // If the chapter setup is set to open, then remove all the Star Card locks (minus Weapon's Core's).
-            if ((long)Plugin.slotData["chapters"] == 2)
+            // If the chapter setup is set to open (or the Star Card Locks option is disabled), then remove all the Star Card locks (minus Weapon's Core's).
+            if ((long)Plugin.slotData["chapters"] == 2 || ((long)Plugin.slotData["chapters"] < 2 && (long)Plugin.slotData["star_locks"] == 0))
                 for (int stageIndex = 0;  stageIndex < __instance.stages.Length; stageIndex++)
                     if (stageIndex != 30)
                         __instance.stages[stageIndex].starCardRequirement = 0;

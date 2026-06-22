@@ -316,6 +316,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             if (!Plugin.slotData.ContainsKey("damage_link")) Plugin.slotData.Add("damage_link", 0L);
             if (!Plugin.slotData.ContainsKey("chest_tracer_items")) Plugin.slotData.Add("chest_tracer_items", 0L);
             if (!Plugin.slotData.ContainsKey("chapters")) Plugin.slotData.Add("chapters", 2L);
+            if (!Plugin.slotData.ContainsKey("star_locks")) Plugin.slotData.Add("star_locks", 1L);
             if (!Plugin.slotData.ContainsKey("trap_stones")) Plugin.slotData.Add("trap_stones", 0L);
             if (!Plugin.slotData.ContainsKey("fast_weapons_core")) Plugin.slotData.Add("fast_weapons_core", 0L);
             if (!Plugin.slotData.ContainsKey("dangerous_time_limit")) Plugin.slotData.Add("dangerous_time_limit", 0L);
