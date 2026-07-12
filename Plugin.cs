@@ -1,5 +1,6 @@
 ﻿// TODO: Release "Found [x]'s [y]" messages.
 // TODO: Starting to not like the trap timers being based on a coroutine, while this is needed for packet handling and stuff, I'm not sure about it being used for timers.
+// TODO: The game crashes A LOT with the AP mod on.
 global using Archipelago.MultiClient.Net;
 global using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 global using Archipelago.MultiClient.Net.Models;

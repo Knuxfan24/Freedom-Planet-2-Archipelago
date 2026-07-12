@@ -1,4 +1,6 @@
-﻿namespace Freedom_Planet_2_Archipelago
+﻿using Archipelago.MultiClient.Net.Helpers;
+
+namespace Freedom_Planet_2_Archipelago
 {
     internal class SocketEvents
     {
@@ -136,8 +138,8 @@
                                     case Archipelago.MultiClient.Net.Enums.JsonMessagePartType.ItemId:
                                         {
                                             // Read the info of the specified player and get the name of the item index the message references.
-                                            var playerInfo = Plugin.session.Players.GetPlayerInfo(jsonData.Player.Value);
-                                            textPart = Plugin.session.Items.GetItemName(int.Parse(jsonData.Text), playerInfo.Game);
+                                            PlayerInfo playerInfo = Plugin.session.Players.GetPlayerInfo(jsonData.Player.Value);
+                                            textPart = Plugin.session.Items.GetItemName(long.Parse(jsonData.Text), playerInfo.Game);
 
                                             // Set the colour of the text based on the item's flag.
                                             // TODO: If an item has more than one flag then none of these end up applying.
@@ -155,8 +157,8 @@
                                     case Archipelago.MultiClient.Net.Enums.JsonMessagePartType.LocationId:
                                         {
                                             // Read the info of the specified player and get the name of the location index the message references while also making it green.
-                                            var playerInfo = Plugin.session.Players.GetPlayerInfo(jsonData.Player.Value);
-                                            textPart = $"<c=green>{Plugin.session.Locations.GetLocationNameFromId(int.Parse(jsonData.Text), playerInfo.Game)}</c>";
+                                            PlayerInfo playerInfo = Plugin.session.Players.GetPlayerInfo(jsonData.Player.Value);
+                                            textPart = $"<c=green>{Plugin.session.Locations.GetLocationNameFromId(long.Parse(jsonData.Text), playerInfo.Game)}</c>";
                                             break;
                                         }
 
@@ -397,6 +399,7 @@
                             case "Flip Horizontal Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                             case "Flip Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
                             case "Flip Vertical Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                            case "Food poisoning Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
                             case "Food Poisoning Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
                             case "Fracture Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                             case "Freeze Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;

@@ -194,6 +194,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Calculate the highlighted item.
             int selectedItem = ___currentDetail + ___detailListOffset;
 
+            // Bail out if we're outside the array's length.
+            if (selectedItem > ___itemsForSale.Length)
+                return;
+
             // Handle Milla's shop.
             if (!___payWithCrystals)
             {

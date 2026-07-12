@@ -3,6 +3,7 @@
     internal class MenuJukeboxPatcher
     {
         // Both of these functions are just for removing bits of the code that locks vinyls.
+        // This does seem to cause a problem where the extra vinyl slots added to make the expandable shop work also try and get unlocked, which... Doesn't work for obvious reasons.
         [HarmonyTranspiler]
         [HarmonyPatch(typeof(MenuJukebox), "UpdateMenuPosition")]
         static IEnumerable<CodeInstruction> ShowJukeboxIcons(IEnumerable<CodeInstruction> instructions)
