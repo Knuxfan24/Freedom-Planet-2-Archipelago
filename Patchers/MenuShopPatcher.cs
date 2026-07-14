@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿// TODO: Custom Items/Vinyls break the shop's visual stuff quite badly.
+using System.Reflection;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
