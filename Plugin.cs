@@ -396,6 +396,7 @@ namespace Freedom_Planet_2_Archipelago
             Harmony.CreateAndPatchAll(typeof(MenuClassicShopHubPatcher));
             Harmony.CreateAndPatchAll(typeof(MenuContinuePatcher));
             Harmony.CreateAndPatchAll(typeof(MenuCreditsPatcher));
+            Harmony.CreateAndPatchAll(typeof(MenuExchangePatcher));
             Harmony.CreateAndPatchAll(typeof(MenuGlobalPausePatcher));
             Harmony.CreateAndPatchAll(typeof(MenuItemGetPatcher));
             Harmony.CreateAndPatchAll(typeof(MenuItemSelectPatcher));

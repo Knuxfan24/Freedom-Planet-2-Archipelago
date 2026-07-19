@@ -328,6 +328,8 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             if (!Plugin.slotData.ContainsKey("milla_shop")) Plugin.slotData.Add("milla_shop", 1L);
             if (!Plugin.slotData.ContainsKey("milla_shop_price")) Plugin.slotData.Add("milla_shop_price", 1L);
             if (!Plugin.slotData.ContainsKey("milla_shop_amount")) Plugin.slotData.Add("milla_shop_amount", 30L);
+            if (!Plugin.slotData.ContainsKey("gold_gem_crystal_cost")) Plugin.slotData.Add("gold_gem_crystal_cost", 1000L);
+            if (!Plugin.slotData.ContainsKey("gold_gem_core_cost")) Plugin.slotData.Add("gold_gem_core_cost", 20L);
             if (!Plugin.slotData.ContainsKey("vinyl_shop")) Plugin.slotData.Add("vinyl_shop", 1L);
             if (!Plugin.slotData.ContainsKey("vinyl_shop_price")) Plugin.slotData.Add("vinyl_shop_price", 100L);
             if (!Plugin.slotData.ContainsKey("vinyl_shop_amount")) Plugin.slotData.Add("vinyl_shop_amount", 60L);
