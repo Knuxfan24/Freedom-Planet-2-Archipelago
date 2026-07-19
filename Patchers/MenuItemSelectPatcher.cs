@@ -82,6 +82,20 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     }
                 }
             }
+
+            // Check for the Lightning mod and if we have the Step Booster item received.
+            if (Chainloader.PluginInfos.ContainsKey("com.kuborro.plugins.fp2.playablelightning") && Plugin.save.LightningStepBooster)
+            {
+                // Loop backwards through the list to find and unlock the Step Booster.
+                for (int itemIndex = __instance.amuletList.Length - 1; itemIndex >= 0; itemIndex--)
+                {
+                    if ((int)__instance.amuletList[itemIndex] == FP2Lib.Item.ItemHandler.GetItemDataByUid("kubo.fast_ladders").itemID)
+                    {
+                        __instance.amulets[itemIndex] = true;
+                        break;
+                    }
+                }
+            }
         }
 
         /// <summary>

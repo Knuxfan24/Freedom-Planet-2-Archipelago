@@ -543,6 +543,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case "Invisibility Cloak": return "You can't see your own body.";
                         case "Gravity Boots": return "The Down key is constantly held down while you are on the ground.";
                         case "Magic Compass": return "Points towards the closest checkpoint you haven't reached yet.";
+
+                        // Lightning mod item.
+                        case "Step Booster": return "Lets you climb ladders faster!";
                     }
                 }
 

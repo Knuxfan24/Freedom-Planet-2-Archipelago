@@ -336,6 +336,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             if (!Plugin.slotData.ContainsKey("item_boxes")) Plugin.slotData.Add("item_boxes", 0L);
             if (!Plugin.slotData.ContainsKey("sonic_mod")) Plugin.slotData.Add("sonic_mod", 0L);
             if (!Plugin.slotData.ContainsKey("potion_seller_mod")) Plugin.slotData.Add("potion_seller_mod", 0L);
+            if (!Plugin.slotData.ContainsKey("lightning_mod")) Plugin.slotData.Add("lightning_mod", 0L);
 
             // Overwrite the link values in the slot data if we need to.
             if (Plugin.configDeathLinkOverride.Value != -1) Plugin.slotData["death_link"] = Plugin.configDeathLinkOverride.Value;
@@ -474,6 +475,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
 
             if ((long)Plugin.slotData["sonic_mod"] != 0 && !Chainloader.PluginInfos.ContainsKey("K24_FP2_Sonic")) missingMods.Add("Sonic");
             if ((long)Plugin.slotData["potion_seller_mod"] != 0 && !Chainloader.PluginInfos.ContainsKey("com.eps.plugin.fp2.potion-seller")) missingMods.Add("Potion Seller");
+            if ((long)Plugin.slotData["lightning_mod"] != 0 && !Chainloader.PluginInfos.ContainsKey("com.kuborro.plugins.fp2.playablelightning")) missingMods.Add("Lightning");
 
             // Handle making the alert if we're missing any mods.
             if (missingMods.Count > 0)

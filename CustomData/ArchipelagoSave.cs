@@ -163,16 +163,22 @@
         public bool[] SonicChaosEmeralds { get; set; } = new bool[7];
 
         /// <summary>
-        /// The Brave Stones we've received from the server for the Potion Seller mod compatbility.
+        /// The Brave Stones we've received from the server for the Potion Seller mod compatibility.
         /// </summary>
         [JsonIgnore]
         public bool[] PotionSellerBraveStones { get; set; } = new bool[15];
 
         /// <summary>
-        /// The Potions we've received from the server for the Potion Seller mod compatbility.
+        /// The Potions we've received from the server for the Potion Seller mod compatibility.
         /// </summary>
         [JsonIgnore]
         public bool[] PotionSellerPotions { get; set; } = new bool[3];
+
+        /// <summary>
+        /// Whether or not we've recieved the Step Booster added by the Lightning mod compatibility option.
+        /// </summary>
+        [JsonIgnore]
+        public bool LightningStepBooster { get; set; }
 
         /// <summary>
         /// Dictionary of enemy sanity names and IDs.

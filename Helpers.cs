@@ -1051,6 +1051,9 @@ namespace Freedom_Planet_2_Archipelago
                     SetTrapBraveStone((FPPowerup)96);
                     break;
 
+                // Lightning mod compatibility item.
+                case "Step Booster": Plugin.save.LightningStepBooster = true; break;
+
                 // Unhandled items, throw an error into the console.
                 default: Plugin.consoleLog.LogError($"Item Type '{item.Key.ItemName}' (sent by '{item.Key.Source}' {item.Value} time(s)) not yet handled!"); return;
             }
