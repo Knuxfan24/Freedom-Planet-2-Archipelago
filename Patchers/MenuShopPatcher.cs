@@ -1,11 +1,11 @@
-﻿// TODO: Custom Items/Vinyls break the shop's visual stuff quite badly.
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class MenuShopPatcher
     {
         private static readonly MethodInfo updateListMethod = typeof(MenuShop).GetMethod("UpdateItemList", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(bool) }, null);
+        private static readonly MethodInfo sortItemsMethod = typeof(MenuShop).GetMethod("SortItems", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null);
 
         /// <summary>
         /// The sprites for the items in this shop.
@@ -34,6 +34,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Sets the shop vendor name to the slot's and puts the slot's sprite there if one is provided.
+        /// TODO: Make this pick a random player in the world?
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MenuShop), "Start")]
@@ -79,6 +80,66 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             {
                 ___itemCosts = [.. Enumerable.Repeat((int)(long)Plugin.slotData["milla_shop_price"], (int)(long)Plugin.slotData["milla_shop_amount"])];
                 ___musicID = new FPMusicTrack[(int)(long)Plugin.slotData["milla_shop_amount"]];
+            }
+        }
+
+        /// <summary>
+        /// Checks the shop arrays and see if FP2Lib has done any damage to them through mods adding other items and undo the damage.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(MenuShop), "SortItems")]
+        [HarmonyPatch(typeof(MenuShop), "UpdateItemList")]
+        static void UndoFP2LibDamage(MenuShop __instance, ref bool ___payWithCrystals, ref int[] ___itemCosts, ref FPPowerup[] ___itemsForSale, ref FPMusicTrack[] ___musicID, ref int[] ___starCardRequirements)
+        {
+            if (___payWithCrystals && ___musicID.Length > (long)Plugin.slotData["vinyl_shop_amount"])
+            {
+                // Fix the prices.
+                for (int itemIndex = 0; itemIndex < ___itemCosts.Length; itemIndex++)
+                    ___itemCosts[itemIndex] = (int)(long)Plugin.slotData["vinyl_shop_price"];
+
+                // Recreate the arrays for the Vinyl shop.
+                ___musicID = new FPMusicTrack[(int)(long)Plugin.slotData["vinyl_shop_amount"]];
+                for (int itemIndex = 0; itemIndex < ___musicID.Length; itemIndex++)
+                    ___musicID[itemIndex] = ((FPMusicTrack)(itemIndex + 1));
+                ___itemsForSale = new FPPowerup[(int)(long)Plugin.slotData["vinyl_shop_amount"]];
+                for (int itemIndex = 0; itemIndex < ___itemsForSale.Length; itemIndex++)
+                    ___itemsForSale[itemIndex] = FPPowerup.NONE;
+
+                // Determine how much we need to multiply the location index for the Vinyl shop by.
+                float multiplicationRange = 30 / (float)(long)Plugin.slotData["vinyl_shop_amount"];
+
+                // Create the array for the Star Card requirements for the Vinyl shop, setting its length to the amount specified in the slot then setting the value of each item linerally by multiplying its index with multiplaction range and rounding the result up.
+                ___starCardRequirements = new int[(int)(long)Plugin.slotData["vinyl_shop_amount"]];
+                for (int requirementIndex = 0; requirementIndex < ___starCardRequirements.Length; requirementIndex++)
+                    ___starCardRequirements[requirementIndex] = (int)Math.Ceiling(multiplicationRange * (requirementIndex + 1));
+
+                // Force sort the list.
+                sortItemsMethod.Invoke(__instance, new object[] { });
+                updateListMethod.Invoke(__instance, new object[] { true });
+            }
+
+            if (!___payWithCrystals && ___itemsForSale.Length > (long)Plugin.slotData["milla_shop_amount"])
+            {
+                // Fix the prices.
+                for (int itemIndex = 0; itemIndex < ___itemCosts.Length; itemIndex++)
+                    ___itemCosts[itemIndex] = (int)(long)Plugin.slotData["milla_shop_price"];
+
+                // Recreate the array for Milla's shop.
+                ___itemsForSale = new FPPowerup[(int)(long)Plugin.slotData["milla_shop_amount"]];
+                for (int itemIndex = 0; itemIndex < ___itemsForSale.Length; itemIndex++)
+                    ___itemsForSale[itemIndex] = (FPPowerup)(itemIndex + 2);
+
+                // Determine how much we need to multiply the location index for Milla's shop by.
+                float multiplicationRange = 30 / (float)(long)Plugin.slotData["milla_shop_amount"];
+
+                // Create the array for the Star Card requirements for Milla's shop, setting its length to the amount specified in the slot then setting the value of each item linerally by multiplying its index with multiplaction range and rounding the result up.
+                ___starCardRequirements = new int[(int)(long)Plugin.slotData["milla_shop_amount"]];
+                for (int requirementIndex = 0; requirementIndex < ___starCardRequirements.Length; requirementIndex++)
+                    ___starCardRequirements[requirementIndex] = (int)Math.Ceiling(multiplicationRange * (requirementIndex + 1));
+
+                // Force sort the list.
+                sortItemsMethod.Invoke(__instance, new object[] { });
+                updateListMethod.Invoke(__instance, new object[] { true });
             }
         }
 
