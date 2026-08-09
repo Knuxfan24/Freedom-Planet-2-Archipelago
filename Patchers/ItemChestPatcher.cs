@@ -206,7 +206,7 @@
                 FPPlayerPatcher.storedItemVoices = null;
                 
                 // Check if this item is a trap.
-                if (item.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Trap)
+                if ((item.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.Trap) != 0)
                 {
                     // Set the player's override animator to our one containing the character's shocked animation.
                     // We skip Carol's bike state, as we don't replace her animation, thanks to her lacking a suitable shocked one (might use her look up animation?)

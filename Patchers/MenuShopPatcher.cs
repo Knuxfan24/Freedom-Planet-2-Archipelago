@@ -145,7 +145,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     // If we're only sending progression item hints, then loop through the previous scout and remove ones without the Advancement flag.
                     if (Plugin.configShopHints.Value == 1)
                         foreach (KeyValuePair<long, ScoutedItemInfo> location in _ScoutedLocationInfo)
-                            if (location.Value.Flags != Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement)
+                            if ((location.Value.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement) == 0)
                                 locationIDs.Remove(location.Key);
 
                     // Scout for the hints for these locations.
@@ -299,8 +299,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Determine the progression level of this item.
                 string itemType = "";
-                if (location.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement) itemType = "Progression ";
-                if (location.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Trap) itemType = "Trap ";
+                if ((location.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement) != 0) itemType = "Progression ";
+                else if ((location.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.Trap) != 0) itemType = "Trap ";
 
                 // Return the right string for the Show Item Names in Shops setting.
                 switch (Plugin.configItemInfo.Value)
@@ -323,9 +323,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 switch (Plugin.configItemInfo.Value)
                 {
                     case 1:
-                        if (location.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement)
+                        if ((location.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement) != 0)
                             return $"A progression item for {itemTarget}.";
-                        else if (location.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Trap)
+                        else if ((location.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.Trap) != 0)
                             return $"A trap item for {itemTarget}.";
                         else
                             return $"An item for {itemTarget}.";

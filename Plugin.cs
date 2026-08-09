@@ -478,7 +478,7 @@ namespace Freedom_Planet_2_Archipelago
 
         /// <summary>
         /// Handles updating our own remote player data.
-        /// TODO: This thread seems to make the game freeze on close, requiring the BepInEx console to be closed to make it properly terminate?
+        /// TODO: This thread seems to make the game freeze on close, requiring the BepInEx console to be closed to make it properly terminate? Tempted to just throw out the Remote Player stuff in general at this point.
         /// </summary>
         private static void RemotePlayerHandler()
         {

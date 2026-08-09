@@ -142,14 +142,10 @@ namespace Freedom_Planet_2_Archipelago
                                             textPart = Plugin.session.Items.GetItemName(long.Parse(jsonData.Text), playerInfo.Game);
 
                                             // Set the colour of the text based on the item's flag.
-                                            // TODO: If an item has more than one flag then none of these end up applying.
-                                            switch (jsonData.Flags)
-                                            {
-                                                case Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement: textPart = $"<c=purple>{textPart}</c>"; break;
-                                                case Archipelago.MultiClient.Net.Enums.ItemFlags.NeverExclude: textPart = $"<c=blue>{textPart}</c>"; break;
-                                                case Archipelago.MultiClient.Net.Enums.ItemFlags.None: textPart = $"<c=cyan>{textPart}</c>"; break;
-                                                case Archipelago.MultiClient.Net.Enums.ItemFlags.Trap: textPart = $"<c=orange>{textPart}</c>"; break;
-                                            }
+                                            if ((jsonData.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement) != 0) textPart = $"<c=purple>{textPart}</c>";
+                                            else if ((jsonData.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.NeverExclude) != 0) textPart = $"<c=blue>{textPart}</c>";
+                                            else if ((jsonData.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.Trap) != 0) textPart = $"<c=orange>{textPart}</c>";
+                                            else textPart = $"<c=cyan>{textPart}</c>";
 
                                             break;
                                         }

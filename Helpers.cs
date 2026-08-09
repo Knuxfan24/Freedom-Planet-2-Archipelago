@@ -37,9 +37,9 @@ namespace Freedom_Planet_2_Archipelago
                     return sprite;
 
             // Swap to the Progression or Trap sprite if needed.
-            if (scoutedLocationInfo.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement)
+            if ((scoutedLocationInfo.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement) != 0)
                 sprite = apLogo[3];
-            if (scoutedLocationInfo.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Trap)
+            else if ((scoutedLocationInfo.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.Trap) != 0)
                 sprite = apLogo[4];
 
             // If the Show Item Names in Shops setting is set to Flags, then return whichever AP Logo we have loaded.
