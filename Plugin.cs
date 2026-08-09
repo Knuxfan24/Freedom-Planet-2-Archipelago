@@ -58,6 +58,7 @@ namespace Freedom_Planet_2_Archipelago
         public static ConfigEntry<int> configTriviaDifficulty;
         public static ConfigEntry<int> configItemInfo;
         public static ConfigEntry<bool> configItemBoxDisplay;
+        public static ConfigEntry<bool> configFoFHints;
 
         // The AP session's data.
         public static ArchipelagoSession session;
@@ -286,6 +287,13 @@ namespace Freedom_Planet_2_Archipelago
                                                "Displays the sprite for the item that will be given for opening a Chest or breaking an Item Box, adhering to the setting of Item Information.\r\n" +
                                                "false: Disabled\r\n" +
                                                "true: Enabled");
+
+            configFoFHints = Config.Bind("Misc",
+                                         "Fists of Frogs Hints",
+                                         true,
+                                         "Makes clearing a level in Fists of Frogs (accessible in the map's pause menu) send a random location hint.\r\n" +
+                                         "false: Disabled\r\n" +
+                                         "true: Enabled");
 
             // Load our asset bundle.
             apAssetBundle = AssetBundle.LoadFromFile($@"{Paths.GameRootPath}\mod_overrides\Archipelago\archipelago.assets");

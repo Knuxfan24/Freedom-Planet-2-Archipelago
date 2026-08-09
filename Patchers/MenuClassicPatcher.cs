@@ -910,8 +910,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             previousSong = FPAudio.GetCurrentMusic();
 
             // Add the HintGame tag to our connection info.
-            // TODO: Is this a good idea?
-            Plugin.session.ConnectionInfo.UpdateConnectionOptions([.. Plugin.session.ConnectionInfo.Tags, .. new string[1] { "HintGame" }]);
+            if (Plugin.configFoFHints.Value)
+                Plugin.session.ConnectionInfo.UpdateConnectionOptions([.. Plugin.session.ConnectionInfo.Tags, .. new string[1] { "HintGame" }]);
 
             // Stop the album menu's original start function from running.
             return false;
@@ -932,9 +932,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             if (___pauseOption == 1)
             {
                 // Remove the HintGame tag from our connection info.
-                List<string> tags = [.. Plugin.session.ConnectionInfo.Tags];
-                tags.Remove("HintGame");
-                Plugin.session.ConnectionInfo.UpdateConnectionOptions([.. tags]);
+                if (Plugin.configFoFHints.Value)
+                {
+                    List<string> tags = [.. Plugin.session.ConnectionInfo.Tags];
+                    tags.Remove("HintGame");
+                    Plugin.session.ConnectionInfo.UpdateConnectionOptions([.. tags]);
+                }
 
                 // Play our saved song.
                 FPAudio.PlayMusic(previousSong);
@@ -978,6 +981,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(FistsOfFrog), "State_Gameplay")]
         static void SendFoFHint(ref SpriteRenderer[] ___flies)
         {
+            // Don't send any hints if the config option is set to disabled.
+            if (!Plugin.configFoFHints.Value)
+                return;
+
             // Check that we've eaten all the flies in the stage.
             for (int flyIndex = 0; flyIndex < ___flies.Length; flyIndex++)
             {
