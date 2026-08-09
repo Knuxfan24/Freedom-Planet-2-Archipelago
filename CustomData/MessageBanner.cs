@@ -104,7 +104,7 @@
         private void State_Typing()
         {
             // Add the current character from the text value to the text mesh.
-            // TODO: This is affected by framerate, but I'm not sure I care.
+            // This is affected by framerate, but I don't care.
             textMesh.text += text[characterIndex];
 
             // If we still have characters left, then increment the index.

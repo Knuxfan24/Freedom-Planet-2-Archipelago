@@ -41,7 +41,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(MenuClassic), "Start")]
         static void MenuSetup(MenuClassic __instance)
         {
-            // TODO: Should I leave this here just to be safe?
+            // Reset the Trivia Trap flag in case a stage was left with one active.
             Plugin.TriviaTrap = false;
 
             // Randomise the character if we need to.

@@ -173,7 +173,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         private void State_TypeQuestion()
         {
             // Add the current character from the text value to the text mesh.
-            // TODO: This is affected by framerate, but I'm not sure I care.
+            // This is affected by framerate, but I don't care.
             questionUI.text += question[questionCharacterIndex];
 
             // If we still have characters left, then increment the index.
