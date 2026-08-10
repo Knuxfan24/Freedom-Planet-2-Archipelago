@@ -95,6 +95,22 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new(null, "Thank you\r\n{$}!\r\n\r\nBut our princess is\r\nin another\r\nmultiworld!", [PlaceholderTypes.OurName]),
             new("CATS:", "How are you\r\ngentlemen !!\r\n\r\nAll your base\r\nare belong to us."), // Reference to Zero Wing.
             new(null, "Boy gets beaten in\r\nfoot race by one\r\nsecond despite\r\nspeedrunner\r\ntechniques."), // Reference to The Legend of Zelda: Ocarina of Time.
+            new(null, "Local resident would\r\njust love it if\r\nthere was a Vending\r\nMachine right here!"), // Reference to Tomadachi Life.
+            new("CONTROVERSY!", "Local \"More Gun\"\r\nadvocate caught\r\nappreciating \"A\r\nLittle Less Gun\""), // Reference to Team Fortress 2.
+            new(null, "Supposed \"Greatest\r\nPlan\" turned out\r\nto be not so great.\r\n\r\nPilot unavailable\r\nfor comment."), // Reference to The Henry Stickmin Collection.
+            new(null, "Random block of Tofu\r\ncalls it quits,\r\ncites concern over\r\namount of Buzzsaws\r\nand Salt.\r\nMeat lovers apathetic\r\nat this announcement."), // Reference to Super Meat Boy.
+            new("SHOCKING DISCOVERY", "Floor Ice Cream\r\nallegedly gives\r\nhealth.\r\n\r\nExperts continue to \r\ndeny Angel's claim."), // Reference to Kid Icarus Uprising.
+            new(null, "{$}\r\nwins by doing\r\nabsolutely nothing.", [PlaceholderTypes.RandomNameNotOursOrServer]), // Reference to the Luigi Wins meme.
+            new(null, "Bazelgeuse reported\r\nin the area. Local\r\nHunters traumatised\r\nby horns."), // Reference to Monster Hunter World.
+            new(null, "Local millionaire\r\nsurprisingly\r\napologises after\r\ntaunting waiting\r\npatrons for over\r\nfifty minutes."), // Reference to Wario World.
+            new(null, "Squids continue to\r\nargue over mundane\r\nchoices.\r\n\r\nNewly arriving\r\nOctopi left confused."), // Reference to Splatoon.
+            new(null, "Greenland closes\r\nall access.\r\n\r\nLocal residents\r\nfeel oddly smug."), // Reference to Plague Inc.
+            new("Remote Purchasing?", "Local gangster\r\nallegedly purchases\r\ndesert property\r\ndespite paying for\r\ncountryside motel\r\nroom."), // Reference to Grand Theft Auto: San Andreas.
+            new(null, "\"They just weren't\r\nprotected at all\",\r\nclaims Literature\r\nClub leader upon\r\ndeleting critical\r\nCHR files."), // Reference to Doki Doki Literature Club.
+            new(null, "Local plumber\r\nboycotts motorcycles\r\nover concerns of\r\nunfair advantage."), // Reference to Mario Kart Wii.
+            new(null, "SECRET POWERS OF\r\nHUMBLE BUG NET AND\r\nFISHING ROD\r\nREVEALED!?"), // Reference to The Legend of Zelda: A Link to the Past and Twilight Princess.
+            new(null, "Hedgehog shows up\r\nlate after being\r\nlost in maze."), // Reference to Super Smash Brothers Brawl.
+            new("Tragic...", "Local Skyloft\r\nresident allegedly\r\nspoke to Goron at\r\nwrong time."), // Reference to The Legend of Zelda: Skyward Sword.
         ];
 
         // The valid colours to tint the background.
