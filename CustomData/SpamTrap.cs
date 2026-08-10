@@ -95,7 +95,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new(null, "Thank you\r\n{$}!\r\n\r\nBut our princess is\r\nin another\r\nmultiworld!", [PlaceholderTypes.OurName]),
             new("CATS:", "How are you\r\ngentlemen !!\r\n\r\nAll your base\r\nare belong to us."), // Reference to Zero Wing.
             new(null, "Boy gets beaten in\r\nfoot race by one\r\nsecond despite\r\nspeedrunner\r\ntechniques."), // Reference to The Legend of Zelda: Ocarina of Time.
-            new(null, "Local resident would\r\njust love it if\r\nthere was a Vending\r\nMachine right here!"), // Reference to Tomadachi Life.
+            new("{$}", "I would just love it\r\nif there was a\r\nVending Machine \r\nright here!", [PlaceholderTypes.RandomNameNotOursOrServer]), // Reference to Tomadachi Life.
             new("CONTROVERSY!", "Local \"More Gun\"\r\nadvocate caught\r\nappreciating \"A\r\nLittle Less Gun\""), // Reference to Team Fortress 2.
             new(null, "Supposed \"Greatest\r\nPlan\" turned out\r\nto be not so great.\r\n\r\nPilot unavailable\r\nfor comment."), // Reference to The Henry Stickmin Collection.
             new(null, "Random block of Tofu\r\ncalls it quits,\r\ncites concern over\r\namount of Buzzsaws\r\nand Salt.\r\nMeat lovers apathetic\r\nat this announcement."), // Reference to Super Meat Boy.
