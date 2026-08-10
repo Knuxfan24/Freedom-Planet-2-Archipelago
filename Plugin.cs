@@ -55,6 +55,7 @@ namespace Freedom_Planet_2_Archipelago
         public static ConfigEntry<bool> configRemotePlayers;
         public static ConfigEntry<int> configChat;
         public static ConfigEntry<int> configShopHints;
+        public static ConfigEntry<int> configShopOwner;
         public static ConfigEntry<int> configTriviaDifficulty;
         public static ConfigEntry<int> configItemInfo;
         public static ConfigEntry<bool> configItemBoxDisplay;
@@ -263,6 +264,14 @@ namespace Freedom_Planet_2_Archipelago
                                           "0: Disabled\r\n" +
                                           "1: Progressive Items Only\r\n" +
                                           "2: All");
+
+            configShopOwner = Config.Bind("Misc",
+                                          "Shop Owner",
+                                          1,
+                                          "Who's name should be displayed in the Shop.\r\n" +
+                                          "0: Doesn't display any name in the shop, like the vanilla game.\r\n" +
+                                          "1: Always displays the player's own name.\r\n" +
+                                          "2: Displays the name of a random player in the multiworld.");
 
             configTriviaDifficulty = Config.Bind("Misc",
                                                  "Trivia Trap Maximum Difficulty",

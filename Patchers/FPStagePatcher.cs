@@ -19,8 +19,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         }
 
         /// <summary>
-        /// TODO: Test this.
-        /// Checks any active Spam Traps and enables their script if they've somehow become disabled.
+        /// Checks any active Spam Traps and enables their script if they've somehow become disabled. Bit of a hack but seems to work.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPStage), "Start")]
@@ -65,7 +64,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             if (Plugin.session.ConnectionInfo.Slot == -1)
                 return;
 
-            // Set up our entry in the remote players data storage..
+            // Set up our entry in the remote players data storage.
             Plugin.ourRemotePlayer = new()
             {
                 { "Player", Plugin.session.ConnectionInfo.Slot },
@@ -77,7 +76,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 { "Facing", 1 }
             };
 
-            if (Plugin.configRemotePlayers.Value == false)
+            // If the remote players config option is disabled, then stop here.
+            if (!Plugin.configRemotePlayers.Value)
                 return;
 
             // Set the flag to update our data on the server.

@@ -34,20 +34,34 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Sets the shop vendor name to the slot's and puts the slot's sprite there if one is provided.
-        /// TODO: Make this pick a random player in the world?
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MenuShop), "Start")]
         static void SetShopVendor(MenuShop __instance)
         {
-            // Check that a sprite for this slot name exists.
-            if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players\Shop\{Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot)}.png"))
+            // Don't set a vendor if the config option tells us not to.
+            if (Plugin.configShopOwner.Value == 0)
+                return;
+
+            // Set the vendor name to our slot's name.
+            string vendorName = Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot);
+
+            // If we've selected the random option, then pick a random name, rerolling if we pick Server.
+            if (Plugin.configShopOwner.Value == 2)
+            {
+                vendorName = Plugin.session.Players.AllPlayers.ToArray()[Plugin.rng.Next(Plugin.session.Players.AllPlayers.ToArray().Length)].Name;
+                while (vendorName == "Server")
+                    vendorName = Plugin.session.Players.AllPlayers.ToArray()[Plugin.rng.Next(Plugin.session.Players.AllPlayers.ToArray().Length)].Name;
+            }
+
+            // Check that a sprite for our chosen vendor exists.
+            if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players\Shop\{vendorName}.png"))
             {
                 // Set up a new texture using point filtering.
                 Texture2D texture = new(32, 32) { filterMode = FilterMode.Point };
 
                 // Read the sprite for this texture.
-                texture.LoadImage(File.ReadAllBytes(($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players\Shop\{Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot)}.png")));
+                texture.LoadImage(File.ReadAllBytes(($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Players\Shop\{vendorName}.png")));
 
                 // Set the seller sprite to a newly created sprite.
                 __instance.sellerSprite.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0f), 1);
@@ -56,8 +70,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 __instance.sellerSprite.transform.localPosition = new(60, -189);
             }
 
-            // Set the shop keeper name to our slot name.
-            __instance.sellerName.textMesh.text = Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot);
+            // Set the shop keeper name to our chosen vendor.
+            __instance.sellerName.textMesh.text = vendorName;
 
         }
 
