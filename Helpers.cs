@@ -1302,7 +1302,7 @@ namespace Freedom_Planet_2_Archipelago
             spamTrap.transform.position = new(Plugin.rng.Next(377), -Plugin.rng.Next(200), 0);
 
             // Add the actual script to the object.
-            spamTrap.AddComponent<SpamTrap>();
+            spamTrap.AddComponent<SpamTrap>().debugTrap = false;
 
             // Make sure the spam trap persists through scene changes.
             UnityEngine.Object.DontDestroyOnLoad(spamTrap);

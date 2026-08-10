@@ -8,7 +8,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         /// <summary>
         /// Valid placeholder types for replacing parts of a string in the header or message body.
         /// </summary>
-        private enum PlaceholderTypes
+        public enum PlaceholderTypes
         {
             RandomName, // Picks any name from the server.
             RandomNameNoServer, // Excludes the word "Server".
@@ -17,7 +17,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             OurName // Shows our own name.
         }
 
-        private class SpamTrapMessage(string? header, string message)
+        public class SpamTrapMessage(string? header, string message)
         {
             /// <summary>
             /// Text shown in the header. If this is null, then the header is removed entirely and the message body shifted up.
@@ -39,7 +39,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         }
 
         // The various messages that can be picked for display.
-        private static readonly SpamTrapMessage[] messages =
+        public static readonly SpamTrapMessage[] messages =
         [
             new("NOTICE", "We've been trying\r\nto reach you\r\nregarding your\r\nbike's extended\r\nwarranty."),
             new("Beauty Contest", "You have won second\r\nprize in a\r\nbeauty contest\r\n\r\nCollect $10"),
@@ -78,7 +78,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new(null, "Local boy discovers\r\nfriends are power.\r\n\r\nSword responds\r\nwith confusion."), // Reference to Kingdom Hearts.
             new(null, "DeathLink received\r\nfrom {$}?", [PlaceholderTypes.RandomNameNotOursOrServer]),
             new("Exciting Tournament!", "Not just a race...\r\nBut a special race,\r\nto see who's the\r\nfastest!"), // Reference to Sonic Riders.
-            new(null, "KTOX TV reports\r\nDangerous Games\r\ndelayed due to\r\nDigger related\r\nincidents."), // Reference to Megaman Legends.
+            new("KTOX TV Report", "Dangerous Games\r\ndelayed due to\r\nDigger related\r\nincidents."), // Reference to Megaman Legends.
             new(null, "Blue haired CEO\r\nforces castle\r\nvisitors to play\r\ncard games.\r\n\r\nExperts still\r\nconfused."), // Reference to Kingdom Hearts: Chain of Memories with a slight Birth by Sleep reference too.
             new(null, "\"Barrier continues\r\nto hold\" reports\r\nfrustrated conductor."), // Reference to The Legend of Zelda: Wind Waker.
             new("Wheel of Fortune", "NOPE!"), // Reference to Balatro.
@@ -99,14 +99,14 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new("CONTROVERSY!", "Local \"More Gun\"\r\nadvocate caught\r\nappreciating \"A\r\nLittle Less Gun\""), // Reference to Team Fortress 2.
             new(null, "Supposed \"Greatest\r\nPlan\" turned out\r\nto be not so great.\r\n\r\nPilot unavailable\r\nfor comment."), // Reference to The Henry Stickmin Collection.
             new(null, "Random block of Tofu\r\ncalls it quits,\r\ncites concern over\r\namount of Buzzsaws\r\nand Salt.\r\nMeat lovers apathetic\r\nat this announcement."), // Reference to Super Meat Boy.
-            new("SHOCKING DISCOVERY", "Floor Ice Cream\r\nallegedly gives\r\nhealth.\r\n\r\nExperts continue to \r\ndeny Angel's claim."), // Reference to Kid Icarus Uprising.
+            new("SHOCKING DISCOVERY", "Floor Ice Cream\r\nallegedly gives\r\nhealth.\r\n\r\nExperts still deny\r\nthe angel's claim."), // Reference to Kid Icarus Uprising.
             new(null, "{$}\r\nwins by doing\r\nabsolutely nothing.", [PlaceholderTypes.RandomNameNotOursOrServer]), // Reference to the Luigi Wins meme.
             new(null, "Bazelgeuse reported\r\nin the area. Local\r\nHunters traumatised\r\nby horns."), // Reference to Monster Hunter World.
             new(null, "Local millionaire\r\nsurprisingly\r\napologises after\r\ntaunting waiting\r\npatrons for over\r\nfifty minutes."), // Reference to Wario World.
             new(null, "Squids continue to\r\nargue over mundane\r\nchoices.\r\n\r\nNewly arriving\r\nOctopi left confused."), // Reference to Splatoon.
             new(null, "Greenland closes\r\nall access.\r\n\r\nLocal residents\r\nfeel oddly smug."), // Reference to Plague Inc.
             new("Remote Purchasing?", "Local gangster\r\nallegedly purchases\r\ndesert property\r\ndespite paying for\r\ncountryside motel\r\nroom."), // Reference to Grand Theft Auto: San Andreas.
-            new(null, "\"They just weren't\r\nprotected at all\",\r\nclaims Literature\r\nClub leader upon\r\ndeleting critical\r\nCHR files."), // Reference to Doki Doki Literature Club.
+            new(null, "\"They just weren't\r\nprotected at all\",\r\nclaims Literature\r\nClub president upon\r\ndeleting critical\r\nCHR files."), // Reference to Doki Doki Literature Club.
             new(null, "Local plumber\r\nboycotts motorcycles\r\nover concerns of\r\nunfair advantage."), // Reference to Mario Kart Wii.
             new(null, "SECRET POWERS OF\r\nHUMBLE BUG NET AND\r\nFISHING ROD\r\nREVEALED!?"), // Reference to The Legend of Zelda: A Link to the Past and Twilight Princess.
             new(null, "Hedgehog shows up\r\nlate after being\r\nlost in maze."), // Reference to Super Smash Brothers Brawl.
@@ -140,6 +140,8 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         private int placeholderIndex = 0;
 
         // Debug specific message for testing the placeholders.
+        public bool debugTrap;
+        public int debugIndex;
         private readonly SpamTrapMessage DebugMessage = new("***DEBUG for {$}***",
                                                             "Random Name: {$}\r\nNot Server: {$}\r\nNot Us: {$}\r\nNeither: {$}\r\nUs: {$}",
                                                             [PlaceholderTypes.OurName, PlaceholderTypes.RandomName, PlaceholderTypes.RandomNameNoServer, PlaceholderTypes.RandomNameNotOurs, PlaceholderTypes.RandomNameNotOursOrServer, PlaceholderTypes.OurName]);
@@ -170,10 +172,22 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             message = messages[messageIndex].Message;
             placeholders = messages[messageIndex].Placeholders;
 
-            // DEBUG: Replace the stuff with our debug message. Only use this if adding new placeholder types.
-            //header = DebugMessage.Header;
-            //message = DebugMessage.Message;
-            //placeholders = DebugMessage.Placeholders;
+            // Handle overriding the text if this is a Debug Spam Trap.
+            if (debugTrap)
+            {
+                if (debugIndex == messages.Length)
+                {
+                    header = DebugMessage.Header;
+                    message = DebugMessage.Message;
+                    placeholders = DebugMessage.Placeholders;
+                }
+                else
+                {
+                    header = messages[debugIndex].Header;
+                    message = messages[debugIndex].Message;
+                    placeholders = messages[debugIndex].Placeholders;
+                }
+            }
 
             // Get the names of the players in this multiworld.
             List<string> playerNames = [];
@@ -184,13 +198,17 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             if (header != null) header = ReplacePlaceholders(header, placeholders);
             message = ReplacePlaceholders(message, placeholders);
 
-            // Select a colour for the background.
-            gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().color = colours[Plugin.rng.Next(colours.Length)];
+            // Select a colour for the background if this isn't a Debug Spam Trap.
+            if (!debugTrap)
+                gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().color = colours[Plugin.rng.Next(colours.Length)];
 
-            // If the target message has a header, then just update its text.
-            // If not, then hide the header element and shift the body element up by 8 pixels.
+            // Handle setting the header and body positions. We redo stuff here for the sake of the Debug Spam Trap.
             if (header != null)
+            {
+                gameObject.transform.GetChild(1).gameObject.SetActive(true);
                 gameObject.transform.GetChild(1).GetComponent<TextMesh>().text = header;
+                gameObject.transform.GetChild(2).transform.localPosition = new(128.5f, -88f, 0f);
+            }
             else
             {
                 gameObject.transform.GetChild(1).gameObject.SetActive(false);
@@ -213,6 +231,37 @@ namespace Freedom_Planet_2_Archipelago.CustomData
 
         private void State_Default()
         {
+            // Check if this is a Debug Spam Trap.
+            if (debugTrap)
+            {
+                // Cycle through messages when the Numpad is used, printing the current index (the last one is the default Debug message) and rerunning the start function to update everything.
+                if (Input.GetKeyDown(KeyCode.Keypad4))
+                {
+                    if (debugIndex == 0)
+                        debugIndex = messages.Length;
+                    else
+                        debugIndex--;
+
+                    Plugin.consoleLog.LogDebug($"Debug Spam Trap Message Index: {debugIndex}");
+
+                    Start();
+                }
+                if (Input.GetKeyDown(KeyCode.Keypad6))
+                {
+                    if (debugIndex == messages.Length)
+                        debugIndex = 0;
+                    else
+                        debugIndex++;
+
+                    Plugin.consoleLog.LogDebug($"Debug Spam Trap Message Index: {debugIndex}");
+
+                    Start();
+                }
+
+                // Don't do the timer stuff if we're a Debug Spam Trap.
+                return;
+            }
+
             // Decrement our timer by the game's delta time.
             genericTimer -= Time.deltaTime;
 

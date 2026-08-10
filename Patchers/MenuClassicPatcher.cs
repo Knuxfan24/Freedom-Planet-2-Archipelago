@@ -852,6 +852,32 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             }
         }
 
+#if DEBUG
+        /// <summary>
+        /// Debug Build only method that spawns a Debug Spam Trap if F9 is pressed on the map.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(MenuClassic), "UpdateIcons")]
+        static void DebugSpamTrap()
+        {
+            if (Input.GetKeyDown(KeyCode.F9))
+            {
+                Plugin.sentMessageQueue.Add("Spawned a Debug Spam Trap.");
+
+                // Instantiate the prefab from the asset bundle.
+                GameObject spamTrap = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("SpamTrap"));
+
+                // Set the Spam Trap to the center of the screen.
+                spamTrap.transform.position = new(192, -106);
+
+                // Add the actual script to the object.
+                var trapScript = spamTrap.AddComponent<SpamTrap>();
+                trapScript.debugTrap = true;
+                trapScript.debugIndex = SpamTrap.messages.Length;
+            }
+        }
+#endif
+
         /// <summary>
         /// Hides the counters if a menu is up.
         /// </summary>
