@@ -19,6 +19,40 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         }
 
         /// <summary>
+        /// TODO: Test this.
+        /// Checks any active Spam Traps and enables their script if they've somehow become disabled.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPStage), "Start")]
+        static void SpamTrapDeactivationFixHack()
+        {
+            // Find any active Spam Traps.
+            GameObject[] spamTraps = [.. UnityEngine.Object.FindObjectsOfType<GameObject>().Where(x => x.name.StartsWith("SpamTrap"))];
+
+            // Loop through each Spam Trap object.
+            foreach (GameObject spamTrap in spamTraps)
+            {
+                // Get this Spam Trap's script.
+                SpamTrap trapComponent = spamTrap.GetComponent<SpamTrap>();
+
+                // Check that the script actually exists on the object.
+                if (trapComponent != null)
+                {
+                    // Check if the script is disabled and try to enable it.
+                    if (!trapComponent.enabled)
+                    {
+                        Plugin.consoleLog.LogDebug("Found a stuck Spam Trap, attempting to reactivate it.");
+                        trapComponent.enabled = true;
+                    }
+                }
+
+                // If the script doesn't exist, destroy the object.
+                else
+                    GameObject.Destroy(spamTrap);
+            }
+        }
+
+        /// <summary>
         /// Handles setting up remote players.
         /// </summary>
         [HarmonyPostfix]
