@@ -85,7 +85,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new("COMING SOON!", "Something\r\nNew\r\n'n'\r\nTasty"), // Reference to Oddworld: Abe's Oddysee.
             new("Hey all!", "{$}\r\nhere!", [PlaceholderTypes.RandomNameNotOurs]), // Reference to Scott the Woz.
             new(null, "The train headed\r\nfor the Mystic Ruins\r\nwill be departing\r\nsoon."), // Reference to Sonic Adventure.
-            new("FOOOOOOOOOOOOOOL!!", "You blew it!\r\nYou've totally\r\nscrewed yourself!\r\nNobody enter my\r\nhome and leaves in\r\none piece!"), // Reference to A Hat in Time.
+            new("FOOOOOOOOOOOOOOL!!", "You blew it!\r\nYou've totally\r\nscrewed yourself!\r\nNobody enters my\r\nhome and leaves in\r\none piece!"), // Reference to A Hat in Time.
             new("BREAKING NEWS", "Regional Chuckola\r\nreserves low!\r\n\r\nTwo brothers are on\r\nthe scene to\r\ninvestigate!"), // Reference to Mario & Luigi: Superstar Saga.
             new("TRAGEDY", "Local resident dies\r\ndue to mysterious\r\npool ladder related\r\nincident.\r\n{$} denies\r\ninvolvement.", [PlaceholderTypes.RandomNameNoServer]), // Reference to The Sims.
             new(null, "The only thing\r\nthey fear is\r\n{$}.", [PlaceholderTypes.RandomName]), // Reference to Doom.
