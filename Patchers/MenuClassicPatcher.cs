@@ -772,9 +772,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 // Hide the key counter.
                 KeyCounter.gameObject.SetActive(false);
 
-                // Get the location index for this stage's clear check.
-                locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{stageName} - Clear");
-                AddLocation();
+                // Get the location indices for this stage's clear checks.
+                locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{stageName} - Clear"); AddLocation();
+                locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{stageName} - Rainbow S-Rank"); AddLocation();
+                locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{stageName} - S-Rank"); AddLocation();
+                locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{stageName} - A-Rank"); AddLocation();
 
                 // Loop through for the chests (we do up to 8 because Tidal Gate has that many).
                 for (int chestIndex = 0; chestIndex <= 8; chestIndex++)

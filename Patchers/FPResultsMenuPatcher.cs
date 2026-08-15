@@ -8,9 +8,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// Sends a location check upon clearing a stage.
         /// </summary>
         /// <param name="___challengeID">The challenge ID this results menu has, used for Battlesphere locations.</param>
+        /// <param name="___rank">The rank the player received.</param>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPResultsMenu), "Start")]
-        static void SendLocationCheck(ref int ___challengeID)
+        static void SendLocationCheck(ref int ___challengeID, ref byte ___rank)
         {
             // Set up a value to hold the location name.
             string locationName = string.Empty;
@@ -126,6 +127,72 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             {
                 StatusUpdatePacket goalPacket = new() { Status = ArchipelagoClientState.ClientGoal };
                 Plugin.session.Socket.SendPacketAsync(goalPacket);
+            }
+
+            // Check if we got a Rainbow S-Rank.
+            if (___rank == 5)
+            {
+                // Update the location name and get the new index.
+                string rankLocation = locationName;
+                if (rankLocation.EndsWith(" - Clear"))
+                    rankLocation = rankLocation.Replace(" - Clear", " - Rainbow S-Rank");
+                else
+                    rankLocation += " - Rainbow S-Rank";
+                locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", rankLocation);
+
+                // If this location exists, then complete the check of it.
+                if (Helpers.CheckLocationExists(locationIndex))
+                {
+                    // Complete the location check for this index.
+                    Plugin.EnqueueLocation(locationIndex);
+                    var item = Plugin.items[locationIndex];
+                    if (item.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                        Plugin.sentMessageQueue.Add($"Found {item.Player.Name}'s {item.ItemName}.");
+                }
+            }
+
+            // Check if we got an S-Rank.
+            if (___rank >= 4)
+            {
+                // Update the location name and get the new index.
+                string rankLocation = locationName;
+                if (rankLocation.EndsWith(" - Clear"))
+                    rankLocation = rankLocation.Replace(" - Clear", " - S-Rank");
+                else
+                    rankLocation += " - S-Rank";
+                locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", rankLocation);
+
+                // If this location exists, then complete the check of it.
+                if (Helpers.CheckLocationExists(locationIndex))
+                {
+                    // Complete the location check for this index.
+                    Plugin.EnqueueLocation(locationIndex);
+                    var item = Plugin.items[locationIndex];
+                    if (item.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                        Plugin.sentMessageQueue.Add($"Found {item.Player.Name}'s {item.ItemName}.");
+                }
+            }
+
+            // Check if we got an A-Rank.
+            if (___rank >= 3)
+            {
+                // Update the location name and get the new index.
+                string rankLocation = locationName;
+                if (rankLocation.EndsWith(" - Clear"))
+                    rankLocation = rankLocation.Replace(" - Clear", " - A-Rank");
+                else
+                    rankLocation += " - A-Rank";
+                locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", rankLocation);
+
+                // If this location exists, then complete the check of it.
+                if (Helpers.CheckLocationExists(locationIndex))
+                {
+                    // Complete the location check for this index.
+                    Plugin.EnqueueLocation(locationIndex);
+                    var item = Plugin.items[locationIndex];
+                    if (item.Player.Name != Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
+                        Plugin.sentMessageQueue.Add($"Found {item.Player.Name}'s {item.ItemName}.");
+                }
             }
         }
     }
