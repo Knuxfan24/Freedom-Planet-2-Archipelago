@@ -14,7 +14,8 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             RandomNameNoServer, // Excludes the word "Server".
             RandomNameNotOurs, // Excludes our own name.
             RandomNameNotOursOrServer, // Excludes both "Server" and our own name.
-            OurName // Shows our own name.
+            OurName, // Shows our own name.
+            RandomString // Picks a random string from a provided set.
         }
 
         public class SpamTrapMessage(string? header, string message)
@@ -34,8 +35,18 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             /// </summary>
             public List<PlaceholderTypes> Placeholders = [];
 
+            /// <summary>
+            /// Strings that can be used to fill in the RandomString placeholder type.
+            /// </summary>
+            public List<string> PlaceholderStrings = [];
+
             // Initialiser that includes placeholders.
             public SpamTrapMessage(string? header, string message, List<PlaceholderTypes> placeholders) : this(header, message) => Placeholders = placeholders;
+            public SpamTrapMessage(string? header, string message, List<PlaceholderTypes> placeholders, List<string> placeholderStrings) : this(header, message)
+            {
+                Placeholders = placeholders;
+                PlaceholderStrings = placeholderStrings;
+            }
         }
 
         // The various messages that can be picked for display.
@@ -111,6 +122,32 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new(null, "SECRET POWERS OF\r\nHUMBLE BUG NET AND\r\nFISHING ROD\r\nREVEALED!?"), // Reference to The Legend of Zelda: A Link to the Past and Twilight Princess.
             new(null, "Hedgehog shows up\r\nlate after being\r\nlost in maze."), // Reference to Super Smash Brothers Brawl.
             new("Tragic...", "Local Skyloft\r\nresident allegedly\r\nspoke to Goron at\r\nwrong time."), // Reference to The Legend of Zelda: Skyward Sword.
+            new("WARNING!", "OK  [CANCEL]  DELETE"), // Reference to Sonic Adventure 2.
+            new("FACT", "To make a\r\nphotocopier, simply\r\nphotocopy a mirror."), // Reference to Portal 2.
+            new(null, "Local Bandicoot\r\nreportedly still\r\nwaiting on new\r\nLaptop Battery."), // Reference to Crash Bandicoot 2.
+            new("Neo Cortex", "The crystals,\r\n{$}.", [PlaceholderTypes.OurName]), // Reference to Crash Bandicoot 2.
+            new("LET'S GO GAMBLING!", "[XXX] Aw dang it!\r\n[XXX] Aw dang it!\r\n[XXX] Aw dang it!\r\n[XXX] Aw dang it!\r\n[XXX] Aw dang it!\r\n[XXX] Aw dang it!"), // Reference to that Flipnote Studio animation.
+            new("DEAR PESKY PLUMBERS", "The Koopalings and I\r\nhave taken over the\r\nmultiworld.\r\n{$} is now\r\na permanent guest\r\nat one of my 7\r\nBK'd games!", [PlaceholderTypes.RandomNameNotOursOrServer]), // Reference to Hotel Mario.
+            new(null, "{$}\r\ndoesn't need to hear\r\nall this, they're\r\na highly trained\r\nprofessional.", [PlaceholderTypes.RandomNameNoServer]), // Reference to Half-Life.
+            new(null, "Monster Truck\r\nsightings increase.\r\n\r\nSouls reported\r\nstolen."), // Reference to Sonic Racing CrossWorlds.
+            new(null, "Planet remains\r\nshattered.\r\n\r\nLocal scholar, when\r\nasked for comment,\r\njust talked about\r\nsandwiches..."), // Reference to Sonic Unleashed.
+            new(null, "{$}\r\nreportedly didn't\r\nget the Wordle.", [PlaceholderTypes.RandomNameNotOursOrServer]), // Reference to Wordle.
+            new(null, "{$}\r\nhit the ground\r\ntoo hard.", [PlaceholderTypes.RandomNameNotOursOrServer]), // Reference to Minecraft.
+            new(null, "Reading this\r\nSpam Trap\r\ncrashes Paper Mario."), // Reference to old "Doing [x] crashes Paper Mario" videos.
+            new("Intelligence Core", "Peanut butter\r\nbutterflies. It is\r\nshaped like a fish.\r\n\r\n\r\nCUP"), // Reference to the Portal Google Translated mod.
+            new("Pot: $2,400", "{$}\r\nhas...\r\n{$}\r\n\r\n{$} wins\r\nthe hand.", [PlaceholderTypes.OurName, PlaceholderTypes.RandomString, PlaceholderTypes.RandomNameNotOurs], ["Ace High.", "A Pair of Twos.", "Two Pair.", "Three of a Kind.", "Four of a Kind.", "A Flush!", "A Straight!", "A Full House!", "A Straight Flush!", "A ROYAL FLUSH!"]), // Reference to Poker Night at the Inventory.
+            new(null, "Mudokon workers\r\ncontinue to go\r\nmissing.\r\n\r\nReports of Bird\r\nPortals dismissed as\r\n\"crap\"."), // Reference to Oddworld.
+            new(null, "Grandma allegedly\r\ndiscovers quantum\r\ntechnology while\r\nbaking cookies."), // Reference to Cookie Clicker.
+            new(null, "{$}\r\nmakes yet another\r\ncum joke. Gets\r\nSuper Quiplash.", [PlaceholderTypes.RandomNameNotOursOrServer]), // Reference to Quiplash.
+            new(null, "Uh-oh! How unfortunate!\r\nUh-oh! How unfortunate!\r\nI'm gonna do a sneaky\r\nthing, and add a new\r\ntext box to your\r\nscreen!"), // Reference to Ultimate Custom Night.
+            new("Jokes on them.", "{$}\r\nforgot about\r\nThe Psychic.\r\n\r\nOnly played\r\nHigh Card.", [PlaceholderTypes.RandomNameNoServer]), // Reference to Balatro.
+            new(null, "Real Hardware sales\r\ndrop following\r\nretirement of\r\nHedgehog-based\r\nquality assurance."), // Reference to redhotsonic.
+            new(null, "{$}\r\nwas not The\r\nImposter.", [PlaceholderTypes.RandomNameNoServer]), // Reference to Among Us.
+            new(null, "Worm drowns\r\nin rope related\r\naccident."), // Reference to Worms.
+            new(null, "Local manager\r\nfinds secret to\r\nsafe consumption of\r\nfull bottle of Pain\r\nPills.\r\n\r\nClick for more info."), // Reference to Left 4 Dead.
+            new(null, "Hedgehog stands\r\nupside down on\r\nshuttle loop.\r\n\r\nSpectators baffled."), // Reference to Sonic '06.
+            new(null, "Reports of mining\r\nlaser sabotage\r\nrefuted, declared\r\ntragic accident."), // Reference to Freedom Planet 2 itself.
+
         ];
 
         // The valid colours to tint the background.
@@ -137,14 +174,16 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         private string? header;
         private string message = "";
         private List<PlaceholderTypes> placeholders = [];
+        private List<string> placeholderStrings = null;
         private int placeholderIndex = 0;
 
         // Debug specific message for testing the placeholders.
         public bool debugTrap;
         public int debugIndex;
         private readonly SpamTrapMessage DebugMessage = new("***DEBUG for {$}***",
-                                                            "Random Name: {$}\r\nNot Server: {$}\r\nNot Us: {$}\r\nNeither: {$}\r\nUs: {$}",
-                                                            [PlaceholderTypes.OurName, PlaceholderTypes.RandomName, PlaceholderTypes.RandomNameNoServer, PlaceholderTypes.RandomNameNotOurs, PlaceholderTypes.RandomNameNotOursOrServer, PlaceholderTypes.OurName]);
+                                                            "Random Name: {$}\r\nNot Server: {$}\r\nNot Us: {$}\r\nNeither: {$}\r\nUs: {$}\r\nCustom: {$}",
+                                                            [PlaceholderTypes.OurName, PlaceholderTypes.RandomName, PlaceholderTypes.RandomNameNoServer, PlaceholderTypes.RandomNameNotOurs, PlaceholderTypes.RandomNameNotOursOrServer, PlaceholderTypes.OurName, PlaceholderTypes.RandomString],
+                                                            ["String 1", "String 2", "String 3", "Potato"]);
 
         private new void Start()
         {
@@ -180,12 +219,14 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                     header = DebugMessage.Header;
                     message = DebugMessage.Message;
                     placeholders = DebugMessage.Placeholders;
+                    placeholderStrings = DebugMessage.PlaceholderStrings;
                 }
                 else
                 {
                     header = messages[debugIndex].Header;
                     message = messages[debugIndex].Message;
                     placeholders = messages[debugIndex].Placeholders;
+                    placeholderStrings = messages[debugIndex].PlaceholderStrings;
                 }
             }
 
@@ -195,8 +236,8 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                 playerNames.Add(player.Name);
 
             // Swap out any placeholders the header and message may have.
-            if (header != null) header = ReplacePlaceholders(header, placeholders);
-            message = ReplacePlaceholders(message, placeholders);
+            if (header != null) header = ReplacePlaceholders(header, placeholders, placeholderStrings);
+            message = ReplacePlaceholders(message, placeholders, placeholderStrings);
 
             // Select a colour for the background if this isn't a Debug Spam Trap.
             if (!debugTrap)
@@ -280,7 +321,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             }
         }
 
-        private string ReplacePlaceholders(string text, List<PlaceholderTypes> placeholders)
+        private string ReplacePlaceholders(string text, List<PlaceholderTypes> placeholders, List<string> placeholderStrings = null)
         {
             // If we only have at most two players (likely our own name and the server), then force replace RandomNameNotOursOrServer with RandomName.
             if (Plugin.session.Players.AllPlayers.Count() <= 2)
@@ -335,6 +376,10 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                                     split[splitIndex] = Plugin.session.Players.AllPlayers.ToArray()[Plugin.rng.Next(Plugin.session.Players.AllPlayers.ToArray().Length)].Name;
                             break;
 
+
+                        case PlaceholderTypes.RandomString:
+                            split[splitIndex] = placeholderStrings[Plugin.rng.Next(placeholderStrings.Count)];
+                            break;
                         // Log an error if we haven't handled this placeholder type.
                         default: Plugin.consoleLog.LogError($"Placeholder type {placeholders[placeholderIndex]} not handled!"); break;
                     }
