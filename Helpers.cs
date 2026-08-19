@@ -40,7 +40,7 @@ namespace Freedom_Planet_2_Archipelago
             if ((scoutedLocationInfo.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement) != 0)
                 sprite = apLogo[3];
             else if ((scoutedLocationInfo.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.Trap) != 0)
-                sprite = apLogo[4];
+                sprite = apLogo[5];
 
             // If the Show Item Names in Shops setting is set to Flags, then return whichever AP Logo we have loaded.
             if (respectInfoSetting)
@@ -234,15 +234,19 @@ namespace Freedom_Planet_2_Archipelago
                         }
 
                     // Traps
-                    case "Aaa Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("aaa_trap");
+                    case "Mirror Trap": return apLogo[1];
                     case "Pie Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("pie_trap");
                     case "Spring Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("spring_trap");
+                    case "PowerPoint Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("powerpoint_trap");
                     case "Zoom Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("zoom_trap");
+                    case "Aaa Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("aaa_trap");
                     case "Spike Ball Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("spike_ball_trap");
                     case "Pixellation Trap": return apLogo[2];
-                    case "Mirror Trap": return apLogo[1];
+                    case "Spam Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("spam_trap");
                     case "Syntax Jumpscare Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("syntax_jumpscare_trap");
-                    case "Trivia Trap": return apLogo[5];
+                    case "Trivia Trap": return apLogo[6];
+                    case "Mach Speed Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("mach_speed_trap");
+                    case "Scott The Woz Trap": return apLogo[4];
 
                     // Potion Seller Mod Items (the repo was MIT licensed so I assume including these is fine?)
                     case "Potion - Hover": return Plugin.apAssetBundle.LoadAsset<Sprite>("hoverPotion");
