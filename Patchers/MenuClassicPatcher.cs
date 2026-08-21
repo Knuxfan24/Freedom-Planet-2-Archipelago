@@ -722,6 +722,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 }
             }
 
+            // Hide the enemy counter if both enemy and boss sanity are disabled.
+            if ((long)Plugin.slotData["enemies"] == 0 && (long)Plugin.slotData["bosses"] == 0)
+                EnemyCounter.gameObject.SetActive(true);
+
             void GetLocations(string stageName)
             {
                 // Set up a value to hold our location indices.
