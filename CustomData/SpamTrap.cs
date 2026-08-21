@@ -147,7 +147,18 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new(null, "Local manager\r\nfinds secret to\r\nsafe consumption of\r\nfull bottle of Pain\r\nPills.\r\n\r\nClick for more info."), // Reference to Left 4 Dead.
             new(null, "Hedgehog stands\r\nupside down on\r\nshuttle loop.\r\n\r\nSpectators baffled."), // Reference to Sonic '06.
             new(null, "Reports of mining\r\nlaser sabotage\r\nrefuted, declared\r\ntragic accident."), // Reference to Freedom Planet 2 itself.
-
+            new(null, "Local officer\r\nreportedly almost\r\na sandwich."), // Reference to Resident Evil.
+            new(null, "There was a\r\nhole here.\r\n\r\nIt's gone now."), // Reference to Silent Hill 2.
+            new(null, "THIS CANNOT CONTINUE"), // Reference to NieR Automata.
+            new(null, "Nanomachine market\r\nsurges following\r\ninternet memes."), // Reference to Metal Gear (specifically Armstrong's line in Rising).
+            new(null, "Time Travel achieved\r\nwithout set of\r\nstones.\r\n\r\nHedgehog left\r\nconfused."), // Reference to Sonic Generations (specifically a line in the 2024 rewrite).
+            new(null, "Finny Fun turns\r\nout to be not\r\nso fun after all."), // Reference to Kingdom Hearts 2.
+            new(null, "Glory to Arstotzka"), // Reference to Papers, Please.
+            new("valve plz", "ricochet 2\r\nwhen?"), // Reference to Ricochet.
+            new(null, "{$}\r\nforgot to install\r\nCounter-Strike:\r\nSource.", [PlaceholderTypes.RandomNameNoServer]), // Reference to how Counter-Strike: Source used to be so important to Garry's Mod.
+            new(null, "YOU'RE WINNER !"), // Reference to Big Rigs.
+            new(null, "An archipelago.gg\r\naccount is required\r\nto play this title."), // Reference to the bethesda.net requirement in the 25th anniversary Doom rereleases.
+            new(null, "Hear the words of\r\nO-Lir, last Sentinel\r\nof the Fortress\r\nTemple. May they\r\nserve you well."), // Reference to Metroid Prime 2: Echoes.
         ];
 
         // The valid colours to tint the background.
