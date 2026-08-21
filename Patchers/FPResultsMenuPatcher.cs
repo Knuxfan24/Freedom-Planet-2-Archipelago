@@ -122,8 +122,8 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 }
             }
 
-            // If the location was Weapon's Core's clear, then send a goal packet to the server too.
-            if (locationName == "Weapon's Core - Clear")
+            // If the location was Weapon's Core's clear (or Merga's clear if the goal is set to her), then send a goal packet to the server too.
+            if (locationName == "Weapon's Core - Clear" || ((long)Plugin.slotData["goal"] == 0) && locationName == "Merga - Clear")
             {
                 StatusUpdatePacket goalPacket = new() { Status = ArchipelagoClientState.ClientGoal };
                 Plugin.session.Socket.SendPacketAsync(goalPacket);

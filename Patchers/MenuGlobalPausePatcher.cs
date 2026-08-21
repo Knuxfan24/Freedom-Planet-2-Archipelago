@@ -16,14 +16,17 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         }
 
         /// <summary>
-        /// Replaces the Core Counter in the menu with a Time Capsule counter.
+        /// Replaces the Core Counter in the menu with a Time Capsule counter if our goal is Weapon's Core.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MenuGlobalPause), "Start")]
         static void ReplaceCores(MenuGlobalPause __instance)
         {
-            __instance.overviewCounters[3].GetComponent<TextMesh>().text = Plugin.save.TimeCapsuleCount.ToString();
-            __instance.overviewCounters[3].transform.GetChild(3).GetComponent<SpriteRenderer>().sprite = Plugin.apAssetBundle.LoadAsset<Sprite>("time_capsule");
+            if ((long)Plugin.slotData["goal"] == 1)
+            {
+                __instance.overviewCounters[3].GetComponent<TextMesh>().text = Plugin.save.TimeCapsuleCount.ToString();
+                __instance.overviewCounters[3].transform.GetChild(3).GetComponent<SpriteRenderer>().sprite = Plugin.apAssetBundle.LoadAsset<Sprite>("time_capsule");
+            }
         }
 
         /// <summary>

@@ -310,6 +310,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             Plugin.slotData = connectionSuccess.SlotData;
 
             // If our slot data is missing anything, then go ahead and add a default value.
+            if (!Plugin.slotData.ContainsKey("goal")) Plugin.slotData.Add("goal", 1L);
             if (!Plugin.slotData.ContainsKey("death_link")) Plugin.slotData.Add("death_link", 0L);
             if (!Plugin.slotData.ContainsKey("ring_link")) Plugin.slotData.Add("ring_link", 0L);
             if (!Plugin.slotData.ContainsKey("trap_link")) Plugin.slotData.Add("trap_link", 0L);

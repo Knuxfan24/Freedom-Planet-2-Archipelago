@@ -264,6 +264,21 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             __instance.stages[31].icon.gameObject.SetActive(false);
             __instance.stages[33].icon.gameObject.SetActive(false);
 
+            // Handle the Merga goal.
+            if ((long)Plugin.slotData["goal"] == 0)
+            {
+                // Set Merga's access to 32 Star Cards.
+                __instance.stages[29].starCardRequirement = 32;
+
+                // Remove Weapon's Core's panel.
+                __instance.stages[30].icon.gameObject.SetActive(false);
+
+                // If we have enough Star Cards and the stage access is set to individual unlocks, then unlock Merga's.
+                // The other situations are handled by the normal lock panels check (in theory, TODO: Test that!).
+                if (FPSaveManager.TotalStarCards() >= __instance.stages[29].starCardRequirement && (long)Plugin.slotData["chapters"] == 2)
+                    __instance.stages[29].lockedPanel.gameObject.SetActive(false);
+            }
+
             // Remove any custom stage panels.
             if (__instance.stages.Length > 34)
                 for (int extraStageIndex = 34; extraStageIndex < __instance.stages.Length; extraStageIndex++)
