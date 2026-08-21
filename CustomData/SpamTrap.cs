@@ -149,7 +149,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new(null, "Reports of mining\r\nlaser sabotage\r\nrefuted, declared\r\ntragic accident."), // Reference to Freedom Planet 2 itself.
             new(null, "Local officer\r\nreportedly almost\r\na sandwich."), // Reference to Resident Evil.
             new(null, "There was a\r\nhole here.\r\n\r\nIt's gone now."), // Reference to Silent Hill 2.
-            new(null, "THIS CANNOT CONTINUE"), // Reference to NieR Automata.
+            new("BECOME AS GODS", "THIS CANNOT CONTINUE"), // Reference to NieR Automata.
             new(null, "Nanomachine market\r\nsurges following\r\ninternet memes."), // Reference to Metal Gear (specifically Armstrong's line in Rising).
             new(null, "Time Travel achieved\r\nwithout set of\r\nstones.\r\n\r\nHedgehog left\r\nconfused."), // Reference to Sonic Generations (specifically a line in the 2024 rewrite).
             new(null, "Finny Fun turns\r\nout to be not\r\nso fun after all."), // Reference to Kingdom Hearts 2.
