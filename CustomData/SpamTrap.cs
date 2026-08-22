@@ -159,6 +159,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new(null, "YOU'RE WINNER !"), // Reference to Big Rigs.
             new(null, "An archipelago.gg\r\naccount is required\r\nto play this title."), // Reference to the bethesda.net requirement in the 25th anniversary Doom rereleases.
             new(null, "Hear the words of\r\nO-Lir, last Sentinel\r\nof the Fortress\r\nTemple. May they\r\nserve you well."), // Reference to Metroid Prime 2: Echoes.
+            new(null, "you got games\r\non your phone?"),
         ];
 
         // The valid colours to tint the background.
