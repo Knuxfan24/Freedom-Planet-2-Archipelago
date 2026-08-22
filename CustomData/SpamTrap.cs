@@ -160,6 +160,8 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new(null, "An archipelago.gg\r\naccount is required\r\nto play this title."), // Reference to the bethesda.net requirement in the 25th anniversary Doom rereleases.
             new(null, "Hear the words of\r\nO-Lir, last Sentinel\r\nof the Fortress\r\nTemple. May they\r\nserve you well."), // Reference to Metroid Prime 2: Echoes.
             new(null, "you got games\r\non your phone?"),
+            new(null, "It was foretold\r\nby Gyromancy!"), // Reference to Silent Hill.
+            new("Monsters?", "They looked like\r\nmonsters to you?"), // Reference to Silent Hill 3.
         ];
 
         // The valid colours to tint the background.
