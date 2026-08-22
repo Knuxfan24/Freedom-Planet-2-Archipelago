@@ -1,6 +1,5 @@
 ﻿// TODO: The prefab for this has a timer in it, but considering the movement keys are the answer keys, I'm not sure the extra stress of the timer is needed?
-// TODO: These don't work in Bakunawa Chase.
-// TODO: Wrong answers don't successfully kill the BFF2000.
+// TODO: Wrong answers don't successfully kill the BFF2000 or Airship.
 namespace Freedom_Planet_2_Archipelago.CustomData
 {
     public class TriviaTrap : FPBaseObject
@@ -202,7 +201,9 @@ namespace Freedom_Planet_2_Archipelago.CustomData
 
         private void State_WaitForAnswer()
         {
-            if (FPPlayerPatcher.player.input.upPress)
+            FPStage.UpdateMenuInput();
+
+            if (FPStage.menuInput.up)
             {
                 if (answers.Length > 3)
                 {
@@ -211,31 +212,21 @@ namespace Freedom_Planet_2_Archipelago.CustomData
                 }
             }
 
-            if (FPPlayerPatcher.player.input.downPress)
+            if (FPStage.menuInput.down)
             {
                 if (answerIndex == 2) HandleRightAnswer();
                 else HandleWrongAnswer();
             }
 
-            if (FPPlayerPatcher.player.input.leftPress)
+            if (FPStage.menuInput.left)
             {
-                // Flip the answer index for this answer if a Mirror Trap is active.
-                int directionIndex = 1;
-                if (Plugin.MirrorTrapTimer > 0)
-                    directionIndex = 0;
-
-                if (answerIndex == directionIndex) HandleRightAnswer();
+                if (answerIndex == 1) HandleRightAnswer();
                 else HandleWrongAnswer();
             }
 
-            if (FPPlayerPatcher.player.input.rightPress)
+            if (FPStage.menuInput.right)
             {
-                // Flip the answer index for this answer if a Mirror Trap is active.
-                int directionIndex = 0;
-                if (Plugin.MirrorTrapTimer > 0)
-                    directionIndex = 1;
-
-                if (answerIndex == directionIndex) HandleRightAnswer();
+                if (answerIndex == 0) HandleRightAnswer();
                 else HandleWrongAnswer();
             }
         }
