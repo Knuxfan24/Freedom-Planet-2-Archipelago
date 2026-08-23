@@ -41,8 +41,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(MenuClassic), "Start")]
         static void MenuSetup(MenuClassic __instance)
         {
-            // Reset the Trivia Trap flag in case a stage was left with one active.
+            // Reset the Trivia and Wordle Trap flags in case a stage was left with one active.
             Plugin.TriviaTrap = false;
+            Plugin.WordleTrap = false;
 
             // Randomise the character if we need to.
             if (Plugin.usingRandomCharacter)

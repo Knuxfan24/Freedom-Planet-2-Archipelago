@@ -34,7 +34,7 @@ namespace Freedom_Planet_2_Archipelago
     {
         // The asset bundle exported from the Unity project and its MD5 hash.
         public static AssetBundle apAssetBundle;
-        private const string apAssetBundleHash = "9520c27c6480f5e181e45d009b6236e5";
+        private const string apAssetBundleHash = "d4595105e2d50f06184b7cb0b8c5c6a3";
 
         // The icons used for the chat box.
         public static Sprite apChatIcon;
@@ -100,6 +100,7 @@ namespace Freedom_Planet_2_Archipelago
         public static bool RailTrap = false;
         public static float BufferTrapTimer = -1;
         public static bool TriviaTrap = false;
+        public static bool WordleTrap = false;
         public static Dictionary<string, List<DKCQuestion>> TriviaGames = [];
 
         // RingLink based values.

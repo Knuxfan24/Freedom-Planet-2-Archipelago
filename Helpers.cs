@@ -308,6 +308,7 @@ namespace Freedom_Planet_2_Archipelago
             int triviaTrapCount = 0;
             int machSpeedTrapCount = 0;
             int scottTrapCount = 0;
+            int wordleTrapCount = 0;
             int goldGemCount = 0;
             int crystalCount = 0;
             int extraLifeCount = 0;
@@ -330,6 +331,7 @@ namespace Freedom_Planet_2_Archipelago
             int saveTriviaTrapCount = Plugin.save.TriviaTrapCount;
             int saveMachSpeedTrapCount = Plugin.save.MachSpeedTrapCount;
             int saveScottTrapCount = Plugin.save.ScottTrapCount;
+            int saveWordleTrapCount = Plugin.save.ScottTrapCount;
             int saveGoldGemCount = Plugin.save.GoldGemCount;
             int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveCrystalCount = Plugin.save.CrystalCount;
@@ -358,6 +360,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Trivia Trap": triviaTrapCount += item.Value; break;
                     case "Mach Speed Trap": machSpeedTrapCount += item.Value; break;
                     case "Scott The Woz Trap": scottTrapCount += item.Value; break;
+                    case "Wordle Trap": wordleTrapCount += item.Value; break;
 
                     case "Gold Gem": goldGemCount += item.Value; break;
                     case "Crystals": crystalCount += item.Value * 100; break;
@@ -398,6 +401,7 @@ namespace Freedom_Planet_2_Archipelago
             int trueTriviaTrapCount = triviaTrapCount - saveTriviaTrapCount;
             int trueMachSpeedTrapCount = machSpeedTrapCount - saveMachSpeedTrapCount;
             int trueScottTrapCount = scottTrapCount - saveScottTrapCount;
+            int trueWordleTrapCount = wordleTrapCount - saveWordleTrapCount;
             int trueCrystalCount = crystalCount - saveCrystalCount;
             int trueExtraLifeCount = extraLifeCount - saveExtraLifeCount;
             int trueInvincibilityCount = invincibilityCount - saveInvincibilityCount;
@@ -420,6 +424,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.save.TriviaTrapCount = saveTriviaTrapCount + trueTriviaTrapCount;
             Plugin.save.MachSpeedTrapCount = saveMachSpeedTrapCount + trueMachSpeedTrapCount;
             Plugin.save.ScottTrapCount = saveScottTrapCount + trueScottTrapCount;
+            Plugin.save.WordleTrapCount = saveWordleTrapCount + trueWordleTrapCount;
             Plugin.SpamTrapCount = trueSpamTrapCount + 1;
             Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
             Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
@@ -1002,6 +1007,18 @@ namespace Freedom_Planet_2_Archipelago
                         UnityEngine.Object.DontDestroyOnLoad(Plugin.ScottTrap);
                     }
                     if (!trapLink) Plugin.save.ScottTrapCount += item.Value;
+                    break;
+
+                case "Wordle Trap":
+                    if (!trapLink) Plugin.save.WordleTrapCount += item.Value;
+                    if (!Plugin.WordleTrap && FPPlayerPatcher.player != null && FPStage.objectsRegistered)
+                    {
+                        Plugin.WordleTrap = true;
+                        GameObject wordle = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("WordleTrap"));
+                        wordle.AddComponent<WordleTrap>();
+                    }
+                    else
+                        Plugin.BufferedTraps.Add(item.Key);
                     break;
 
                 // Sonic mod compatibility Chaos Emeralds.

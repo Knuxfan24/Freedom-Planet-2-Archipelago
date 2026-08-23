@@ -224,5 +224,15 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPrefix]
         [HarmonyPatch(typeof(FPStage), "Start")]
         private static void ClearItemBoxSanityFallback() => ItemBoxFallbackPositions.Clear();
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPStage), "UpdateMenuInput")]
+        private static bool BlockMenuInputOnWordle()
+        {
+            if (Plugin.WordleTrap)
+                return false;
+
+            return true;
+        }
     }
 }

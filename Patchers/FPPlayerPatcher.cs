@@ -26,6 +26,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         public static bool dyingFromTriviaTrap = false;
 
         /// <summary>
+        /// Whether or not a crush death has been trigger from a Wordle Trap.
+        /// </summary>
+        public static bool dyingFromWordleTrap = false;
+
+        /// <summary>
         /// Whether or not we have a Powerup queued.
         /// </summary>
         public static bool hasBufferedPowerup;
@@ -640,6 +645,14 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             {
                 SendDeathLink($"{Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot)} is bad at trivia. So sad.", false);
                 dyingFromTriviaTrap = false;
+                return;
+            }
+
+            // Change the DeathLink message if this was caused by a Wordle Trap.
+            if (dyingFromWordleTrap)
+            {
+                SendDeathLink($"{Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot)} didn't get the Wordle.", false);
+                dyingFromWordleTrap = false;
                 return;
             }
 

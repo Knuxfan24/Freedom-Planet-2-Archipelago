@@ -102,6 +102,11 @@
         public int ScottTrapCount { get; set; }
 
         /// <summary>
+        /// The amount of Wordle Traps we've gotten from the server.
+        /// </summary>
+        public int WordleTrapCount { get; set; }
+
+        /// <summary>
         /// The amount of Gold Gems we've gotten from the server.
         /// </summary>
         public int GoldGemCount { get; set; }
