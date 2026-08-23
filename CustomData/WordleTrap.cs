@@ -84,7 +84,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             UntriedCharacters.text = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z";
 
             // DEBUG: Log the correct answer.
-            Plugin.consoleLog.LogDebug($"Answer is: {answer}");
+            //Plugin.consoleLog.LogDebug($"Answer is: {answer}");
         }
 
         void Update()
