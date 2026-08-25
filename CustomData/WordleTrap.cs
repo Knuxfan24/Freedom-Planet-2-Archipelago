@@ -1,5 +1,4 @@
-﻿// TODO: Make an entrance animation.
-// TODO: Timer?
+﻿// TODO: Timer?
 
 namespace Freedom_Planet_2_Archipelago.CustomData
 {
@@ -55,6 +54,11 @@ namespace Freedom_Planet_2_Archipelago.CustomData
         /// </summary>
         public TextMesh UntriedCharacters;
 
+        // Variables for the intro animation.
+        public int state = 0;
+        public int typingIndex = 0;
+        public float genericTimer = 0;
+
         void Start()
         {
             // Get the HUD and hide it.
@@ -70,6 +74,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
 
             // Get the cursor object.
             cursor = transform.GetChild(0).gameObject;
+            cursor.SetActive(false);
 
             // Get the word objects.
             words[0] = transform.GetChild(1).gameObject;
@@ -79,9 +84,13 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             words[4] = transform.GetChild(5).gameObject;
             words[5] = transform.GetChild(6).gameObject;
 
-            // Get and reset the untried characters.
+            // Get and clear the untried characters.
             UntriedCharacters = transform.GetChild(7).GetComponent<TextMesh>();
-            UntriedCharacters.text = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z";
+            UntriedCharacters.text = "";
+
+            // Reset the state and position to the ones for the entrance animation.
+            state = 0;
+            transform.position = new(transform.position.x, 88, transform.position.z);
 
             // DEBUG: Log the correct answer.
             //Plugin.consoleLog.LogDebug($"Answer is: {answer}");
@@ -89,6 +98,76 @@ namespace Freedom_Planet_2_Archipelago.CustomData
 
         void Update()
         {
+            // Check if we're in the first state for the intro animation.
+            if (state == 0)
+            {
+                // Shift the Wordle Trap object down by eight pixels until it's reached 0.
+                if (transform.position.y > 0)
+                {
+                    transform.position = new(transform.position.x, transform.position.y - (8 * FPStage.deltaTime), transform.position.z);
+                }
+
+                // Snap the Wordle Trap object to 0,0,0, reset the generic timer and move on to the typing state.
+                else
+                {
+                    genericTimer = 0;
+                    transform.position = Vector3.zero;
+                    state = 1;
+                }
+                return;
+            }
+
+            // Check if we're in the typing state for the intro animation.
+            if (state == 1)
+            {
+                // Increment the generic timer.
+                genericTimer += FPStage.deltaTime;
+
+                // Check the generic timer has reached 1.
+                if (genericTimer >= 1)
+                {
+                    // Type out this index's character, or exit the intro animation if we've typed them all.
+                    switch (typingIndex)
+                    {
+                        case 0: UntriedCharacters.text += "A "; break;
+                        case 1: UntriedCharacters.text += "B "; break;
+                        case 2: UntriedCharacters.text += "C "; break;
+                        case 3: UntriedCharacters.text += "D "; break;
+                        case 4: UntriedCharacters.text += "E "; break;
+                        case 5: UntriedCharacters.text += "F "; break;
+                        case 6: UntriedCharacters.text += "G "; break;
+                        case 7: UntriedCharacters.text += "H "; break;
+                        case 8: UntriedCharacters.text += "I "; break;
+                        case 9: UntriedCharacters.text += "J "; break;
+                        case 10: UntriedCharacters.text += "K "; break;
+                        case 11: UntriedCharacters.text += "L "; break;
+                        case 12: UntriedCharacters.text += "M "; break;
+                        case 13: UntriedCharacters.text += "N "; break;
+                        case 14: UntriedCharacters.text += "O "; break;
+                        case 15: UntriedCharacters.text += "P "; break;
+                        case 16: UntriedCharacters.text += "Q "; break;
+                        case 17: UntriedCharacters.text += "R "; break;
+                        case 18: UntriedCharacters.text += "S "; break;
+                        case 19: UntriedCharacters.text += "T "; break;
+                        case 20: UntriedCharacters.text += "U "; break;
+                        case 21: UntriedCharacters.text += "V "; break;
+                        case 22: UntriedCharacters.text += "W "; break;
+                        case 23: UntriedCharacters.text += "X "; break;
+                        case 24: UntriedCharacters.text += "Y "; break;
+                        case 25: UntriedCharacters.text += "Z "; break;
+                        default: state = 2; cursor.SetActive(true); break;
+                    }
+
+                    // Decrement the timer.
+                    genericTimer -= FPStage.deltaTime;
+
+                    // Increment the typing index.
+                    typingIndex++;
+                }
+
+                return;
+            }
+
             // Cycle between the characters using Left and Right.
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
