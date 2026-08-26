@@ -76,8 +76,9 @@
                 FPPlayerPatcher.CreateChestTracers();
 
                 // Check for and destroy the AP item sprite object.
-                if (__instance.transform.GetChild(0) != null)
-                    GameObject.Destroy(__instance.transform.GetChild(0).gameObject);
+                for (int childIndex = 0; childIndex < __instance.transform.childCount; childIndex++)
+                    if (__instance.transform.GetChild(childIndex).name == "BoxAPSprite")
+                        GameObject.Destroy(__instance.transform.GetChild(childIndex).gameObject);
             }
         }
 
