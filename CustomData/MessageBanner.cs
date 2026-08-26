@@ -8,11 +8,6 @@
         public FPObjectState state;
 
         /// <summary>
-        /// Whether the banner's object has actually been set up.
-        /// </summary>
-        private bool isValidatedInObjectList;
-
-        /// <summary>
         /// The text that will get typed into the text mesh.
         /// </summary>
         public string text = "Placeholder";
@@ -47,10 +42,6 @@
 
         private void Update()
         {
-            // Validate this object in the stage list if it hasn't already been.
-            if (!isValidatedInObjectList && FPStage.objectsRegistered)
-                isValidatedInObjectList = FPStage.ValidateStageListPos(this);
-
             // Invoke our state if it isn't null and the banner object is registered.
             if (FPStage.objectsRegistered && state != null)
                 state();

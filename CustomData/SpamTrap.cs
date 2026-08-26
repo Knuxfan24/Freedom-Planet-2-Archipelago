@@ -176,10 +176,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             UnityEngine.Color.yellow
         ];
 
-        // FPBaseObject stuff.
-        private static int classID = -1;
         private FPObjectState state;
-        private bool isValidatedInObjectList;
 
         // A timer that counts down to destroy this spam trap.
         private float genericTimer = 5;
@@ -208,8 +205,6 @@ namespace Freedom_Planet_2_Archipelago.CustomData
 
             // Start the FPBaseObject setup.
             base.Start();
-            classID = FPStage.RegisterObjectType(this, GetType(), 0);
-            objectID = classID;
 
             // Force this script to always be active.
             activationMode = FPActivationMode.ALWAYS_ACTIVE;
@@ -276,10 +271,6 @@ namespace Freedom_Planet_2_Archipelago.CustomData
 
         private void Update()
         {
-            // Validate this object in the stage list if it hasn't already been.
-            if (!isValidatedInObjectList && FPStage.objectsRegistered)
-                isValidatedInObjectList = FPStage.ValidateStageListPos(this);
-
             // Invoke the current state if it isn't null.
             state?.Invoke();
         }
