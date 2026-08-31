@@ -74,7 +74,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new("Did You Know?", "Metal Harbor is\r\nactually beatable\r\nwithout the\r\nLight Shoes!"), // Reference to Sonic Adventure 2: Battle.
             new("Shrine of Chance", "You offer to the\r\nshrine, but gain\r\nnothing."), // Reference to Risk of Rain 2.
             new("The Ocean", "Now with 75%\r\nmore Leviathan!"), // Reference to Subnautica.
-            new(null, "This advert\r\ndedicated to those\r\nwho perished on\r\nthe climb..."), // Reference to Celeste
+            new(null, "This advert\r\ndedicated to those\r\nwho perished on\r\nthe climb..."), // Reference to Celeste.
             new("Need Reception?", "Climb to the top\r\nof Hawk Peak!"), // Reference to A Short Hike.
             new("AURORA BOREALIS", "At this time of year?\r\nAt this time of day?\r\nIn this part of the\r\nmutliworld?\r\n\r\nLocalised entirely\r\nwithin your slot data?!"), // Reference to that Simpsons meme.
             new("Dear {$}", "Please come to the\r\ncastle. I've baked\r\na cake for you.\r\nYours truly--\r\nPrincess Toadstool", [PlaceholderTypes.OurName]), // Reference to Super Mario 64.
@@ -106,7 +106,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new(null, "Thank you\r\n{$}!\r\n\r\nBut our princess is\r\nin another\r\nmultiworld!", [PlaceholderTypes.OurName]),
             new("CATS:", "How are you\r\ngentlemen !!\r\n\r\nAll your base\r\nare belong to us."), // Reference to Zero Wing.
             new(null, "Boy gets beaten in\r\nfoot race by one\r\nsecond despite\r\nspeedrunner\r\ntechniques."), // Reference to The Legend of Zelda: Ocarina of Time.
-            new("{$}", "I would just love it\r\nif there was a\r\nVending Machine \r\nright here!", [PlaceholderTypes.RandomNameNotOursOrServer]), // Reference to Tomadachi Life.
+            new("{$}", "I would just love it\r\nif there was a\r\nVending Machine\r\nright here!", [PlaceholderTypes.RandomNameNotOursOrServer]), // Reference to Tomadachi Life.
             new("CONTROVERSY!", "Local \"More Gun\"\r\nadvocate caught\r\nappreciating \"A\r\nLittle Less Gun\""), // Reference to Team Fortress 2.
             new(null, "Supposed \"Greatest\r\nPlan\" turned out\r\nto be not so great.\r\n\r\nPilot unavailable\r\nfor comment."), // Reference to The Henry Stickmin Collection.
             new(null, "Random block of Tofu\r\ncalls it quits,\r\ncites concern over\r\namount of Buzzsaws\r\nand Salt.\r\nMeat lovers apathetic\r\nat this announcement."), // Reference to Super Meat Boy.
@@ -162,6 +162,10 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new(null, "you got games\r\non your phone?"),
             new(null, "It was foretold\r\nby Gyromancy!"), // Reference to Silent Hill.
             new("Monsters?", "They looked like\r\nmonsters to you?"), // Reference to Silent Hill 3.
+            new(null, "It's a lovely\r\nmorning in Shang Tu,\r\nand you are a\r\nhorrible goose."), // Reference to Untitled Goose Game.
+            new("Look at you:", "A pathetic creature\r\nof meat and bone,\r\npanting and sweating\r\nas you run through\r\nmy corridors."), // Reference to System Shock.
+            new(null, "Still can't cross\r\nthe Sahara Desert?\r\n\r\nTry camels."), // Reference to The History of the Entire World.
+            new("BREAKING NEWS!", "Guardian genie\r\nfired.\r\n\r\n\r\n\r\nAgain..."), // Reference to the Shantae series.
         ];
 
         // The valid colours to tint the background.

@@ -128,13 +128,14 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         goPlatform.name = "Chest Platform";
                         break;
 
-                    // If we're in Sky Bridge, then clone the two parts of one of the platforms to make reaching Chest 2 possible with the help of the Super Feather potion.
-                    // TODO: No longer happy with this solution.
+                    // If we're in Sky Bridge, then add a few Springs to make reaching one of the Chests and a couple of Crystal Item Boxes possible.
                     case "SkyBridge":
-                        var sbPlatformL = GameObject.Instantiate(UnityEngine.GameObject.Find("hb_bigplatform_0 (4)"), new(6144, -4128, 0), Quaternion.identity);
-                        sbPlatformL.name = "Chest Platform L";
-                        var sbPlatformR = GameObject.Instantiate(UnityEngine.GameObject.Find("hb_bigplatform_0 (5)"), new(6432, -4128, 0), Quaternion.identity);
-                        sbPlatformR.name = "Chest Platform R";
+                        var sbVerticalSpring = GameObject.Instantiate(UnityEngine.GameObject.Find("High Spring Up"), new(7216, -5632, 0), Quaternion.identity);
+                        sbVerticalSpring.GetComponent<Spring>().springStrength = 30;
+                        var sbChestSpring = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("SpringTrap"), new(6784, -4624, 0), Quaternion.identity);
+                        sbChestSpring.GetComponent<Spring>().direction = FPDirection.FACING_LEFT;
+                        sbChestSpring.GetComponent<Spring>().springStrength = 21;
+                        sbChestSpring.transform.localScale = new(-1, 1, 1);
                         break;
 
                     // If we're in Nalao Lake, then clone one of the Rising Bubbles to make reaching Chest 3 possible with the help of the Super Feather potion.
@@ -160,11 +161,19 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         rgLedge.name = "Crystal Box Ledge";
                         break;
 
-                    // If we're in Sky Bridge, then clone a Spring to aid in reaching a Shield Box near the start.
-                    // TODO: Those two Crystal Boxes.
+                    // If we're in Sky Bridge, then clone a Spring to aid in reaching a Shield Box near the start and add one to reach the two Crystal Boxes atop the double loop.
                     case "SkyBridge":
-                        var sbSpring = GameObject.Instantiate(UnityEngine.GameObject.Find("High Spring Up (1)"), new(4784, -8832, 0), Quaternion.identity);
-                        sbSpring.name = "Shield Box Spring";
+                        var sbShieldSpring = GameObject.Instantiate(UnityEngine.GameObject.Find("High Spring Up (1)"), new(4784, -8832, 0), Quaternion.identity);
+                        sbShieldSpring.name = "Shield Box Spring";
+
+                        // This spring is already created by the Chests option, so don't create it if we have that option on.
+                        if ((long)Plugin.slotData["chests"] == 0)
+                        {
+                            var verticalSpring = GameObject.Instantiate(UnityEngine.GameObject.Find("High Spring Up"), new(7216, -5632, 0), Quaternion.identity);
+                            verticalSpring.GetComponent<Spring>().springStrength = 30;
+                        }
+                        var sbCrystalsSpring = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("SpringTrap"), new(7040, -4624, 0), Quaternion.identity);
+                        sbCrystalsSpring.GetComponent<Spring>().springStrength = 30;
                         break;
 
                     // If we're in Magma Starscape, then clone a Spring to aid in reaching the Crystal Boxes above the spawn.

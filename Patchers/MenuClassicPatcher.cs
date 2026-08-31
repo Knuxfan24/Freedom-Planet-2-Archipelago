@@ -1023,7 +1023,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Sends out a hint upon clearing a level in Fists of Frogs.
-        /// TODO: Option to disable this, either in the YAML or mod config.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(FistsOfFrog), "State_Gameplay")]

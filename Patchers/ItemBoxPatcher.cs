@@ -196,7 +196,6 @@
                 }
 
                 // Throw an error if we didn't find a fallback position and this item isn't a bomb.
-                // TODO: This shouldn't cause a problem with the Items to Bombs Brave Stone? Test that to confirm.
                 if (__instance.itemType != FPItemBoxTypes.BOX_BOMB)
                     Plugin.consoleLog.LogError($"No item box found for position {__instance.position} in stage ID {FPStage.currentStage.stageID} ({FPStage.currentStage.stageName})!");
                 return -1;
