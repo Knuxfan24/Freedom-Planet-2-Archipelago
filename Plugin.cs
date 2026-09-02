@@ -60,6 +60,7 @@ namespace Freedom_Planet_2_Archipelago
         public static ConfigEntry<int> configItemInfo;
         public static ConfigEntry<bool> configItemBoxDisplay;
         public static ConfigEntry<bool> configFoFHints;
+        public static ConfigEntry<bool> configSM64Text;
 
         // The AP session's data.
         public static ArchipelagoSession session;
@@ -302,6 +303,13 @@ namespace Freedom_Planet_2_Archipelago
                                          "Fists of Frogs Hints",
                                          true,
                                          "Makes clearing a level in Fists of Frogs (accessible in the map's pause menu) send a random location hint.\r\n" +
+                                         "false: Disabled\r\n" +
+                                         "true: Enabled");
+
+            configSM64Text = Config.Bind("Joke",
+                                         "Super Mario 64 Text",
+                                         false,
+                                         "Makes text in the message banner and chat piper act like it does in Super Mario 64, where certain characters are missing and thus replaced by whatever the previous character was.\r\n" +
                                          "false: Disabled\r\n" +
                                          "true: Enabled");
 

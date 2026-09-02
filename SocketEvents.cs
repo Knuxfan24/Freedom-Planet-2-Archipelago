@@ -99,9 +99,10 @@ namespace Freedom_Planet_2_Archipelago
                         // Try and parse this Print JSON packet as a chat message.
                         try
                         {
-                            message = ((ChatPrintJsonPacket?)printJSON).Message;
+                            message = SM64Message(((ChatPrintJsonPacket?)printJSON).Message);
                             player = Plugin.session.Players.GetPlayerName(((ChatPrintJsonPacket?)printJSON).Slot);
                             lengthOffset = Math.Max(2f, message.Split([' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length / 2);
+
                         }
 
                         // If we failed to parse this packet as a chat message, then handle its raw text data.
@@ -124,7 +125,7 @@ namespace Freedom_Planet_2_Archipelago
                                         {
                                             // Read the info of the specified player and set our text value to their name.
                                             var playerInfo = Plugin.session.Players.GetPlayerInfo(int.Parse(jsonData.Text));
-                                            textPart = playerInfo.Name;
+                                            textPart = SM64Message(playerInfo.Name);
 
                                             // If this player is us, then make the text purple, if not, make it yellow.
                                             if (playerInfo.Name == Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot))
@@ -139,7 +140,7 @@ namespace Freedom_Planet_2_Archipelago
                                         {
                                             // Read the info of the specified player and get the name of the item index the message references.
                                             PlayerInfo playerInfo = Plugin.session.Players.GetPlayerInfo(jsonData.Player.Value);
-                                            textPart = Plugin.session.Items.GetItemName(long.Parse(jsonData.Text), playerInfo.Game);
+                                            textPart = SM64Message(Plugin.session.Items.GetItemName(long.Parse(jsonData.Text), playerInfo.Game));
 
                                             // Set the colour of the text based on the item's flag.
                                             if ((jsonData.Flags & Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement) != 0) textPart = $"<c=purple>{textPart}</c>";
@@ -154,13 +155,13 @@ namespace Freedom_Planet_2_Archipelago
                                         {
                                             // Read the info of the specified player and get the name of the location index the message references while also making it green.
                                             PlayerInfo playerInfo = Plugin.session.Players.GetPlayerInfo(jsonData.Player.Value);
-                                            textPart = $"<c=green>{Plugin.session.Locations.GetLocationNameFromId(long.Parse(jsonData.Text), playerInfo.Game)}</c>";
+                                            textPart = $"<c=green>{SM64Message(Plugin.session.Locations.GetLocationNameFromId(long.Parse(jsonData.Text), playerInfo.Game))}</c>";
                                             break;
                                         }
 
                                     // For anything else, just add the text value to the message as is.
                                     default:
-                                        textPart = jsonData.Text; break;
+                                        textPart = SM64Message(jsonData.Text); break;
                                 }
 
                                 // Add our text to the message.
@@ -184,6 +185,9 @@ namespace Freedom_Planet_2_Archipelago
                         // If a sprite exists for this player, then replace the generic AP icon with it.
                         if (Plugin.apChatIcons.ContainsKey(dialogMessage.name))
                             dialogMessage.portrait = Plugin.apChatIcons[dialogMessage.name];
+
+                        // Do the SM64 joke to the player's name.
+                        dialogMessage.name = SM64Message(player);
 
                         // Loop through each entry in the text display's queue.
                         for (int queueIndex = 0; queueIndex < Plugin.TextDisplay.GetComponent<PlayerDialog>().queue.Length; queueIndex++)
@@ -528,6 +532,43 @@ namespace Freedom_Planet_2_Archipelago
             {
                 Plugin.consoleLog.LogError($"Socket event errored with the exception!\r\n\t{e}");
             }
+        }
+    
+        private static string SM64Message(string input)
+        {
+            // Only bother doing this if the Mario 64 Text option is enabled.
+            if (Plugin.configSM64Text.Value)
+            {
+                // Set a default last character.
+                char lastCharacter = 'X';
+
+                // Create a StringBuilder out of the input string.
+                System.Text.StringBuilder strBuilder = new(input);
+
+                // Loop through each character in the StringBuilder.
+                for (int characterIndex = 0; characterIndex < strBuilder.Length; characterIndex++)
+                {
+                    // Check if this character is one that's missing from the Mario 64 font.
+                    if (Char.ToUpper(strBuilder[characterIndex]) is '!' or '#' or '%' or '&' or '*' or '+' or ',' or '-' or '.' or '?' or 'J' or 'Q' or 'V' or 'X' or 'Z')
+                    {
+                        // Type the previously stored character, converting its case if needed.
+                        if (Char.IsUpper(strBuilder[characterIndex])) strBuilder[characterIndex] = Char.ToUpper(lastCharacter);
+                        else strBuilder[characterIndex] = Char.ToLower(lastCharacter);
+                    }
+                    else
+                    {
+                        // Update the last character if this isn't a space.
+                        if (strBuilder[characterIndex] != ' ')
+                            lastCharacter = strBuilder[characterIndex];
+                    }
+                }
+
+                // Return the finalised string.
+                return strBuilder.ToString();
+            }
+
+            // Return the input if we're not doing the edit.
+            return input;
         }
     }
 }

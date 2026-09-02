@@ -27,6 +27,11 @@
         /// </summary>
         private float genericTimer;
 
+        /// <summary>
+        /// The last character that was typed for use in the SM64 text option. Defaults to an X.
+        /// </summary>
+        private char lastCharacter = 'X';
+
         private void Start()
         {
             // Set the banner to its idle state.
@@ -74,6 +79,9 @@
             // Force the scale to 0.
             gameObject.transform.localScale = Vector3.zero;
 
+            // Reset the last character to an X.
+            lastCharacter = 'X';
+
             // Force empty the text.
             text = string.Empty;
         }
@@ -96,7 +104,31 @@
         {
             // Add the current character from the text value to the text mesh.
             // This is affected by framerate, but I don't care.
-            textMesh.text += text[characterIndex];
+
+            // Check if we're using the Super Mario 64 joke.
+            if (Plugin.configSM64Text.Value)
+            {
+                // Check if this character is one that's missing from the Mario 64 font.
+                if (Char.ToUpper(text[characterIndex]) is '!' or '#' or '%' or '&' or '*' or '+' or ',' or '-' or '.' or '?' or 'J' or 'Q' or 'V' or 'X' or 'Z')
+                {
+                    // Type the previously stored character, converting its case if needed.
+                    if (Char.IsUpper(text[characterIndex])) textMesh.text += Char.ToUpper(lastCharacter);
+                    else textMesh.text += Char.ToLower(lastCharacter);
+                }
+
+                // Just add the actual character if Mario 64 would have it.
+                // In addition, update the stored character if it isn't a space.
+                else
+                {
+                    textMesh.text += text[characterIndex];
+                    if (text[characterIndex] != ' ') lastCharacter = text[characterIndex];
+                }
+            }
+            else
+            {
+                textMesh.text += text[characterIndex];
+            }
+
 
             // If we still have characters left, then increment the index.
             // If not, then swap to the waiting state.
