@@ -166,6 +166,8 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new("Look at you:", "A pathetic creature\r\nof meat and bone,\r\npanting and sweating\r\nas you run through\r\nmy corridors."), // Reference to System Shock.
             new(null, "Still can't cross\r\nthe Sahara Desert?\r\n\r\nTry camels."), // Reference to The History of the Entire World.
             new("BREAKING NEWS!", "Guardian genie\r\nfired.\r\n\r\n\r\n\r\nAgain..."), // Reference to the Shantae series.
+            new("Middle-aged Man", "I've combined\r\n\"luppy\" and \"luppy\"\r\ninto one word!\r\n\"Luppyluppy\"!"), // Reference to Sonic '06.
+            new("NOTICE", "What is the square\r\nroot of a fish?\r\n\r\nNow I'm sad."), // Reference to Skullgirls.
         ];
 
         // The valid colours to tint the background.
