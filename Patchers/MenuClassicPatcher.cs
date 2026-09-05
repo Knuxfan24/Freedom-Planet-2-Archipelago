@@ -737,25 +737,34 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 // Check if the highlighted stage is the Battlesphere, as we handle that differently.
                 if (stageName == "The Battlesphere")
                 {
-                    // Get and add the locations for each of the Battlesphere challenges.
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Beginner's Gauntlet"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Battlebot Battle Royale"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Hero Battle Royale"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Kalaw's Challenge"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Army of One"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Ring-Out Challenge"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Flip Fire Gauntlet"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Vanishing Maze"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Mondo Condo"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Birds of Prey"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Battlebot Revenge"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Mach Speed Melee"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Galactic Rumble"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Stop and Go"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Mecha Madness"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Rolling Thunder"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Blast from the Past"); AddLocation();
-                    locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", "Bubble Battle"); AddLocation();
+                    // Gets the four clear locations for each challenge.
+                    void BattlesphereLocation(string challengeName)
+                    {
+                        locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{challengeName}"); AddLocation();
+                        locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{challengeName} - Rainbow S-Rank"); AddLocation();
+                        locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{challengeName} - S-Rank"); AddLocation();
+                        locationIndex = Plugin.session.Locations.GetLocationIdFromName("Freedom Planet 2", $"{challengeName} - A-Rank"); AddLocation();
+                    }
+
+                    // Pass each Battlesphere challenge into the location method..
+                    BattlesphereLocation("Beginner's Gauntlet");
+                    BattlesphereLocation("Battlebot Battle Royale");
+                    BattlesphereLocation("Hero Battle Royale");
+                    BattlesphereLocation("Kalaw's Challenge");
+                    BattlesphereLocation("Army of One");
+                    BattlesphereLocation("Ring-Out Challenge");
+                    BattlesphereLocation("Flip Fire Gauntlet");
+                    BattlesphereLocation("Vanishing Maze");
+                    BattlesphereLocation("Mondo Condo");
+                    BattlesphereLocation("Birds of Prey");
+                    BattlesphereLocation("Battlebot Revenge");
+                    BattlesphereLocation("Mach Speed Melee");
+                    BattlesphereLocation("Galactic Rumble");
+                    BattlesphereLocation("Stop and Go");
+                    BattlesphereLocation("Mecha Madness");
+                    BattlesphereLocation("Rolling Thunder");
+                    BattlesphereLocation("Blast from the Past");
+                    BattlesphereLocation("Bubble Battle");
 
                     // If the Item Box sanity option is on, then handle adding those locations to the counter too.
                     if ((long)Plugin.slotData["item_boxes"] != 0)
