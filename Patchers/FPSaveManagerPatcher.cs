@@ -150,11 +150,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(FPSaveManager), "AddCrystal")]
         static void RingLinkPacket()
         {
-            // Check that we should actually be sending a link and if RingLink is on.
-            if (!DisableRingLinkSend && (long)Plugin.slotData["ring_link"] != 0)
-            {
+            // Check that we should actually be sending a link and add a Ring to the link count.
+            if (!DisableRingLinkSend)
                 Plugin.RingLinkCrystalCount++;
-            }
         }
 
         /// <summary>

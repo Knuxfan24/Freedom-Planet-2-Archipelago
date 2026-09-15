@@ -33,12 +33,9 @@
         [HarmonyPatch(typeof(MenuItemGet), "Start")]
         static void DeductRingLink(ref FPPowerup ___powerup)
         {
-            // Check that this is a Vinyl and that our slot data has the ring_link flag.
-            if (___powerup == FPPowerup.NONE/* && (long)Plugin.slotData["ring_link"] == 1*/)
-            {
-                // Remove our vinyl shop price from the RingLink value.
+            // Check that this is a Vinyl and remove our vinyl shop price from the RingLink value if so.
+            if (___powerup == FPPowerup.NONE)
                 Plugin.RingLinkCrystalCount -= (int)(long)Plugin.slotData["vinyl_shop_price"];
-            }
         }
     }
 }

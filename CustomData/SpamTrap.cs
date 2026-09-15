@@ -168,6 +168,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new("BREAKING NEWS!", "Guardian genie\r\nfired.\r\n\r\n\r\n\r\nAgain..."), // Reference to the Shantae series.
             new("Middle-aged Man", "I've combined\r\n\"luppy\" and \"luppy\"\r\ninto one word!\r\n\"Luppyluppy\"!"), // Reference to Sonic '06.
             new("NOTICE", "What is the square\r\nroot of a fish?\r\n\r\nNow I'm sad."), // Reference to Skullgirls.
+            new(null, "Human Jellyfish Bird\r\nhybrid allegedly\r\nstill unable to\r\ncrawl."), // Reference to the "y cant metroid crawl" meme.
         ];
 
         // The valid colours to tint the background.

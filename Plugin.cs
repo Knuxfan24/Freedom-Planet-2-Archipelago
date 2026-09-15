@@ -735,22 +735,28 @@ namespace Freedom_Planet_2_Archipelago
             var tick = new WaitForSeconds(0.25f);
             while(Application.isPlaying)
             {
-                if (RingLinkCrystalCount != 0 && session != null)
+                if (slotData.ContainsKey("ring_link"))
                 {
-                    BouncePacket packet = new()
+                    if ((long)slotData["ring_link"] != 0)
                     {
-                        Tags = ["RingLink"],
-                        Data = new()
+                        if (RingLinkCrystalCount != 0 && session != null)
                         {
-                            { "time", (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds },
-                            { "source", session.ConnectionInfo.Slot },
-                            { "amount", RingLinkCrystalCount }
-                        }
-                    };
+                            BouncePacket packet = new()
+                            {
+                                Tags = ["RingLink"],
+                                Data = new()
+                                {
+                                    { "time", (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds },
+                                    { "source", session.ConnectionInfo.Slot },
+                                    { "amount", RingLinkCrystalCount }
+                                }
+                            };
 
-                    // Enqueue to background sender to avoid main-thread blocking.
-                    EnqueueBounce(packet);
-                    RingLinkCrystalCount = 0;
+                            // Enqueue to background sender to avoid main-thread blocking.
+                            EnqueueBounce(packet);
+                            RingLinkCrystalCount = 0;
+                        }
+                    }
                 }
                 yield return tick;
             }
