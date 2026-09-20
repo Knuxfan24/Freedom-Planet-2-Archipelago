@@ -502,6 +502,10 @@ namespace Freedom_Planet_2_Archipelago
         {
             switch (item.Key.ItemName)
             {
+                // Test item that I can use whenever I add a new trap or something.
+                // If this does anything other than the Sonic CD prototype joke in a GitHub copy, then I screwed up.
+                case "Test Item": Plugin.consoleLog.LogDebug($"The programmer has a nap. Hold out! Programmer!"); break;
+
                 // Multitude Items that simply add to the save's value.
                 case "Star Card": Plugin.save.StarCardCount += item.Value; break;
                 case "Time Capsule": Plugin.save.TimeCapsuleCount += item.Value; break;
@@ -1021,6 +1025,12 @@ namespace Freedom_Planet_2_Archipelago
                         Plugin.BufferedTraps.Add(item.Key);
                     break;
 
+                // TODO: Determine if I'll keep this and tidy up/actually upload the code if so.
+                case "Flood Trap":
+                    if (FPPlayerPatcher.player != null)
+                    {
+                    }
+                    break;
                 // Sonic mod compatibility Chaos Emeralds.
                 case "Red Chaos Emerald": Plugin.save.SonicChaosEmeralds[0] = true; break;
                 case "Blue Chaos Emerald": Plugin.save.SonicChaosEmeralds[1] = true; break;
