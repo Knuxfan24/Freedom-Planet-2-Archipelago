@@ -1031,6 +1031,7 @@ namespace Freedom_Planet_2_Archipelago
                     {
                     }
                     break;
+
                 // Sonic mod compatibility Chaos Emeralds.
                 case "Red Chaos Emerald": Plugin.save.SonicChaosEmeralds[0] = true; break;
                 case "Blue Chaos Emerald": Plugin.save.SonicChaosEmeralds[1] = true; break;
