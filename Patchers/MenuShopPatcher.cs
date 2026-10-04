@@ -199,7 +199,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 // If our shop information setting is set to full and the shop hints are enabled, then also send them.
                 if (Plugin.configItemInfo.Value == 0 && Plugin.configShopHints.Value > 0)
                 {
-                    // Reset the location ID lost.
+                    // Reset the location ID list.
                     locationIDs = [];
 
                     // Calculate how many items are valid hints.
