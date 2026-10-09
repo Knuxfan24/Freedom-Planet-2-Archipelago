@@ -4,6 +4,32 @@ namespace Freedom_Planet_2_Archipelago
 {
     internal class SocketEvents
     {
+        private static readonly string[] GenericDeathLinkReasons =
+        [
+            "$ had an oopsie.",
+            "$ didn't find their Photochad.", // Reference to Balatro.
+            "$ tripped.",
+            "$ died. Sadge.",
+            "$'s princess is in another castle.", // Reference to Super Mario Brothers.
+            "$ got bodied.",
+            "$ hit the ground too hard.", // Reference to Minecraft.
+            "$ should have played on Drizzle.", // Reference to Risk of Rain.
+            "$ didn't make it to 6AM.", // Reference to Five Nights at Freddy's.
+            "$ had a Station Brakes Failure.", // Reference to RollerCoaster Tycoon.
+            "$'s heart belongs to darkness.", // Reference to Kingdom Hearts.
+            "$ had vapor for brains.", // Reference to Metroid Prime.
+            "$ passed out at 2AM.", // Reference to Stardew Valley.
+            "$ didn't follow the damn train.", // Reference to Grand Theft Auto: San Andreas.
+            "Cranky was right about $.", // Reference to Donkey Kong Country.
+            "$ forgot to rip and tear.", // Reference to Doom.
+            "$ missed 1 box.", // Reference to Crash Bandicoot.
+            "$ had a bad time.", // Reference to Undertale.
+            "$ forgot the real superpower of teamwork.", // Reference to Sonic Heroes.
+            "$ is a horrible goose.", // Reference to Untilted Goose Game.
+            "$ got splatted.", // Reference to Splatoon.
+            "$ misread their tracker client.",
+        ];
+
         /// <summary>
         /// Event handler for when we receive an item from the multiworld.
         /// </summary>
@@ -56,12 +82,16 @@ namespace Freedom_Planet_2_Archipelago
         public static void Socket_ReceiveDeathLink(DeathLink deathLink)
         {
             // Set up the message showing our DeathLink source.
-            string notifyMessage = $"DeathLink received from {deathLink.Source}";
+            string notifyMessage = string.Empty;
 
             // Present the cause and source of the DeathLink, assuming we actually have one.
             if (deathLink.Cause != null)
                 if (deathLink.Cause != "")
                     notifyMessage = $"{deathLink.Cause}";
+
+            // If we still don't have a notify message set, then pull a generic one.
+            if (notifyMessage == string.Empty)
+                notifyMessage = GenericDeathLinkReasons[Plugin.rng.Next(GenericDeathLinkReasons.Length)].Replace("$", deathLink.Source);
 
             // Set the player's DeathLink flags accordingly.
             FPPlayerPatcher.canSendDeathLink = false;
