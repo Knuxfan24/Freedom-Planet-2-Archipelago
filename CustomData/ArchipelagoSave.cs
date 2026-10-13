@@ -107,6 +107,11 @@
         public int WordleTrapCount { get; set; }
 
         /// <summary>
+        /// The amount of Flood Traps we've gotten from the server.
+        /// </summary>
+        public int FloodTrapCount { get; set; }
+
+        /// <summary>
         /// The amount of Gold Gems we've gotten from the server.
         /// </summary>
         public int GoldGemCount { get; set; }

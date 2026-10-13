@@ -309,6 +309,7 @@ namespace Freedom_Planet_2_Archipelago
             int machSpeedTrapCount = 0;
             int scottTrapCount = 0;
             int wordleTrapCount = 0;
+            int floodTrapCount = 0;
             int goldGemCount = 0;
             int crystalCount = 0;
             int extraLifeCount = 0;
@@ -332,6 +333,7 @@ namespace Freedom_Planet_2_Archipelago
             int saveMachSpeedTrapCount = Plugin.save.MachSpeedTrapCount;
             int saveScottTrapCount = Plugin.save.ScottTrapCount;
             int saveWordleTrapCount = Plugin.save.ScottTrapCount;
+            int saveFloodTrapCount = Plugin.save.FloodTrapCount;
             int saveGoldGemCount = Plugin.save.GoldGemCount;
             int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveCrystalCount = Plugin.save.CrystalCount;
@@ -361,6 +363,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Mach Speed Trap": machSpeedTrapCount += item.Value; break;
                     case "Scott The Woz Trap": scottTrapCount += item.Value; break;
                     case "Wordle Trap": wordleTrapCount += item.Value; break;
+                    case "Flood Trap": floodTrapCount += item.Value; break;
 
                     case "Gold Gem": goldGemCount += item.Value; break;
                     case "Crystals": crystalCount += item.Value * 100; break;
@@ -402,6 +405,7 @@ namespace Freedom_Planet_2_Archipelago
             int trueMachSpeedTrapCount = machSpeedTrapCount - saveMachSpeedTrapCount;
             int trueScottTrapCount = scottTrapCount - saveScottTrapCount;
             int trueWordleTrapCount = wordleTrapCount - saveWordleTrapCount;
+            int trueFloodTrapCount = floodTrapCount - saveFloodTrapCount;
             int trueCrystalCount = crystalCount - saveCrystalCount;
             int trueExtraLifeCount = extraLifeCount - saveExtraLifeCount;
             int trueInvincibilityCount = invincibilityCount - saveInvincibilityCount;
@@ -425,6 +429,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.save.MachSpeedTrapCount = saveMachSpeedTrapCount + trueMachSpeedTrapCount;
             Plugin.save.ScottTrapCount = saveScottTrapCount + trueScottTrapCount;
             Plugin.save.WordleTrapCount = saveWordleTrapCount + trueWordleTrapCount;
+            Plugin.save.FloodTrapCount = saveFloodTrapCount + trueFloodTrapCount;
             Plugin.SpamTrapCount = trueSpamTrapCount + 1;
             Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
             Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
@@ -979,11 +984,13 @@ namespace Freedom_Planet_2_Archipelago
                     break;
 
                 case "Syntax Jumpscare Trap":
+                    SendTrapLink();
                     if (!fromStart) SpawnSyntaxJumpscare();
                     if (!trapLink) Plugin.save.SyntaxJumpscareTrapCount += item.Value;
                     break;
 
                 case "Trivia Trap":
+                    SendTrapLink();
                     if (!trapLink) Plugin.save.TriviaTrapCount += item.Value;
                     if (!Plugin.TriviaTrap && FPPlayerPatcher.player != null && FPStage.objectsRegistered)
                     {
@@ -1014,6 +1021,7 @@ namespace Freedom_Planet_2_Archipelago
                     break;
 
                 case "Wordle Trap":
+                    SendTrapLink();
                     if (!trapLink) Plugin.save.WordleTrapCount += item.Value;
                     if (!Plugin.WordleTrap && FPPlayerPatcher.player != null && FPStage.objectsRegistered)
                     {
@@ -1025,11 +1033,33 @@ namespace Freedom_Planet_2_Archipelago
                         Plugin.BufferedTraps.Add(item.Key);
                     break;
 
-                // TODO: Determine if I'll keep this and tidy up/actually upload the code if so.
                 case "Flood Trap":
-                    if (FPPlayerPatcher.player != null)
+                    SendTrapLink();
+                    if (FPPlayerPatcher.player != null && FPStage.objectsRegistered)
                     {
+                        // Select a random water colour.
+                        UnityEngine.Color waterColour = new((float)Plugin.rng.NextDouble(), (float)Plugin.rng.NextDouble(), (float)Plugin.rng.NextDouble());
+
+                        // Create the flood trap prefab.
+                        GameObject floodTrap = GameObject.Instantiate(Plugin.apAssetBundle.LoadAsset<GameObject>("Flood Trap"), new(0, FPCamera.stageCamera.bottom, 0), Quaternion.identity);
+
+                        // Set the water's colour.
+                        FPWaterSurface waterScript = floodTrap.GetComponent<FPWaterSurface>();
+                        waterScript.surfaceLineColor = new(waterColour.r, waterColour.g, waterColour.b, waterScript.surfaceLineColor.a);
+                        waterScript.surfaceColor = new(waterColour.r * 0.9f, waterColour.g * 0.9f, waterColour.b * 0.9f, waterScript.surfaceColor.a);
+                        waterScript.deepColor = new(waterColour.r * 0.75f, waterColour.g * 0.75f, waterColour.b * 0.75f, waterScript.deepColor.a);
+                        SpriteRenderer surfaceTop = floodTrap.transform.GetChild(0).GetComponent<SpriteRenderer>();
+                        surfaceTop.color = new(waterColour.r * 0.9f, waterColour.g * 0.9f, waterColour.b * 0.9f, surfaceTop.color.a);
+                        SpriteRenderer line = surfaceTop.transform.GetChild(0).GetComponent<SpriteRenderer>();
+                        line.color = new(waterColour.r * 0.9f, waterColour.g * 0.9f, waterColour.b * 0.9f, line.color.a);
+
+                        // Add the movement script to the object.
+                        FloodTrapMovement script = floodTrap.AddComponent<FloodTrapMovement>();
+                        script.yTarget = FPCamera.stageCamera.top;
                     }
+                    else
+                        Plugin.BufferedTraps.Add(item.Key);
+
                     break;
 
                 // Sonic mod compatibility Chaos Emeralds.
