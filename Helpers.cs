@@ -950,14 +950,14 @@ namespace Freedom_Planet_2_Archipelago
                     {
                         for (int spikeBallIndex = 0; spikeBallIndex < item.Value; spikeBallIndex++)
                         {
-                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x - 400, FPPlayerPatcher.player.transform.position.y, FPPlayerPatcher.player.transform.position.z), 10f);
-                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x - 400, FPPlayerPatcher.player.transform.position.y + 64, FPPlayerPatcher.player.transform.position.z), 10f);
-                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x - 400, FPPlayerPatcher.player.transform.position.y + 128, FPPlayerPatcher.player.transform.position.z), 10f);
-                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x - 400, FPPlayerPatcher.player.transform.position.y + 192, FPPlayerPatcher.player.transform.position.z), 10f);
-                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x + 400, FPPlayerPatcher.player.transform.position.y, FPPlayerPatcher.player.transform.position.z), -10f);
-                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x + 400, FPPlayerPatcher.player.transform.position.y + 64, FPPlayerPatcher.player.transform.position.z), -10f);
-                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x + 400, FPPlayerPatcher.player.transform.position.y + 128, FPPlayerPatcher.player.transform.position.z), -10f);
-                            SpawnSpikeBall(new(FPPlayerPatcher.player.transform.position.x + 400, FPPlayerPatcher.player.transform.position.y + 192, FPPlayerPatcher.player.transform.position.z), -10f);
+                            SpawnSpikeBall(new(FPCamera.stageCamera.left, FPPlayerPatcher.player.transform.position.y, FPPlayerPatcher.player.transform.position.z), 10f);
+                            SpawnSpikeBall(new(FPCamera.stageCamera.left, FPPlayerPatcher.player.transform.position.y + 64, FPPlayerPatcher.player.transform.position.z), 10f);
+                            SpawnSpikeBall(new(FPCamera.stageCamera.left, FPPlayerPatcher.player.transform.position.y + 128, FPPlayerPatcher.player.transform.position.z), 10f);
+                            SpawnSpikeBall(new(FPCamera.stageCamera.left, FPPlayerPatcher.player.transform.position.y + 192, FPPlayerPatcher.player.transform.position.z), 10f);
+                            SpawnSpikeBall(new(FPCamera.stageCamera.right, FPPlayerPatcher.player.transform.position.y, FPPlayerPatcher.player.transform.position.z), -10f);
+                            SpawnSpikeBall(new(FPCamera.stageCamera.right, FPPlayerPatcher.player.transform.position.y + 64, FPPlayerPatcher.player.transform.position.z), -10f);
+                            SpawnSpikeBall(new(FPCamera.stageCamera.right, FPPlayerPatcher.player.transform.position.y + 128, FPPlayerPatcher.player.transform.position.z), -10f);
+                            SpawnSpikeBall(new(FPCamera.stageCamera.right, FPPlayerPatcher.player.transform.position.y + 192, FPPlayerPatcher.player.transform.position.z), -10f);
                         }
                     }
                     else
