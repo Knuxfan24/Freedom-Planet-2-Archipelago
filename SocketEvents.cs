@@ -28,6 +28,14 @@ namespace Freedom_Planet_2_Archipelago
             "$ is a horrible goose.", // Reference to Untilted Goose Game.
             "$ got splatted.", // Reference to Splatoon.
             "$ misread their tracker client.",
+            "$ forgot the basics of CQC.", // Reference to Metal Gear Solid 3.
+            "The future did not start with $.", // Reference to Portal 2.
+            "$ let it overcharge.", // Reference to Half-Life.
+            "$ did not pass Go.", // Reference to Monopoly.
+            "The \"miracle\" never happen for $.", // Reference to Ace Attorney.
+            "$ perished on the climb.", // Reference to Celeste.
+            "$ was not The Imposter.", // Reference to Among Us.
+            "$ got Crossworlded.", // Reference to Sonic Racing CrossWorlds.
         ];
 
         /// <summary>
