@@ -373,6 +373,8 @@ namespace Freedom_Planet_2_Archipelago
                             case "Trivia Trap": AddTrap(bouncedPacket, "Trivia Trap", true); break;
                             case "Mach Speed Trap": AddTrap(bouncedPacket, "Mach Speed Trap", true); break;
                             case "Scott The Woz Trap": AddTrap(bouncedPacket, "Scott The Woz Trap"); break;
+                            case "Wordle Trap": AddTrap(bouncedPacket, "Wordle Trap", true); break;
+                            case "Flood Trap": AddTrap(bouncedPacket, "Flood Trap", true); break;
 
                             // None FP2 Based Traps, sourced from https://docs.google.com/spreadsheets/d/1yoNilAzT5pSU9c2hYK7f2wHAe9GiWDiHFZz8eMe1oeQ/edit?gid=811965759#gid=811965759.
                             case "144p Trap": AddTrap(bouncedPacket, "Pixellation Trap", true); break;
