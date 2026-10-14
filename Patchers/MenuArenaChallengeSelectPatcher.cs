@@ -9,6 +9,10 @@
         [HarmonyPatch(typeof(MenuArenaChallengeSelect), "Start")]
         static void GetChallengeRewardSprites()
         {
+            // Reset the Trivia and Wordle Trap flags in case a Battlesphere Challenge was left with one active.
+            Plugin.TriviaTrap = false;
+            Plugin.WordleTrap = false;
+
             // Only do this if we haven't already gotten the sprites.
             if (Sprites != null)
                 return;
