@@ -813,6 +813,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Handles swapping the player out if a Swap Trap comes in.
+        /// TODO: Modded characters being swapped away from can cause some problems, might disable the Swap Trap if a modded character is being used?
         /// </summary>
         public static void SwapTrap()
         {
