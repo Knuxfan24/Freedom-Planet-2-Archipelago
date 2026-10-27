@@ -30,11 +30,11 @@
                     state = 1;
                     break;
 
-                // Increment the timer until it hits 3000, then change to state 2.
+                // Increment the timer until it hits 60, then change to state 2.
                 case 1:
-                    genericTimer += FPStage.deltaTime;
+                    genericTimer += Time.deltaTime;
 
-                    if (genericTimer >= 3000)
+                    if (genericTimer >= 60)
                         state = 2;
                     break;
 
