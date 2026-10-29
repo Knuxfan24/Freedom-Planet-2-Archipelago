@@ -34,7 +34,7 @@ namespace Freedom_Planet_2_Archipelago
     {
         // The asset bundle exported from the Unity project and its MD5 hash.
         public static AssetBundle apAssetBundle;
-        private const string apAssetBundleHash = "d3c0dbb3158917dfdf49a1e6fea86148";
+        private const string apAssetBundleHash = "5cb2715ec295f30a188d36714fb295ef";
 
         // The icons used for the chat box.
         public static Sprite apChatIcon;

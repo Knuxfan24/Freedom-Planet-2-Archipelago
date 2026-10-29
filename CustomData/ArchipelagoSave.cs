@@ -112,6 +112,11 @@
         public int FloodTrapCount { get; set; }
 
         /// <summary>
+        /// The amount of DVD Screensaver Traps we've gotten from the server.
+        /// </summary>
+        public int DVDScreensaverTrapCount { get; set; }
+
+        /// <summary>
         /// The amount of Gold Gems we've gotten from the server.
         /// </summary>
         public int GoldGemCount { get; set; }

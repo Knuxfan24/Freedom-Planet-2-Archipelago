@@ -247,6 +247,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Trivia Trap": return apLogo[6];
                     case "Mach Speed Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("mach_speed_trap");
                     case "Scott The Woz Trap": return apLogo[4];
+                    case "DVD Screensaver Trap": return Plugin.apAssetBundle.LoadAsset<Sprite>("dvd_screensaver_item");
 
                     // Potion Seller Mod Items (the repo was MIT licensed so I assume including these is fine?)
                     case "Potion - Hover": return Plugin.apAssetBundle.LoadAsset<Sprite>("hoverPotion");
@@ -310,6 +311,7 @@ namespace Freedom_Planet_2_Archipelago
             int scottTrapCount = 0;
             int wordleTrapCount = 0;
             int floodTrapCount = 0;
+            int dvdScreensaverTrapCount = 0;
             int goldGemCount = 0;
             int crystalCount = 0;
             int extraLifeCount = 0;
@@ -334,6 +336,7 @@ namespace Freedom_Planet_2_Archipelago
             int saveScottTrapCount = Plugin.save.ScottTrapCount;
             int saveWordleTrapCount = Plugin.save.ScottTrapCount;
             int saveFloodTrapCount = Plugin.save.FloodTrapCount;
+            int saveDVDScreensaverTrapCount = Plugin.save.DVDScreensaverTrapCount;
             int saveGoldGemCount = Plugin.save.GoldGemCount;
             int fp2SaveGoldGemCount = FPSaveManager.totalGoldGems;
             int saveCrystalCount = Plugin.save.CrystalCount;
@@ -364,6 +367,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Scott The Woz Trap": scottTrapCount += item.Value; break;
                     case "Wordle Trap": wordleTrapCount += item.Value; break;
                     case "Flood Trap": floodTrapCount += item.Value; break;
+                    case "DVD Screensaver Trap": dvdScreensaverTrapCount += item.Value; break;
 
                     case "Gold Gem": goldGemCount += item.Value; break;
                     case "Crystals": crystalCount += item.Value * 100; break;
@@ -406,6 +410,7 @@ namespace Freedom_Planet_2_Archipelago
             int trueScottTrapCount = scottTrapCount - saveScottTrapCount;
             int trueWordleTrapCount = wordleTrapCount - saveWordleTrapCount;
             int trueFloodTrapCount = floodTrapCount - saveFloodTrapCount;
+            int trueDVDScreensaverTrapCount = dvdScreensaverTrapCount - saveDVDScreensaverTrapCount;
             int trueCrystalCount = crystalCount - saveCrystalCount;
             int trueExtraLifeCount = extraLifeCount - saveExtraLifeCount;
             int trueInvincibilityCount = invincibilityCount - saveInvincibilityCount;
@@ -430,6 +435,7 @@ namespace Freedom_Planet_2_Archipelago
             Plugin.save.ScottTrapCount = saveScottTrapCount + trueScottTrapCount;
             Plugin.save.WordleTrapCount = saveWordleTrapCount + trueWordleTrapCount;
             Plugin.save.FloodTrapCount = saveFloodTrapCount + trueFloodTrapCount;
+            Plugin.save.DVDScreensaverTrapCount = saveDVDScreensaverTrapCount + trueDVDScreensaverTrapCount;
             Plugin.SpamTrapCount = trueSpamTrapCount + 1;
             Plugin.save.CrystalCount = saveCrystalCount + trueCrystalCount;
             Plugin.save.ExtraLifeCount = saveExtraLifeCount + trueExtraLifeCount;
@@ -1060,6 +1066,25 @@ namespace Freedom_Planet_2_Archipelago
                     else
                         Plugin.BufferedTraps.Add(item.Key);
 
+                    break;
+
+                case "DVD Screensaver Trap":
+                    SendTrapLink();
+                    if (!fromStart)
+                    {
+                        // Create and position the DVD Screensaver Trap's game object, setting its layer to 5 (the UI layer).
+                        GameObject dvdLogo = new("DVD_Screensaver");
+                        dvdLogo.transform.position = new(320, -180);
+                        dvdLogo.layer = 5;
+
+                        // Add the sprite renderer and script.
+                        dvdLogo.AddComponent<SpriteRenderer>().sprite = Plugin.apAssetBundle.LoadAsset<Sprite>("dvd_screensaver_trap");
+                        dvdLogo.AddComponent<DVDScreensaver>();
+
+                        // Flag the DVD Screensaver object as one that should persist through loading screens.
+                        UnityEngine.Object.DontDestroyOnLoad(dvdLogo);
+                    }
+                    if (!trapLink) Plugin.save.DVDScreensaverTrapCount += item.Value;
                     break;
 
                 // Sonic mod compatibility Chaos Emeralds.
