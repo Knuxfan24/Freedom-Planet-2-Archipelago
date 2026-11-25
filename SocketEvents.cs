@@ -1,9 +1,13 @@
 ﻿using Archipelago.MultiClient.Net.Helpers;
+using BepInEx.Bootstrap;
 
 namespace Freedom_Planet_2_Archipelago
 {
     internal class SocketEvents
     {
+        /// <summary>
+        /// Joke messages for if a DeathLink comes in without a reason attached to it.
+        /// </summary>
         private static readonly string[] GenericDeathLinkReasons =
         [
             "$ had an oopsie.",
@@ -38,6 +42,345 @@ namespace Freedom_Planet_2_Archipelago
             "$ got Crossworlded.", // Reference to Sonic Racing CrossWorlds.
             "$ fired the laser.", // Reference to both Freedom Planet 2 itself and to System Shock.
             "$ removed their OS Chip.", // Reference to NieR Automata.
+        ];
+
+        /// <summary>
+        /// What TrapLink items should be received as. All the trap names were sourced from https://docs.google.com/spreadsheets/d/1yoNilAzT5pSU9c2hYK7f2wHAe9GiWDiHFZz8eMe1oeQ/edit?gid=811965759#gid=811965759.
+        /// TODO: Fully go through the sheet and add things for newer traps/rethink older ones.
+        /// </summary>
+        private static readonly Dictionary<string, string[]> TrapLinkMappings = new()
+        {
+            { "144p Trap", ["Pixellation Trap"] },
+            { "Aaa Trap", ["Aaa Trap"] },
+            { "Animal Trap", ["Swap Trap"] },
+            { "Animal Bonus Trap", [] },
+            { "Army Trap", ["Spike Ball Trap"] },
+            { "Attraction Breakdown Trap", [] },
+            { "Attraction Voucher Trap", [] },
+            { "Bald Trap", [] },
+            { "Banana Peel Trap", ["Pie Trap"] },
+            { "Banana Trap", ["Pie Trap"] },
+            { "Banner Trap", ["Double Damage"] },
+            { "Bathroom Trap", [] },
+            { "Bee Trap", ["Syntax Jumpscare Trap", "Zoom Trap"] },
+            { "Blango Artillery", ["Pie Trap"] },
+            { "Blastoad", ["Spring Trap"] },
+            { "Blue Balls Curse", ["One Hit KO"] },
+            { "Bomb", ["Spike Ball Trap", "Items To Bombs"] },
+            { "Bomb Trap", ["Spike Ball Trap", "Items To Bombs"] },
+            { "Bonk Trap", ["Pie Trap"] },
+            { "Breakout Trap", [] },
+            { "Bubble Trap", ["Pie Trap"] },
+            { "Bullet Time Trap", ["PowerPoint Trap"] },
+            { "Burger Hat Trap", ["Syntax Jumpscare Trap"] },
+            { "Burn Trap", [] },
+            { "Buyon Trap", ["Spike Ball Trap"] },
+            { "Camera Trap", ["Mirror Trap", "Zoom Trap"] },
+            { "Camera Rotate Trap", ["Mirror Trap"] },
+            { "Chameleos Spit", ["Double Damage"] },
+            { "Chaos Trap", [] },
+            { "Chaos Control Trap", ["Pie Trap"] },
+            { "Chart Modifier Trap", [] },
+            { "Chaser Trap", [] },
+            { "Clear Image Trap", [] },
+            { "Coda Trap", [] },
+            { "Confound Trap", ["Pixellation Trap"] },
+            { "Confuse Trap", ["Pixellation Trap"] },
+            { "Confusion Trap", ["Pixellation Trap"] },
+            { "Conga Artillery", ["No Petals"] },
+            { "Control Ball Trap", [] },
+            { "Controller Drift Trap", ["Rail Trap"] },
+            { "CRT Trap", ["Pixellation Trap"] },
+            { "Crystal Trap", ["Pixellation Trap"] },
+            { "Curse Trap", [] },
+            { "Cursed Trap", [] },
+            { "Cursed Ball Trap", [] },
+            { "Cutscene Trap", ["Aaa Trap"] },
+            { "Dad Trap", [] },
+            { "Damage Trap", ["Life Oscillation"] },
+            { "Debug Level Trap", [] },
+            { "Dead Ringer Trap", [] },
+            { "Deisometric Trap", ["Zoom Trap", "Mirror Trap"] },
+            { "Depletion Trap", [] },
+            { "Depression Trap", [] },
+            { "Disable A Trap", ["No Guarding"] },
+            { "Disable B Trap", ["No Guarding"] },
+            { "Disable C Up Trap", ["No Guarding"] },
+            { "Disable Tag Trap", ["Swap Trap"] },
+            { "Disable Z Trap", ["No Guarding"] },
+            { "Disarm Trap", [] },
+            { "Double Damage", ["Double Damage"] },
+            { "Dry Trap", ["No Stocks"] },
+            { "E. Gadd Ramblings", ["Aaa Trap"] },
+            { "Earth Trap", [] },
+            { "Egg Trap", [] },
+            { "Eject Ability", ["Swap Trap"] },
+            { "Electrocution Trap", ["Life Oscillation"] },
+            { "Employee Hiring Trap", [] },
+            { "Employee Tiredness Trap", [] },
+            { "Employee Training Trap", [] },
+            { "Empty Item Box Trap", ["No Guarding"] },
+            { "Enchantment Trap", [] },
+            { "Enemy Ball Trap", [] },
+            { "Energy Drain Trap", [] },
+            { "Expensive Stocks", ["Expensive Stocks"] },
+            { "Explosion Trap", ["Items To Bombs"] },
+            { "Exposition Trap", ["Aaa Trap"] },
+            { "Extreme Chaos Mode", [] },
+            { "Fake Transition", ["Zoom Trap"] },
+            { "Farcaster", [] },
+            { "Fast Trap", ["Mach Speed Trap"] },
+            { "Fat CJ Trap", [] },
+            { "Fear Trap", ["Syntax Jumpscare Trap"] },
+            { "Fire Trap", ["Life Oscillation"] },
+            { "Fish Eye Trap", ["Zoom Trap", "Mirror Trap", "Pixellation Trap"] },
+            { "Fishing Trap", [] },
+            { "Fishin' Boo Trap", [] },
+            { "First Person Trap", [] },
+            { "Flint Trap", [] },
+            { "Flip Horizontal Trap", ["Mirror Trap"] },
+            { "Flip Trap", ["Mirror Trap"] },
+            { "Flip Vertical Trap", ["Mirror Trap"] },
+            { "Flood Trap", ["Flood Trap"] },
+            { "Food Poisoning Trap", ["Life Oscillation"] },
+            { "Fracture Trap", ["Pixellation Trap"] },
+            { "Frame Slime Trap", [] },
+            { "Freeze Trap", ["Pie Trap"] },
+            { "Frog Trap", ["Swap Trap"] },
+            { "Frost Trap", [] },
+            { "Frozen Trap", ["Pie Trap"] },
+            { "Furry Convention Trap", ["Swap Trap"] },
+            { "Fuzzy Trap", ["Pixellation Trap"] },
+            { "Gadget Shuffle Trap", ["Swap Trap"] },
+            { "Gas Trap", ["Mirror Trap"] },
+            { "Get Out Trap", ["Time Limit"] },
+            { "Ghost", ["Spike Ball Trap"] },
+            { "Ghost Chat", ["Aaa Trap"] },
+            { "Glass Trap", [] },
+            { "Gloom Trap", [] },
+            { "Gooey Bag", [] },
+            { "Gravity Trap", [] },
+            { "Grayscale Trap", [] },
+            { "Guest Bathroom Trap", [] },
+            { "Guest Happiness Trap", [] },
+            { "Guest Hunger Trap", [] },
+            { "Guest Kill Trap", [] },
+            { "Guest Money Trap", [] },
+            { "Guest Spawn Trap", [] },
+            { "Guest Thirst Trap", [] },
+            { "Guest Tiredness Trap", [] },
+            { "Guest Vandal Trap", [] },
+            { "Guest Vomiting Trap", [] },
+            { "Gustcrab", [] },
+            { "Help Trap", ["Aaa Trap"] },
+            { "Hey! Trap", ["Aaa Trap", "Spam Trap"] },
+            { "Hiccup Trap", ["Aaa Trap"] },
+            { "Hidden Trap", [] },
+            { "HiSpeed Trap", ["Mach Speed Trap"] },
+            { "Home Trap", [] },
+            { "Honey Trap", ["Rail Trap"] },
+            { "Ice Floor Trap", ["Rail Trap"] },
+            { "Ice Trap", ["Pie Trap"] },
+            { "Icon Trap", [] },
+            { "Icy Hot Pants Trap", ["Spring Trap"] },
+            { "Impatience Trap", ["Time Limit"] },
+            { "Input Sequence Trap", [] },
+            { "Instant Crystal Trap", [] },
+            { "Instant Death Trap", ["One Hit KO"] },
+            { "Invert Colors Trap", [] },
+            { "Inverted Mouse Trap", ["Mirror Trap"] },
+            { "Invisiball Trap", [] },
+            { "Invisible Trap", [] },
+            { "Invisibility Trap", [] },
+            { "Iron Boots Trap", [] },
+            { "Isometric Trap", [] },
+            { "Items to Bombs", ["Items to Bombs"] },
+            { "Jump Trap", [] },
+            { "Jumping Jacks Trap", [] },
+            { "Lane Trap", [] },
+            { "Laser Trap", [] },
+            { "Laughter Trap", ["Aaa Trap"] },
+            { "Leaping Trap", [] },
+            { "Light Up Path Trap", [] },
+            { "Literature Trap", ["Aaa Trap"] },
+            { "Mana Drain Trap", [] },
+            { "Market Crash Trap", [] },
+            { "Math Quiz Trap", [] },
+            { "Meteor Trap", ["Spike Ball Trap"] },
+            { "Metronome Trap", [] },
+            { "Minimap Trap", [] },
+            { "Mirror Trap", ["Mirror Trap"] },
+            { "Modified Bloons Trap", [] },
+            { "Monkey Mash Trap", [] },
+            { "Monkey Trap", [] },
+            { "My Turn! Trap", ["Mirror Trap"] },
+            { "Mystery Trap", [] },
+            { "Nightmare Trap", [] },
+            { "Ninja Trap", [] },
+            { "No Guarding", ["No Guarding"] },
+            { "No Hat Trap", [] },
+            { "No Petals", ["No Petals"] },
+            { "No Revivals", ["No Revivals"] },
+            { "No Return Trap", [] },
+            { "No Stocks", ["No Stocks"] },
+            { "No Vac Trap", ["No Guarding"] },
+            { "NoSpeed Trap", [] },
+            { "Number Sequence Trap", [] },
+            { "Nut Trap", ["Spike Ball Trap"] },
+            { "OmoTrap", ["Aaa Trap", "Spam Trap"] },
+            { "One Hit KO", ["One Hit KO"] },
+            { "One Hit Trap", [] },
+            { "Paper Trap", [] },
+            { "Paralyze Trap", ["Pie Trap"] },
+            { "Paralysis Trap", ["Pie Trap"] },
+            { "Paratoad", ["Pie Trap"] },
+            { "Pea Soup Trap", [] },
+            { "Person Trap", [] },
+            { "Phone Trap", ["Aaa Trap"] },
+            { "Pie Trap", ["Pie Trap"] },
+            { "Pikmin Trap", [] },
+            { "Pinball Trap", [] },
+            { "Pincercrab", [] },
+            { "Pixelate Trap", ["Pixellation Trap"] },
+            { "Pixellation Trap", ["Pixellation Trap"] },
+            { "Player Money Trap", [] },
+            { "Poison Mushroom", ["Zoom Trap"] },
+            { "Poison Trap", ["Life Oscillation"] },
+            { "Poisontoad", ["Life Oscillation"] },
+            { "Pokemon Count Trap", [] },
+            { "Pokemon Trivia Trap", ["Trivia Trap"] },
+            { "Police Trap", ["Spike Ball Trap"] },
+            { "PONG Challenge", [] },
+            { "Pong Trap", [] },
+            { "Posession Trap", ["Life Oscillation"] },
+            { "PowerPoint Trap", ["PowerPoint Trap"] },
+            { "PSP Trap", [] },
+            { "Puppet Spider", [] },
+            { "Push Trap", ["Rail Trap"] },
+            { "Radiation Trap", [] },
+            { "Rail Trap", ["Rail Trap"] },
+            { "Ranch Trap", [] },
+            { "Random Status Trap", [] },
+            { "Research Trap", [] },
+            { "Resistance Trap", [] },
+            { "Reversal Trap", ["Mirror Trap"] },
+            { "Reverse Controls Trap", ["Mirror Trap"] },
+            { "Reverse Trap", ["Mirror Trap"] },
+            { "Riptide Trap", [] },
+            { "Rockfall Trap", ["Spike Ball Trap"] },
+            { "Sandstorm Trap", ["Pixellation Trap"] },
+            { "Saturation Trap", [] },
+            { "Screen Flip Trap", ["Mirror Trap"] },
+            { "SFX Trap", [] },
+            { "Shake Trap", [] },
+            { "Shrink Trap", [] },
+            { "Shuffle Trap", [] },
+            { "Sinking Trap", [] },
+            { "Sleep Trap", ["Pie Trap"] },
+            { "Sleeptoad", ["Pie Trap"] },
+            { "Slip Trap", ["Pie Trap"] },
+            { "Slow Trap", ["PowerPoint Trap"] },
+            { "Slowness Trap", ["PowerPoint Trap"] },
+            { "Smile Trap", [] },
+            { "Snake Trap", [] },
+            { "Spam Trap", ["Spam Trap"] },
+            { "Speed Up Trap", ["Mach Speed Trap"] },
+            { "Spider Web Trap", [] },
+            { "Spike Ball Trap", ["Spike Ball Trap"] },
+            { "Spin Trap", [] },
+            { "Space Trap", [] },
+            { "Spooky Time", ["Zoom Trap"] },
+            { "Spotlight Trap", ["Zoom Trap"] },
+            { "Spring Trap", ["Spring Trap"] },
+            { "Squash Trap", ["Pie Trap"] },
+            { "Sticky Floor Trap", [] },
+            { "Sticky Hands Trap", [] },
+            { "Stinky Trap", [] },
+            { "Stun Trap", ["Pie Trap"] },
+            { "Stutter Trap", [] },
+            { "Sudden Trap", [] },
+            { "Summon Trap", [] },
+            { "SvC Effect", [] },
+            { "Swap Trap", [] },
+            { "Syntax Jumpscare Trap", ["Syntax Jumpscare Trap"] },
+            { "Tar Trap", ["Pie Trap"] },
+            { "Tarr Trap", [] },
+            { "Taunt Trap", [] },
+            { "Teleport Trap", [] },
+            { "Text Trap", ["Aaa Trap", "Spam Trap"] },
+            { "Thwimp Trap", ["Spike Ball Trap"] },
+            { "Time Limit", ["Time Limit"] },
+            { "Time Warp Trap", ["Time Limit"] },
+            { "Timer Trap", ["Time Limit"] },
+            { "Tiny Trap", ["Zoom Trap"] },
+            { "Tip Trap", [] },
+            { "TNT Barrel Trap", ["Spike Ball Trap"] },
+            { "TNT Trap", ["Items To Bombs"] },
+            { "Tool Swap Trap", [] },
+            { "Toxin Trap", [] },
+            { "Transmute Trap", [] },
+            { "Trivia Trap", ["Spam Trap"] },
+            { "Tutorial Trap", ["Aaa Trap", "Spam Trap"] },
+            { "Underwater Trap", [] },
+            { "Undo Trap", [] },
+            { "UNO Challenge", [] },
+            { "Upscroll Trap", [] },
+            { "Vintage Trap", [] },
+            { "Wailnard", [] },
+            { "Weather Cloudy Trap", [] },
+            { "Weather Rainy Trap", [] },
+            { "Weather Stormy Trap", [] },
+            { "Weather Sunny Trap", [] },
+            { "Well Done Trap", [] },
+            { "W I D E Trap", ["Zoom Trap"] },
+            { "Whirlpool Trap", [] },
+            { "Whoops! Trap", [] },
+            { "Yap Trap", ["Aaa Trap"] },
+            { "Zoom In Trap", ["Zoom Trap"] },
+            { "Zoom Out Trap", ["Zoom Trap"] },
+            { "Zoom Trap", ["Zoom Trap"] },
+        };
+
+        /// <summary>
+        /// TrapLink things that require the player object to exist and a stage to be fully loaded before they can activate.
+        /// </summary>
+        public static readonly string[] TrapLinkRequiresPlayer =
+        [
+            "Double Damage",
+            "Expensive Stocks",
+            "Items To Bombs",
+            "Life Oscillation",
+            "No Guarding",
+            "No Petals",
+            "No Revivals",
+            "No Stocks",
+            "One Hit KO",
+            "Time Limit",
+            "Invisibility Cloak",
+            "Madstone",
+            "Explosive Finale",
+            "Idol of Greed",
+            "Gravity Boots",
+            "Swap Trap",
+            "Pie Trap",
+            "Spring Trap",
+            "Spike Ball Trap",
+            "Trivia Trap",
+            "Mach Speed Trap",
+            "Wordle Trap",
+            "Flood Trap"
+        ];
+
+        /// <summary>
+        /// TrapLink things that come from the Potion Seller mod.
+        /// </summary>
+        public static readonly string[] PotionSellerTrapLink =
+        [
+            "Invisibility Cloak",
+            "Madstone",
+            "Explosive Finale",
+            "Idol of Greed",
+            "Gravity Boots"
         ];
 
         /// <summary>
@@ -327,241 +670,35 @@ namespace Freedom_Planet_2_Archipelago
                         if (bouncedPacket.Data["source"].ToObject<string>() == Plugin.session.Players.GetPlayerName(Plugin.session.ConnectionInfo.Slot) || ((long)Plugin.slotData["trap_link"] == 0))
                             return;
 
-                        // Whether or not we've been in a position to receive the linked trap.
-                        bool received = false;
+                        // Get the name of the trap from the packet.
+                        string trapName = bouncedPacket.Data["trap_name"].ToObject<string>();
 
-                        // Selects a trap at random from a set.
-                        void RandomTrap(Dictionary<string, bool> traps)
+                        // Check if we have an entry for this trap name.
+                        if (TrapLinkMappings.ContainsKey(trapName))
                         {
-                            KeyValuePair<string, bool> trap = traps.ElementAt(Plugin.rng.Next(traps.Count));
-                            AddTrap(bouncedPacket, trap.Key, trap.Value);
+                            // Check that we have any mappings for this trap name.
+                            if (TrapLinkMappings[trapName].Length > 0)
+                            {
+                                // Pick a trap from the mappings array.
+                                string targetTrap = TrapLinkMappings[trapName][Plugin.rng.Next(TrapLinkMappings[trapName].Length)];
+
+                                // If our chosen trap requires the player, then abort.
+                                if (TrapLinkRequiresPlayer.Contains(targetTrap) && (FPPlayerPatcher.player == null || !FPStage.objectsRegistered))
+                                    return;
+
+                                // If our chosen trap links to a Potion Seller mod item but the mod is missing, then also abort.
+                                if (PotionSellerTrapLink.Contains(targetTrap) && !Chainloader.PluginInfos.ContainsKey("com.eps.plugin.fp2.potion-seller"))
+                                    return;
+
+                                // Add this trap item and a message to the queue.
+                                Plugin.TrapLinks.Add(new ArchipelagoItem(targetTrap, bouncedPacket.Data["source"].ToObject<string>()));
+                                Plugin.sentMessageQueue.Add($"{bouncedPacket.Data["source"]} linked a {trapName}!");
+                                break;
+                            }
                         }
 
-                        // Handle the traps and what they should link to.
-                        switch (bouncedPacket.Data["trap_name"].ToObject<string>())
-                        {
-                            // Brave Stones.
-                            case "Double Damage": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Double Damage", true); break;
-                            case "Expensive Stocks": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Expensive Stocks", true); break;
-                            case "Items To Bombs": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Items To Bombs", true); break;
-                            case "Life Oscillation": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Life Oscillation", true); break;
-                            case "No Guarding": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Guarding", true); break;
-                            case "No Petals": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Petals", true); break;
-                            case "No Revivals": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Revivals", true); break;
-                            case "No Stocks": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "No Stocks", true); break;
-                            case "One Hit KO": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "One Hit KO", true); break;
-                            case "Time Limit": if ((long)Plugin.slotData["trap_stones"] != 0) AddTrap(bouncedPacket, "Time Limit", true); break;
-
-                            // Potion Seller Brave Stones.
-                            case "Invisibility Cloak": if ((long)Plugin.slotData["trap_stones"] != 0 && (long)Plugin.slotData["potion_seller_mod"] != 0) AddTrap(bouncedPacket, "Invisibility Cloak", true); break;
-                            case "Madstone": if ((long)Plugin.slotData["trap_stones"] != 0 && (long)Plugin.slotData["potion_seller_mod"] != 0) AddTrap(bouncedPacket, "Madstone", true); break;
-                            case "Explosive Finale": if ((long)Plugin.slotData["trap_stones"] != 0 && (long)Plugin.slotData["potion_seller_mod"] != 0) AddTrap(bouncedPacket, "Explosive Finale", true); break;
-                            case "Idol of Greed": if ((long)Plugin.slotData["trap_stones"] != 0 && (long)Plugin.slotData["potion_seller_mod"] != 0) AddTrap(bouncedPacket, "Idol of Greed", true); break;
-                            case "Gravity Boots": if ((long)Plugin.slotData["trap_stones"] != 0 && (long)Plugin.slotData["potion_seller_mod"] != 0) AddTrap(bouncedPacket, "Gravity Boots", true); break;
-
-                            // FP2 Traps.
-                            case "Swap Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
-                            case "Mirror Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
-                            case "Pie Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Spring Trap": AddTrap(bouncedPacket, "Spring Trap", true); break;
-                            case "PowerPoint Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
-                            case "Zoom Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
-                            case "Aaa Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
-                            case "Spike Ball Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
-                            case "Pixellation Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
-                            case "Rail Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
-                            case "Spam Trap": AddTrap(bouncedPacket, "Spam Trap"); break;
-                            case "Syntax Jumpscare Trap": AddTrap(bouncedPacket, "Syntax Jumpscare Trap"); break;
-                            case "Trivia Trap": AddTrap(bouncedPacket, "Trivia Trap", true); break;
-                            case "Mach Speed Trap": AddTrap(bouncedPacket, "Mach Speed Trap", true); break;
-                            case "Scott The Woz Trap": AddTrap(bouncedPacket, "Scott The Woz Trap"); break;
-                            case "Wordle Trap": AddTrap(bouncedPacket, "Wordle Trap", true); break;
-                            case "Flood Trap": AddTrap(bouncedPacket, "Flood Trap", true); break;
-
-                            // None FP2 Based Traps, sourced from https://docs.google.com/spreadsheets/d/1yoNilAzT5pSU9c2hYK7f2wHAe9GiWDiHFZz8eMe1oeQ/edit?gid=811965759#gid=811965759.
-                            case "144p Trap": AddTrap(bouncedPacket, "Pixellation Trap", true); break;
-                            case "Animal Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
-                            case "Army Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
-                            case "Banana Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Banana Peel Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Banner Trap": AddTrap(bouncedPacket, "Double Damage", true); break;
-                            case "Bee Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
-                            case "Blastoad": AddTrap(bouncedPacket, "Spring Trap", true); break;
-                            case "Blue Balls Curse": AddTrap(bouncedPacket, "One Hit KO", true); break;
-                            case "Bomb":
-                            case "Bomb Trap":
-                                RandomTrap(new()
-                            {
-                                { "Spike Ball Trap", true },
-                                { "Items To Bombs", true }
-                            });
-                                break;
-                            case "Bonk Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Bubble Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Bullet Time Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
-                            case "Burger Hat Trap": AddTrap(bouncedPacket, "Syntax Jumpscare Trap"); break;
-                            case "Buyon Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
-                            case "Camera Trap":
-                                RandomTrap(new()
-                            {
-                                { "Mirror Trap", false },
-                                { "Zoom Trap", false }
-                            });
-                                break;
-                            case "Camera Rotate Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
-                            case "Chameleos Spit": AddTrap(bouncedPacket, "Double Damage", true); break;
-                            case "Chaos Control Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Confound Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
-                            case "Confuse Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
-                            case "Confusion Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
-                            case "Conga Artillery": AddTrap(bouncedPacket, "No Petals", true); break;
-                            case "Controller Drift Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
-                            case "CRT Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
-                            case "Crystal Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
-                            case "Cutscene Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
-                            case "Damage Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
-                            case "Deisometric Trap":
-                                RandomTrap(new()
-                            {
-                                { "Zoom Trap", false },
-                                { "Mirror Trap", false }
-                            });
-                                break;
-                            case "Disable A Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
-                            case "Disable B Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
-                            case "Disable C Up Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
-                            case "Disable Tag Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
-                            case "Disable Z Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
-                            case "Dry Trap": AddTrap(bouncedPacket, "No Stocks", true); break;
-                            case "Eject Ability": AddTrap(bouncedPacket, "Swap Trap", true); break;
-                            case "Electrocution Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
-                            case "Empty Item Box Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
-                            case "Exposition Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
-                            case "Explosion Trap": AddTrap(bouncedPacket, "Items To Bombs", true); break;
-                            case "Fake Transition": AddTrap(bouncedPacket, "Zoom Trap"); break;
-                            case "Fast Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
-                            case "Fear Trap": AddTrap(bouncedPacket, "Syntax Jumpscare Trap"); break;
-                            case "Fire Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
-                            case "Fish Eye Trap":
-                                RandomTrap(new()
-                            {
-                                { "Zoom Trap", false },
-                                { "Mirror Trap", false },
-                                { "Pixellation Trap", false }
-                            });
-                                break;
-                            case "Flip Horizontal Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
-                            case "Flip Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
-                            case "Flip Vertical Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
-                            case "Food poisoning Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
-                            case "Food Poisoning Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
-                            case "Fracture Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
-                            case "Freeze Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Frog Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
-                            case "Frozen Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Furry Convention Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
-                            case "Fuzzy Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break; // Doesn't have a source or effect listed on the sheet? Thinking of Yoshi's Island?
-                            case "Gadget Shuffle Trap": AddTrap(bouncedPacket, "Swap Trap", true); break;
-                            case "Gas Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
-                            case "Get Out Trap": AddTrap(bouncedPacket, "Time Limit", true); break;
-                            case "Ghost": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
-                            case "Ghost Chat": AddTrap(bouncedPacket, "Aaa Trap"); break;
-                            case "Help Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
-                            case "Hey! Trap":
-                                RandomTrap(new()
-                            {
-                                { "Aaa Trap", false },
-                                { "Spam Trap", false }
-                            });
-                                break;
-                            case "Hiccup Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
-                            case "Honey Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
-                            case "Ice Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Ice Floor Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
-                            case "Icy Hot Pants Trap": AddTrap(bouncedPacket, "Spring Trap", true); break;
-                            case "Impatience Trap": AddTrap(bouncedPacket, "Time Limit", true); break;
-                            case "Input Sequence Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Instant Death Trap": AddTrap(bouncedPacket, "One Hit KO", true); break;
-                            case "Inverted Mouse Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
-                            case "Laughter Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
-                            case "Literature Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
-                            case "Meteor Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
-                            case "My Turn! Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
-                            case "No Vac Trap": AddTrap(bouncedPacket, "No Guarding", true); break;
-                            case "Nut Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
-                            case "OmoTrap": AddTrap(bouncedPacket, "Aaa Trap"); break;
-                            case "Paralyze Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Paralysis Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Phone Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
-                            case "Pixelate Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
-                            case "Poison Mushroom": AddTrap(bouncedPacket, "Zoom Trap"); break;
-                            case "Poison Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
-                            case "Pokemon Trivia Trap": AddTrap(bouncedPacket, "Trivia Trap", true); break;
-                            case "Police Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
-                            case "Posession Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
-                            case "Push Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
-                            case "Reversal Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
-                            case "Reverse Controls Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
-                            case "Reverse Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
-                            case "Rockfall Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
-                            case "Sandstorm Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
-                            case "Screen Flip Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
-                            case "Sleep Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Slip Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Slow Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
-                            case "Slowness Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
-                            case "Spooky Time": AddTrap(bouncedPacket, "Zoom Trap"); break;
-                            case "Spotlight Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
-                            case "Squash Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Stun Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "SvC Effect":
-                                RandomTrap(new()
-                            {
-                                { "Zoom Trap", false },
-                                { "Mirror Trap", false },
-                                { "Powerpoint Trap", false },
-                                { "Pie Trap", true},
-                                { "Swap Trap", true},
-                                { "Spring Trap", true},
-                                { "Aaa Trap", true},
-                            });
-                                break;
-                            case "Tarr Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
-                            case "Text Trap": AddTrap(bouncedPacket, "Spam Trap"); break;
-                            case "Thwimp Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
-                            case "Timer Trap": AddTrap(bouncedPacket, "Time Limit", true); break;
-                            case "Time Warp Trap": AddTrap(bouncedPacket, "Time Limit", true); break;
-                            case "Tiny Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
-                            case "Tip Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
-                            case "TNT Trap": AddTrap(bouncedPacket, "Items To Bombs", true); break;
-                            case "TNT Barrel Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
-                            case "Tutorial Trap":
-                                RandomTrap(new()
-                            {
-                                { "Aaa Trap", false },
-                                { "Spam Trap", false }
-                            });
-                                break;
-                            case "W I D E Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
-                            case "Zoom In Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
-                            case "Zoom Out Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
-
-                            default: Plugin.consoleLog.LogDebug($"No trap matchup found for {bouncedPacket.Data["source"]}'s {bouncedPacket.Data["trap_name"]}!"); break;
-                        }
-
-                        if (received)
-                            Plugin.sentMessageQueue.Add($"{bouncedPacket.Data["source"]} linked a {bouncedPacket.Data["trap_name"]}!");
-
-                        void AddTrap(BouncedPacket bouncedPacket, string trapName, bool requiresPlayer = false)
-                        {
-                            // If this trap requires a player, then check for one and don't add it if they don't exist.
-                            if (requiresPlayer && (FPPlayerPatcher.player == null || !FPStage.objectsRegistered))
-                                return;
-
-                            Plugin.TrapLinks.Add(new ArchipelagoItem(trapName, bouncedPacket.Data["source"].ToObject<string>()));
-                            received = true;
-                        }
-
+                        // If there wasn't an entry, or was one with no mappings, then put a notice in the console.
+                        Plugin.consoleLog.LogWarning($"No TrapLink mappings found for '{trapName}'.");
                         break;
 
                     case BouncedPacket bouncedPacket when bouncedPacket.Tags.Contains("SharedDamage"):
