@@ -169,6 +169,7 @@ namespace Freedom_Planet_2_Archipelago.CustomData
             new("Middle-aged Man", "I've combined\r\n\"luppy\" and \"luppy\"\r\ninto one word!\r\n\"Luppyluppy\"!"), // Reference to Sonic '06.
             new("NOTICE", "What is the square\r\nroot of a fish?\r\n\r\nNow I'm sad."), // Reference to Skullgirls.
             new(null, "Human Jellyfish Bird\r\nhybrid allegedly\r\nstill unable to\r\ncrawl."), // Reference to the "y cant metroid crawl" meme.
+            new(null, "YOU CAN'T CUT BACK\r\nON FUNDING! YOU\r\nWILL REGRET THIS!\r\n\r\n\r\n\r\n[OK]"), // Reference to Sim City 2000.
         ];
 
         // The valid colours to tint the background.

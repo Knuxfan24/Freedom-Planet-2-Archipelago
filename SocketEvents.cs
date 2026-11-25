@@ -36,6 +36,8 @@ namespace Freedom_Planet_2_Archipelago
             "$ perished on the climb.", // Reference to Celeste.
             "$ was not The Imposter.", // Reference to Among Us.
             "$ got Crossworlded.", // Reference to Sonic Racing CrossWorlds.
+            "$ fired the laser.", // Reference to both Freedom Planet 2 itself and to System Shock.
+            "$ removed their OS Chip.", // Reference to NieR Automata.
         ];
 
         /// <summary>
@@ -384,6 +386,7 @@ namespace Freedom_Planet_2_Archipelago
                             case "Banana Peel Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                             case "Banner Trap": AddTrap(bouncedPacket, "Double Damage", true); break;
                             case "Bee Trap": AddTrap(bouncedPacket, "Zoom Trap"); break;
+                            case "Blastoad": AddTrap(bouncedPacket, "Spring Trap", true); break;
                             case "Blue Balls Curse": AddTrap(bouncedPacket, "One Hit KO", true); break;
                             case "Bomb":
                             case "Bomb Trap":
@@ -396,13 +399,24 @@ namespace Freedom_Planet_2_Archipelago
                             case "Bonk Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                             case "Bubble Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                             case "Bullet Time Trap": AddTrap(bouncedPacket, "PowerPoint Trap"); break;
+                            case "Burger Hat Trap": AddTrap(bouncedPacket, "Syntax Jumpscare Trap"); break;
                             case "Buyon Trap": AddTrap(bouncedPacket, "Spike Ball Trap", true); break;
+                            case "Camera Trap":
+                                RandomTrap(new()
+                            {
+                                { "Mirror Trap", false },
+                                { "Zoom Trap", false }
+                            });
+                                break;
                             case "Camera Rotate Trap": AddTrap(bouncedPacket, "Mirror Trap"); break;
+                            case "Chameleos Spit": AddTrap(bouncedPacket, "Double Damage", true); break;
                             case "Chaos Control Trap": AddTrap(bouncedPacket, "Pie Trap", true); break;
                             case "Confound Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                             case "Confuse Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                             case "Confusion Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
+                            case "Conga Artillery": AddTrap(bouncedPacket, "No Petals", true); break;
                             case "Controller Drift Trap": AddTrap(bouncedPacket, "Rail Trap"); break;
+                            case "CRT Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                             case "Crystal Trap": AddTrap(bouncedPacket, "Pixellation Trap"); break;
                             case "Cutscene Trap": AddTrap(bouncedPacket, "Aaa Trap"); break;
                             case "Damage Trap": AddTrap(bouncedPacket, "Life Oscillation", true); break;
