@@ -46,7 +46,7 @@ namespace Freedom_Planet_2_Archipelago
 
         /// <summary>
         /// What TrapLink items should be received as. All the trap names were sourced from https://docs.google.com/spreadsheets/d/1yoNilAzT5pSU9c2hYK7f2wHAe9GiWDiHFZz8eMe1oeQ/edit?gid=811965759#gid=811965759.
-        /// TODO: Fully go through the sheet and add things for newer traps/rethink older ones.
+        /// TODO: Fully go through the sheet and add things for newer traps/rethink older ones. Also update the FP2 column on the sheet.
         /// </summary>
         private static readonly Dictionary<string, string[]> TrapLinkMappings = new()
         {
