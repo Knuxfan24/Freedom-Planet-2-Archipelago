@@ -725,13 +725,13 @@ namespace Freedom_Planet_2_Archipelago
             }
         }
     
-        private static string SM64Message(string input)
+        public static string SM64Message(string input)
         {
             // Only bother doing this if the Mario 64 Text option is enabled.
             if (Plugin.configSM64Text.Value)
             {
                 // Set a default last character.
-                char lastCharacter = 'X';
+                char lastCharacter = '*';
 
                 // Create a StringBuilder out of the input string.
                 System.Text.StringBuilder strBuilder = new(input);
@@ -740,7 +740,7 @@ namespace Freedom_Planet_2_Archipelago
                 for (int characterIndex = 0; characterIndex < strBuilder.Length; characterIndex++)
                 {
                     // Check if this character is one that's missing from the Mario 64 font.
-                    if (Char.ToUpper(strBuilder[characterIndex]) is '!' or '#' or '%' or '&' or '*' or '+' or ',' or '-' or '.' or '?' or 'J' or 'Q' or 'V' or 'X' or 'Z')
+                    if (Char.ToUpper(strBuilder[characterIndex]) is '!' or '#' or '%' or '&' or '+' or ',' or '-' or '.' or '?' or 'J' or 'Q' or 'V' or 'X' or 'Z')
                     {
                         // Type the previously stored character, converting its case if needed.
                         if (Char.IsUpper(strBuilder[characterIndex])) strBuilder[characterIndex] = Char.ToUpper(lastCharacter);
@@ -748,8 +748,8 @@ namespace Freedom_Planet_2_Archipelago
                     }
                     else
                     {
-                        // Update the last character if this isn't a space.
-                        if (strBuilder[characterIndex] != ' ')
+                        // Update the last character if this isn't a space or part of a line break.
+                        if (strBuilder[characterIndex] is not ' ' and not '\n' and not '\r')
                             lastCharacter = strBuilder[characterIndex];
                     }
                 }

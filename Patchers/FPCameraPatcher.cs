@@ -54,5 +54,17 @@
                     ___uiCam.projectionMatrix *= Matrix4x4.Scale(new Vector3(-1f, 1f, 1f));
             }
         }
+
+        /// <summary>
+        /// Applies the SM64 Message joke to any basic Unity text mesh.
+        /// TODO: Put this behind a seperate option? As I feel like looping through for every text mesh on every frame could TANK performance!
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPCamera), "LateUpdate")]
+        private static void GenericTextMeshSM64()
+        {
+            foreach (TextMesh textMesh in UnityEngine.GameObject.FindObjectsOfType<TextMesh>())
+                textMesh.text = SocketEvents.SM64Message(textMesh.text);
+        }
     }
 }
